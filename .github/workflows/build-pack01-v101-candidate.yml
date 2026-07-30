@@ -1,0 +1,94 @@
+name: Build Pack 01 v1.0.1 Candidate
+
+on:
+  pull_request:
+    paths:
+      - "tools/repair_pack01_v101.py"
+      - "requirements-tools.txt"
+      - ".github/workflows/build-pack01-v101-candidate.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  build-candidate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Install repair dependencies
+        run: python -m pip install -r requirements-tools.txt
+      - name: Download canonical v1.0.0
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          mkdir -p release
+          gh release download assets-pack-01-v1.0.0 \
+            --repo "${{ github.repository }}" \
+            --pattern "PACK_01_LIAN_WU_BASE_FINAL_v1.0.0.zip" \
+            --dir release
+      - name: Verify source checksum
+        run: |
+          echo "0aea374365b8736ae2134312e94d8128260a9c7650cc840aa2e588a4ab70872a  release/PACK_01_LIAN_WU_BASE_FINAL_v1.0.0.zip" | sha256sum --check
+      - name: Extract complete source pack
+        run: |
+          mkdir -p extracted
+          python - <<'PY'
+          import zipfile
+          with zipfile.ZipFile('release/PACK_01_LIAN_WU_BASE_FINAL_v1.0.0.zip') as z:
+              z.extractall('extracted')
+          PY
+      - name: Apply deterministic repairs
+        run: python tools/repair_pack01_v101.py extracted staging
+      - name: Separate repair evidence from package
+        run: |
+          cp staging/repair-report-v1.0.1.json repair-report-v1.0.1.json
+          rm staging/repair-report-v1.0.1.json
+      - name: Verify file count is preserved
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          source = sorted(p.relative_to('extracted') for p in Path('extracted').rglob('*') if p.is_file())
+          target = sorted(p.relative_to('staging') for p in Path('staging').rglob('*') if p.is_file())
+          if len(source) != 27 or len(target) != 27:
+              raise SystemExit(f'expected 27 files; source={len(source)} target={len(target)}')
+          if source != target:
+              missing = sorted(set(source) - set(target))
+              added = sorted(set(target) - set(source))
+              raise SystemExit(f'path set changed; missing={missing}; added={added}')
+          print('27 canonical paths preserved')
+          PY
+      - name: Build non-release candidate ZIP
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          import zipfile
+          output = Path('PACK_01_LIAN_WU_BASE_FINAL_v1.0.1-CANDIDATE.zip')
+          with zipfile.ZipFile(output, 'w', zipfile.ZIP_DEFLATED) as z:
+              for path in sorted(Path('staging').rglob('*')):
+                  if path.is_file():
+                      z.write(path, path.relative_to('staging'))
+          PY
+          sha256sum PACK_01_LIAN_WU_BASE_FINAL_v1.0.1-CANDIDATE.zip | tee candidate-sha256.txt
+      - name: Write blocker notice
+        run: |
+          cat > ARTISTIC_BLOCKER.md <<'EOF'
+          # Pack 01 v1.0.1 candidate — blocked
+
+          This artifact contains the complete 27-file pack with deterministic portrait and master repairs.
+
+          It is not a release and must not be imported into the game until the turnaround weapon, sheath and accessory continuity is corrected and visually approved.
+          EOF
+      - uses: actions/upload-artifact@v4
+        with:
+          name: pack-01-v1.0.1-complete-candidate
+          path: |
+            PACK_01_LIAN_WU_BASE_FINAL_v1.0.1-CANDIDATE.zip
+            repair-report-v1.0.1.json
+            candidate-sha256.txt
+            ARTISTIC_BLOCKER.md
+          if-no-files-found: error
+          retention-days: 30
