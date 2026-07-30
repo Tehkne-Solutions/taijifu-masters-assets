@@ -1,0 +1,27 @@
+{
+  "schema": "taijifu/asset-budget-review/v1",
+  "pack_id": "pack_01_lian_wu_base",
+  "version": "1.0.0",
+  "reviewed_at": "2026-07-30T19:31:00Z",
+  "source": {
+    "workflow_run_id": 30575006819,
+    "artifact_id": 8772334535,
+    "release_tag": "assets-pack-01-v1.0.0",
+    "sha256": "0aea374365b8736ae2134312e94d8128260a9c7650cc840aa2e588a4ab70872a"
+  },
+  "limits": {
+    "max_files": 64,
+    "max_disk_bytes": 268435456
+  },
+  "metrics": {
+    "files": 27,
+    "disk_bytes": 7086126,
+    "draw_calls": 0,
+    "frames": 0,
+    "rgba_bytes": 0,
+    "max_dimension": 0
+  },
+  "passed": true,
+  "violations": [],
+  "next_gate": "visual_review"
+}
