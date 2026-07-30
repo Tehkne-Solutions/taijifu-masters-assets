@@ -1,0 +1,30 @@
+name: Test Pack 01 Repair
+
+on:
+  pull_request:
+    paths:
+      - "tools/repair_pack01_v101.py"
+      - "requirements-tools.txt"
+      - ".github/workflows/test-pack01-repair.yml"
+  push:
+    branches: [main]
+    paths:
+      - "tools/repair_pack01_v101.py"
+      - "requirements-tools.txt"
+      - ".github/workflows/test-pack01-repair.yml"
+
+permissions:
+  contents: read
+
+jobs:
+  syntax:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: python -m pip install -r requirements-tools.txt
+      - run: python -m py_compile tools/repair_pack01_v101.py
+      - name: Verify CLI
+        run: python tools/repair_pack01_v101.py --help
