@@ -1,0 +1,16 @@
+{
+  "schema": "tehkne/asset-vault-catalog/v1",
+  "project": "taijifu-masters",
+  "repository": "Tehkne-Solutions/taijifu-masters-assets",
+  "packs": [
+    {
+      "pack_id": "pack_01_lian_wu_base",
+      "version": "1.0.0",
+      "release_tag": "assets-pack-01-v1.0.0",
+      "filename": "PACK_01_LIAN_WU_BASE_FINAL_v1.0.0.zip",
+      "status": "published_pending_forge_validation",
+      "game_repository": "Tehkne-Solutions/taijifu-masters",
+      "forge_repository": "Tehkne-Solutions/tehkne-assets-forge"
+    }
+  ]
+}
