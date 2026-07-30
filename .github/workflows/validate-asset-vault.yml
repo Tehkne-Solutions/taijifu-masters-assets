@@ -15,7 +15,7 @@ on:
   workflow_dispatch:
     inputs:
       release_tag:
-        description: "Tag da release que deve ser validada"
+        description: "Tag da release que deve ser validada; vazio valida todos os packs pendentes"
         required: false
         type: string
 
@@ -28,6 +28,8 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event_name == 'release' && 'main' || github.sha }}
       - uses: actions/setup-python@v5
         with:
           python-version: "3.12"
@@ -36,69 +38,110 @@ jobs:
       - name: Validate pack catalog
         run: tehkne-assets-forge validate-catalog catalog/packs.json
 
-  release-asset:
-    name: Validate release asset
-    if: github.event_name == 'release' || (github.event_name == 'workflow_dispatch' && inputs.release_tag != '')
+  contracts:
+    name: Resolve release contracts
+    needs: catalog
     runs-on: ubuntu-latest
+    outputs:
+      matrix: ${{ steps.resolve.outputs.matrix }}
+      count: ${{ steps.resolve.outputs.count }}
     steps:
-      - name: Checkout current catalog
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v4
         with:
-          ref: main
-      - uses: actions/setup-python@v5
-        with:
-          python-version: "3.12"
-      - name: Install pinned Assets Forge
-        run: python -m pip install "git+https://github.com/Tehkne-Solutions/tehkne-assets-forge.git@107e0fe7b6e6d29812ad09c5e4645828484ceee8"
-      - name: Resolve release contract
-        id: contract
+          ref: ${{ github.event_name == 'release' && 'main' || github.sha }}
+      - name: Build validation matrix
+        id: resolve
         env:
           EVENT_TAG: ${{ github.event.release.tag_name }}
           INPUT_TAG: ${{ inputs.release_tag }}
         run: |
           python - <<'PY'
-          import json, os
+          import json
+          import os
           from pathlib import Path
 
           catalog = json.loads(Path("catalog/packs.json").read_text(encoding="utf-8"))
-          tag = os.environ.get("EVENT_TAG") or os.environ.get("INPUT_TAG")
-          matches = [pack for pack in catalog["packs"] if pack["release_tag"] == tag]
-          if len(matches) != 1:
-              raise SystemExit(f"release tag {tag!r} must match exactly one catalog entry")
-          pack = matches[0]
+          selected_tag = os.environ.get("EVENT_TAG") or os.environ.get("INPUT_TAG")
+
+          if selected_tag:
+              selected = [pack for pack in catalog["packs"] if pack["release_tag"] == selected_tag]
+              if len(selected) != 1:
+                  raise SystemExit(f"release tag {selected_tag!r} must match exactly one catalog entry")
+          else:
+              selected = [
+                  pack for pack in catalog["packs"]
+                  if pack.get("status", "").startswith("published_pending")
+              ]
+
+          contracts = {
+              "include": [
+                  {
+                      "tag": pack["release_tag"],
+                      "filename": pack["filename"],
+                      "pack_id": pack["pack_id"],
+                      "expected_sha256": pack.get("sha256", ""),
+                  }
+                  for pack in selected
+              ]
+          }
+          matrix = json.dumps(contracts, separators=(",", ":"))
           with open(os.environ["GITHUB_OUTPUT"], "a", encoding="utf-8") as output:
-              output.write(f"tag={tag}\n")
-              output.write(f"filename={pack['filename']}\n")
-              output.write(f"pack_id={pack['pack_id']}\n")
-              output.write(f"expected_sha256={pack.get('sha256', '')}\n")
+              output.write(f"matrix={matrix}\n")
+              output.write(f"count={len(selected)}\n")
+          print(json.dumps({"selected": len(selected), "contracts": contracts}, ensure_ascii=False))
           PY
+
+  release-asset:
+    name: Validate ${{ matrix.pack_id }}
+    needs: contracts
+    if: needs.contracts.outputs.count != '0'
+    strategy:
+      fail-fast: false
+      matrix: ${{ fromJSON(needs.contracts.outputs.matrix) }}
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Install pinned Assets Forge
+        run: python -m pip install "git+https://github.com/Tehkne-Solutions/tehkne-assets-forge.git@107e0fe7b6e6d29812ad09c5e4645828484ceee8"
       - name: Download canonical ZIP
         env:
           GH_TOKEN: ${{ github.token }}
-        run: gh release download "${{ steps.contract.outputs.tag }}" --pattern "${{ steps.contract.outputs.filename }}" --dir release
+        run: gh release download "${{ matrix.tag }}" --repo "${{ github.repository }}" --pattern "${{ matrix.filename }}" --dir release
+      - name: Require exactly one canonical ZIP
+        shell: bash
+        run: |
+          shopt -s nullglob
+          files=(release/*)
+          if [ "${#files[@]}" -ne 1 ] || [ "$(basename "${files[0]}")" != "${{ matrix.filename }}" ]; then
+            echo "Expected exactly release/${{ matrix.filename }}" >&2
+            exit 1
+          fi
       - name: Inspect intake safety
         shell: bash
         run: |
           set -o pipefail
-          tehkne-assets-forge inspect-zip "release/${{ steps.contract.outputs.filename }}" | tee intake-report.json
+          tehkne-assets-forge inspect-zip "release/${{ matrix.filename }}" | tee intake-report.json
       - name: Calculate checksum
         id: checksum
         shell: bash
         run: |
           set -o pipefail
-          tehkne-assets-forge checksum "release/${{ steps.contract.outputs.filename }}" | tee checksum-report.json
+          tehkne-assets-forge checksum "release/${{ matrix.filename }}" | tee checksum-report.json
           python - <<'PY'
-          import json, os
+          import json
+          import os
           digest = json.load(open("checksum-report.json", encoding="utf-8"))["sha256"]
           with open(os.environ["GITHUB_OUTPUT"], "a", encoding="utf-8") as output:
               output.write(f"sha256={digest}\n")
           PY
       - name: Verify catalog checksum
-        if: steps.contract.outputs.expected_sha256 != ''
-        run: tehkne-assets-forge verify-checksum "release/${{ steps.contract.outputs.filename }}" "${{ steps.contract.outputs.expected_sha256 }}"
+        if: matrix.expected_sha256 != ''
+        run: tehkne-assets-forge verify-checksum "release/${{ matrix.filename }}" "${{ matrix.expected_sha256 }}"
       - name: Require checksum before approval status
         env:
-          EXPECTED_SHA: ${{ steps.contract.outputs.expected_sha256 }}
+          EXPECTED_SHA: ${{ matrix.expected_sha256 }}
         run: |
           if [ -z "$EXPECTED_SHA" ]; then
             echo "::warning::Release is structurally valid, but catalog sha256 is still missing. Keep the pack pending validation."
@@ -108,14 +151,14 @@ jobs:
           {
             echo "# Asset Vault validation"
             echo ""
-            echo "- Pack: ${{ steps.contract.outputs.pack_id }}"
-            echo "- Tag: ${{ steps.contract.outputs.tag }}"
-            echo "- File: ${{ steps.contract.outputs.filename }}"
+            echo "- Pack: ${{ matrix.pack_id }}"
+            echo "- Tag: ${{ matrix.tag }}"
+            echo "- File: ${{ matrix.filename }}"
             echo "- SHA-256: ${{ steps.checksum.outputs.sha256 }}"
           } >> "$GITHUB_STEP_SUMMARY"
       - uses: actions/upload-artifact@v4
         with:
-          name: asset-vault-validation-${{ steps.contract.outputs.pack_id }}
+          name: asset-vault-validation-${{ matrix.pack_id }}
           path: |
             intake-report.json
             checksum-report.json
