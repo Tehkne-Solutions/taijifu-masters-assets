@@ -15,7 +15,7 @@ on:
   workflow_dispatch:
     inputs:
       release_tag:
-        description: "Tag da release que deve ser validada; vazio valida todos os packs pendentes"
+        description: "Tag da release que deve ser validada; vazio valida todos os packs publicados"
         required: false
         type: string
 
@@ -68,9 +68,16 @@ jobs:
               if len(selected) != 1:
                   raise SystemExit(f"release tag {selected_tag!r} must match exactly one catalog entry")
           else:
+              release_backed_statuses = {
+                  "published_pending_forge_validation",
+                  "forge_validated_pending_visual_review",
+                  "visual_review_passed_pending_budget",
+                  "budget_passed_pending_game_import_approval",
+                  "approved_for_game_import",
+              }
               selected = [
                   pack for pack in catalog["packs"]
-                  if pack.get("status", "").startswith("published_pending")
+                  if pack.get("status") in release_backed_statuses
               ]
 
           contracts = {
@@ -155,6 +162,7 @@ jobs:
             echo "- Tag: ${{ matrix.tag }}"
             echo "- File: ${{ matrix.filename }}"
             echo "- SHA-256: ${{ steps.checksum.outputs.sha256 }}"
+            echo "- Catalog checksum: ${{ matrix.expected_sha256 != '' && 'verified' || 'missing' }}"
           } >> "$GITHUB_STEP_SUMMARY"
       - uses: actions/upload-artifact@v4
         with:
