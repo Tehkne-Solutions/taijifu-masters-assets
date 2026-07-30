@@ -1,7 +1,7 @@
 {
   "schema": "taijifu/asset-vault-catalog/v1",
   "project": "taijifu-masters",
-  "updated_at": "2026-07-30T17:27:00Z",
+  "updated_at": "2026-07-30T19:18:00Z",
   "packs": [
     {
       "pack_id": "pack_01_lian_wu_base",
@@ -9,9 +9,17 @@
       "version": "1.0.0",
       "release_tag": "assets-pack-01-v1.0.0",
       "filename": "PACK_01_LIAN_WU_BASE_FINAL_v1.0.0.zip",
-      "status": "published_pending_forge_validation",
+      "sha256": "0aea374365b8736ae2134312e94d8128260a9c7650cc840aa2e588a4ab70872a",
+      "file_count": 27,
+      "status": "forge_validated_pending_visual_review",
       "engine": "godot",
-      "character_id": "lian_wu"
+      "character_id": "lian_wu",
+      "validation": {
+        "forge": "passed",
+        "intake_safe": true,
+        "checksum_verified": true,
+        "workflow_run_id": 30573852545
+      }
     }
   ]
 }
