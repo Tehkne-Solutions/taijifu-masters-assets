@@ -87,6 +87,8 @@ jobs:
                       "filename": pack["filename"],
                       "pack_id": pack["pack_id"],
                       "expected_sha256": pack.get("sha256", ""),
+                      "max_files": pack.get("budget", {}).get("max_files", ""),
+                      "max_disk_bytes": pack.get("budget", {}).get("max_disk_bytes", ""),
                   }
                   for pack in selected
               ]
@@ -146,6 +148,33 @@ jobs:
       - name: Verify catalog checksum
         if: matrix.expected_sha256 != ''
         run: tehkne-assets-forge verify-checksum "release/${{ matrix.filename }}" "${{ matrix.expected_sha256 }}"
+      - name: Extract validated archive
+        shell: bash
+        run: |
+          rm -rf extracted
+          mkdir -p extracted
+          python - <<'PY'
+          import zipfile
+          from pathlib import Path
+
+          archive = Path("release/${{ matrix.filename }}")
+          target = Path("extracted")
+          with zipfile.ZipFile(archive) as bundle:
+              bundle.extractall(target)
+          PY
+      - name: Check technical budget
+        if: matrix.max_files != '' || matrix.max_disk_bytes != ''
+        shell: bash
+        run: |
+          set -o pipefail
+          args=(extracted)
+          if [ -n "${{ matrix.max_files }}" ]; then
+            args+=(--max-files "${{ matrix.max_files }}")
+          fi
+          if [ -n "${{ matrix.max_disk_bytes }}" ]; then
+            args+=(--max-disk-bytes "${{ matrix.max_disk_bytes }}")
+          fi
+          tehkne-assets-forge check-budget "${args[@]}" | tee budget-report.json
       - name: Require checksum before approval status
         env:
           EXPECTED_SHA: ${{ matrix.expected_sha256 }}
@@ -163,6 +192,7 @@ jobs:
             echo "- File: ${{ matrix.filename }}"
             echo "- SHA-256: ${{ steps.checksum.outputs.sha256 }}"
             echo "- Catalog checksum: ${{ matrix.expected_sha256 != '' && 'verified' || 'missing' }}"
+            echo "- Budget: ${{ (matrix.max_files != '' || matrix.max_disk_bytes != '') && 'checked' || 'not declared' }}"
           } >> "$GITHUB_STEP_SUMMARY"
       - uses: actions/upload-artifact@v4
         with:
@@ -170,4 +200,5 @@ jobs:
           path: |
             intake-report.json
             checksum-report.json
+            budget-report.json
           if-no-files-found: error
