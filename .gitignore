@@ -1,0 +1,18 @@
+# Binários de produção devem ser publicados em GitHub Releases
+*.zip
+*.png
+*.jpg
+*.jpeg
+*.webp
+*.psd
+*.kra
+*.blend
+*.mp4
+*.mov
+
+# Saídas locais do forge
+.build/
+build/
+dist/
+artifacts/
+intake/

@@ -1,0 +1,17 @@
+{
+  "schema": "taijifu/asset-vault-catalog/v1",
+  "project": "taijifu-masters",
+  "updated_at": "2026-07-30T17:27:00Z",
+  "packs": [
+    {
+      "pack_id": "pack_01_lian_wu_base",
+      "display_name": "Pack 01 — Lian Wu Base",
+      "version": "1.0.0",
+      "release_tag": "assets-pack-01-v1.0.0",
+      "filename": "PACK_01_LIAN_WU_BASE_FINAL_v1.0.0.zip",
+      "status": "published_pending_forge_validation",
+      "engine": "godot",
+      "character_id": "lian_wu"
+    }
+  ]
+}
