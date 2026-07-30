@@ -1,0 +1,70 @@
+name: Export Pack Visual Evidence
+
+on:
+  pull_request:
+    paths:
+      - ".github/workflows/export-visual-evidence.yml"
+  workflow_dispatch:
+    inputs:
+      release_tag:
+        description: "Tag da release"
+        required: true
+        default: "assets-pack-01-v1.0.0"
+        type: string
+
+permissions:
+  contents: read
+
+jobs:
+  export:
+    name: Export visual evidence
+    runs-on: ubuntu-latest
+    steps:
+      - name: Resolve tag
+        id: tag
+        shell: bash
+        run: |
+          tag="${{ inputs.release_tag }}"
+          if [ -z "$tag" ]; then
+            tag="assets-pack-01-v1.0.0"
+          fi
+          echo "value=$tag" >> "$GITHUB_OUTPUT"
+      - name: Download canonical ZIP
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh release download "${{ steps.tag.outputs.value }}" \
+            --repo "${{ github.repository }}" \
+            --pattern "PACK_01_LIAN_WU_BASE_FINAL_v1.0.0.zip" \
+            --dir release
+      - name: Verify checksum
+        shell: bash
+        run: |
+          actual="$(sha256sum release/PACK_01_LIAN_WU_BASE_FINAL_v1.0.0.zip | awk '{print $1}')"
+          expected="0aea374365b8736ae2134312e94d8128260a9c7650cc840aa2e588a4ab70872a"
+          test "$actual" = "$expected"
+      - name: Extract visual files
+        shell: bash
+        run: |
+          mkdir -p visual-evidence
+          python - <<'PY'
+          import zipfile
+          from pathlib import Path
+
+          archive = Path("release/PACK_01_LIAN_WU_BASE_FINAL_v1.0.0.zip")
+          target = Path("visual-evidence")
+          allowed = ("source/", "turnaround/", "portraits/", "icons/")
+          with zipfile.ZipFile(archive) as bundle:
+              for member in bundle.infolist():
+                  if member.filename.lower().endswith(".png") and member.filename.startswith(allowed):
+                      bundle.extract(member, target)
+          PY
+      - name: Inventory evidence
+        shell: bash
+        run: find visual-evidence -type f -name '*.png' -print | sort | tee visual-evidence/inventory.txt
+      - uses: actions/upload-artifact@v4
+        with:
+          name: pack-01-lian-wu-visual-evidence
+          path: visual-evidence
+          if-no-files-found: error
+          retention-days: 30
