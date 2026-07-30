@@ -41,7 +41,10 @@ jobs:
     if: github.event_name == 'release' || (github.event_name == 'workflow_dispatch' && inputs.release_tag != '')
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout current catalog
+        uses: actions/checkout@v4
+        with:
+          ref: main
       - uses: actions/setup-python@v5
         with:
           python-version: "3.12"
@@ -74,10 +77,15 @@ jobs:
           GH_TOKEN: ${{ github.token }}
         run: gh release download "${{ steps.contract.outputs.tag }}" --pattern "${{ steps.contract.outputs.filename }}" --dir release
       - name: Inspect intake safety
-        run: tehkne-assets-forge inspect-zip "release/${{ steps.contract.outputs.filename }}" | tee intake-report.json
+        shell: bash
+        run: |
+          set -o pipefail
+          tehkne-assets-forge inspect-zip "release/${{ steps.contract.outputs.filename }}" | tee intake-report.json
       - name: Calculate checksum
         id: checksum
+        shell: bash
         run: |
+          set -o pipefail
           tehkne-assets-forge checksum "release/${{ steps.contract.outputs.filename }}" | tee checksum-report.json
           python - <<'PY'
           import json, os
