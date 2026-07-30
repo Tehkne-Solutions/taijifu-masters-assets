@@ -8,13 +8,18 @@ O histórico Git armazena somente catálogo, manifests, checksums e documentaç�
 
 1. validar o ZIP e o manifest localmente;
 2. calcular SHA-256;
-3. criar a tag `assets-pack-XX-vMAJOR.MINOR.PATCH`;
-4. anexar ZIP, checksum e manifest à Release;
-5. atualizar `catalog/packs.json`;
-6. executar o Tehkné Assets Forge;
-7. revisar os artifacts visuais;
-8. registrar aprovação;
-9. integrar o bundle no jogo.
+3. criar ou atualizar a entrada em `catalog/packs.json` com tag, nome canônico e status pendente;
+4. integrar a alteração do catálogo no ramo `main`;
+5. criar a tag `assets-pack-XX-vMAJOR.MINOR.PATCH`;
+6. publicar a Release anexando ZIP, checksum e manifest;
+7. executar ou confirmar o workflow `Validate Asset Vault`;
+8. registrar o SHA-256 calculado no catálogo quando ainda estiver ausente;
+9. executar novamente a validação criptográfica;
+10. revisar os artifacts visuais e o orçamento técnico;
+11. registrar aprovação;
+12. integrar o bundle no jogo.
+
+A entrada do catálogo deve existir em `main` antes do evento `release.published`. O workflow de Release sempre lê o catálogo atual do ramo principal, não o commit apontado pela tag binária.
 
 ## Pack 01
 
