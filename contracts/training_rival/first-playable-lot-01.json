@@ -1,0 +1,38 @@
+{
+  "schema_version": "1.0.0",
+  "lot_id": "training_rival_first_playable_lot_01",
+  "display_name": "Rival de Treino — First Playable Lot 01",
+  "status": "art_required",
+  "signature": "Tehkné Solutions",
+  "runtime": {
+    "native_facing": "left",
+    "mirror_for_right": true,
+    "pivot": "bottom_center",
+    "feet_line_tolerance_px": 3,
+    "sprite_frames_resource": "training_rival_first_playable_frames.tres"
+  },
+  "visual_identity": {
+    "style": "comic_manga_2_5d",
+    "role": "martial_training_opponent",
+    "palette": ["charcoal", "ember", "bone", "muted_gold"],
+    "silhouette": "compact_guarded_swordsman",
+    "weapon_count": 1,
+    "weapon": "wooden_training_saber",
+    "forbidden": ["purple_tech_glow", "second_weapon", "white_background", "contact_sheet_runtime"]
+  },
+  "animations": {
+    "idle": {"minimum_frames": 6, "fps": 8, "loop": true},
+    "run": {"minimum_frames": 8, "fps": 12, "loop": true},
+    "jump_start": {"minimum_frames": 3, "fps": 12, "loop": false},
+    "airborne": {"minimum_frames": 2, "fps": 8, "loop": true},
+    "fall": {"minimum_frames": 2, "fps": 8, "loop": true},
+    "attack_light": {"minimum_frames": 6, "fps": 14, "loop": false},
+    "guard": {"minimum_frames": 3, "fps": 8, "loop": true},
+    "dodge": {"minimum_frames": 5, "fps": 14, "loop": false},
+    "hit": {"minimum_frames": 3, "fps": 12, "loop": false},
+    "ko": {"minimum_frames": 6, "fps": 10, "loop": false}
+  },
+  "naming": "char_training_rival__<animation>__f<frame-3-digits>.png",
+  "minimum_total_pngs": 44,
+  "approval_required": true
+}
