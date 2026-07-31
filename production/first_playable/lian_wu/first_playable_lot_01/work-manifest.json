@@ -1,10 +1,12 @@
 {
-  "lot_id": "pack_01_lian_wu_first_playable_lot_01",
+  "lot_id": "first_playable_lot_01",
+  "pack_id": "pack_01_lian_wu",
   "version": "1.0.0",
   "status": "art_required",
   "character_id": "lian_wu",
   "native_facing": "right",
   "pivot": "bottom_center",
+  "canvas": {"min": 128, "max": 1024},
   "required_frames": 44,
   "animations": {
     "idle": 6,
