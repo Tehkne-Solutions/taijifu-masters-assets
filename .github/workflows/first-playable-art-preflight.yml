@@ -1,0 +1,41 @@
+name: First Playable Art Preflight
+
+on:
+  pull_request:
+    paths:
+      - "production/first_playable/**"
+      - "tools/validate_first_playable_art_production.py"
+      - ".github/workflows/first-playable-art-preflight.yml"
+  workflow_dispatch:
+    inputs:
+      allow_incomplete:
+        description: "Executar em modo informativo enquanto a produção está incompleta"
+        required: false
+        default: true
+        type: boolean
+
+jobs:
+  validate-art-production:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Validate production
+        shell: bash
+        run: |
+          EXTRA=""
+          if [[ "${{ github.event_name }}" == "workflow_dispatch" && "${{ inputs.allow_incomplete }}" == "true" ]]; then
+            EXTRA="--allow-incomplete"
+          fi
+          python tools/validate_first_playable_art_production.py $EXTRA
+      - name: Upload report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: first-playable-art-preflight
+          path: artifacts/first-playable-art-preflight.json
+          retention-days: 14
+
+# Tehkné Solutions
