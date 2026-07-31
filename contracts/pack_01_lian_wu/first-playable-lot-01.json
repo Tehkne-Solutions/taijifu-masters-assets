@@ -1,0 +1,78 @@
+{
+  "schema": "tehkne/taijifu-asset-lot/v1",
+  "signature": "Tehkné Solutions",
+  "pack_id": "pack_01_lian_wu",
+  "lot_id": "first_playable_lot_01",
+  "version": "1.0.0",
+  "status": "art_required",
+  "purpose": "Substituir a identidade procedural de Lian Wu no First Playable sem promover o Pack 01 completo.",
+  "source_release": {
+    "tag": "assets-pack-01-v1.0.1",
+    "archive": "PACK_01_LIAN_WU_BASE_FINAL_v1.0.1.zip",
+    "required": true,
+    "candidate_not_allowed": true
+  },
+  "runtime": {
+    "engine": "godot-4.3",
+    "character_id": "lian_wu",
+    "target_root": "res://assets/tgap/pack_01_lian_wu/first_playable/",
+    "sprite_mode": "frame_sequence",
+    "facing_strategy": "horizontal_flip",
+    "native_facing": "right",
+    "pivot": {"x": 0.5, "y": 0.92},
+    "feet_baseline_tolerance_px": 3,
+    "max_frame_bounds_variation_percent": 8,
+    "preserve_gameplay_collision": true
+  },
+  "required_animations": {
+    "idle": {"min_frames": 4, "fps": 8, "loop": true},
+    "run": {"min_frames": 6, "fps": 12, "loop": true},
+    "jump_start": {"min_frames": 2, "fps": 10, "loop": false},
+    "airborne": {"min_frames": 1, "fps": 1, "loop": true},
+    "fall": {"min_frames": 2, "fps": 8, "loop": true},
+    "attack_light": {"min_frames": 5, "fps": 14, "loop": false},
+    "guard": {"min_frames": 2, "fps": 8, "loop": true},
+    "dodge": {"min_frames": 4, "fps": 14, "loop": false},
+    "hit": {"min_frames": 3, "fps": 12, "loop": false},
+    "ko": {"min_frames": 5, "fps": 10, "loop": false}
+  },
+  "required_support_files": [
+    "manifest.json",
+    "checksums.sha256",
+    "runtime-map.json",
+    "approval.json"
+  ],
+  "image_rules": {
+    "format": "png",
+    "alpha": true,
+    "premultiplied_alpha": false,
+    "trim_transparent_border": true,
+    "minimum_canvas": {"width": 128, "height": 128},
+    "maximum_canvas": {"width": 1024, "height": 1024},
+    "forbid_embedded_background": true,
+    "forbid_contact_sheet_as_runtime_asset": true
+  },
+  "identity_rules": {
+    "single_sword": true,
+    "neutral_frames_sword_sheathed": true,
+    "sheath_side": "left_hip",
+    "robe_colors": ["white", "water_blue", "gold"],
+    "no_second_weapon_read": true,
+    "silhouette_consistent_with_approved_turnaround": true
+  },
+  "gates": {
+    "integrity": "required",
+    "image": "required",
+    "animation": "required",
+    "runtime": "required",
+    "visual_approval": "required",
+    "web_smoke": "required",
+    "windows_smoke": "required"
+  },
+  "promotion_policy": {
+    "may_replace_procedural_lian_wu": true,
+    "may_promote_full_pack": false,
+    "procedural_fallback_allowed_in_release": false,
+    "rollback_required": true
+  }
+}

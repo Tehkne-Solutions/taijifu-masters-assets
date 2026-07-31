@@ -1,0 +1,33 @@
+{
+  "schema": "tehkne/taijifu-runtime-map/v1",
+  "signature": "Tehkné Solutions",
+  "character_id": "lian_wu",
+  "lot_id": "first_playable_lot_01",
+  "native_facing": "right",
+  "flip_h_for_left": true,
+  "pivot": {"x": 0.5, "y": 0.92},
+  "animations": {
+    "idle": {"glob": "animations/idle/*.png", "fps": 8, "loop": true},
+    "run": {"glob": "animations/run/*.png", "fps": 12, "loop": true},
+    "jump_start": {"glob": "animations/jump_start/*.png", "fps": 10, "loop": false},
+    "airborne": {"glob": "animations/airborne/*.png", "fps": 1, "loop": true},
+    "fall": {"glob": "animations/fall/*.png", "fps": 8, "loop": true},
+    "attack_light": {"glob": "animations/attack_light/*.png", "fps": 14, "loop": false},
+    "guard": {"glob": "animations/guard/*.png", "fps": 8, "loop": true},
+    "dodge": {"glob": "animations/dodge/*.png", "fps": 14, "loop": false},
+    "hit": {"glob": "animations/hit/*.png", "fps": 12, "loop": false},
+    "ko": {"glob": "animations/ko/*.png", "fps": 10, "loop": false}
+  },
+  "state_mapping": {
+    "grounded_idle": "idle",
+    "grounded_move": "run",
+    "jump_rising_start": "jump_start",
+    "jump_rising": "airborne",
+    "jump_falling": "fall",
+    "attack_light": "attack_light",
+    "guard": "guard",
+    "dodge": "dodge",
+    "hitstun": "hit",
+    "defeated": "ko"
+  }
+}
