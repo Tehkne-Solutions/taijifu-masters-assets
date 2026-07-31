@@ -1,4 +1,4 @@
-# Binários de produção devem ser publicados em GitHub Releases
+# Binários gerais permanecem fora do Git comum
 *.zip
 *.png
 *.jpg
@@ -9,6 +9,9 @@
 *.blend
 *.mp4
 *.mov
+
+# Exceção: frames canônicos do First Playable são versionados por Git LFS
+!production/first_playable/**/*.png
 
 # Saídas locais do forge
 .build/
