@@ -4,6 +4,8 @@ on:
   pull_request:
     paths:
       - "production/first_playable/**"
+      - ".gitattributes"
+      - ".gitignore"
       - "tools/validate_first_playable_art_production.py"
       - ".github/workflows/first-playable-art-preflight.yml"
   workflow_dispatch:
@@ -19,9 +21,13 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+        with:
+          lfs: true
       - uses: actions/setup-python@v5
         with:
           python-version: "3.12"
+      - name: Materializar Git LFS
+        run: git lfs pull
       - name: Validate production
         shell: bash
         run: |
