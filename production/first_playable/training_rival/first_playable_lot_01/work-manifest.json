@@ -1,0 +1,27 @@
+{
+  "lot_id": "training_rival_first_playable_lot_01",
+  "version": "1.0.0",
+  "status": "art_required",
+  "character_id": "training_rival",
+  "native_facing": "left",
+  "pivot": "bottom_center",
+  "required_frames": 44,
+  "animations": {
+    "idle": 6,
+    "run": 8,
+    "jump_start": 3,
+    "airborne": 2,
+    "fall": 2,
+    "attack_light": 6,
+    "guard": 3,
+    "dodge": 5,
+    "hit": 3,
+    "ko": 6
+  },
+  "approval": {
+    "art": false,
+    "runtime": false,
+    "godot_review": false
+  },
+  "signature": "Tehkné Solutions"
+}
