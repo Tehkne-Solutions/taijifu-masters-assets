@@ -1,0 +1,54 @@
+name: Build First Playable Lot 01
+
+on:
+  workflow_dispatch:
+  pull_request:
+    paths:
+      - "production/pack_01_lian_wu/first_playable_lot_01/**"
+      - "tools/validate_first_playable_lot01.py"
+      - ".github/workflows/build-first-playable-lot01.yml"
+
+permissions:
+  contents: read
+
+jobs:
+  validate-and-package:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Validate approved lot
+        run: |
+          python tools/validate_first_playable_lot01.py \
+            production/pack_01_lian_wu/first_playable_lot_01 \
+            --report lot01-validation.json
+      - name: Generate checksums
+        working-directory: production/pack_01_lian_wu/first_playable_lot_01
+        run: |
+          find animations -type f -name '*.png' -print0 | sort -z | xargs -0 sha256sum > checksums.sha256
+      - name: Build canonical ZIP
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          import zipfile
+          root = Path('production/pack_01_lian_wu/first_playable_lot_01')
+          output = Path('PACK_01_LIAN_WU_FIRST_PLAYABLE_LOT_01_v1.0.0.zip')
+          with zipfile.ZipFile(output, 'w', zipfile.ZIP_DEFLATED) as archive:
+              for path in sorted(root.rglob('*')):
+                  if path.is_file():
+                      archive.write(path, path.relative_to(root))
+          PY
+          sha256sum PACK_01_LIAN_WU_FIRST_PLAYABLE_LOT_01_v1.0.0.zip > PACK_01_LIAN_WU_FIRST_PLAYABLE_LOT_01_v1.0.0.zip.sha256
+      - uses: actions/upload-artifact@v4
+        with:
+          name: pack-01-first-playable-lot01
+          path: |
+            PACK_01_LIAN_WU_FIRST_PLAYABLE_LOT_01_v1.0.0.zip
+            PACK_01_LIAN_WU_FIRST_PLAYABLE_LOT_01_v1.0.0.zip.sha256
+            lot01-validation.json
+          if-no-files-found: error
+          retention-days: 30
+
+# Tehkné Solutions
