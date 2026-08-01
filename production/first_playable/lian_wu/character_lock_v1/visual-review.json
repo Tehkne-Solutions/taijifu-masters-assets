@@ -2,43 +2,107 @@
   "schema": "tehkne/taijifu-visual-review/v1",
   "signature": "Tehkné Solutions",
   "review_id": "VM01-A1-LIAN-WU-CHARACTER-LOCK-REVIEW",
-  "status": "pending_missing_candidates",
-  "reviewer": null,
-  "reviewed_at": null,
+  "status": "rejected_candidate_01_identity_mismatch",
+  "reviewer": "technical_and_visual_contract_review",
+  "reviewed_at": "2026-08-01T20:38:00-03:00",
   "evidence": {
-    "neutral_pose": null,
-    "combat_stance": null,
+    "canonical_master": "source/char_lian_wu__master_raw.png",
+    "canonical_turnaround_front": "turnaround/char_lian_wu__front_raw.png",
+    "neutral_pose": {
+      "filename": "lian_wu_neutral.png",
+      "sha256": "d29ed9fc2e443d35fb11e9c4028cb8fa13cd1741d527d3b9bc997ca773b9fc9f",
+      "canvas": [768, 768],
+      "alpha_bbox": [144, 48, 623, 720]
+    },
+    "combat_stance": {
+      "filename": "lian_wu_combat_stance.png",
+      "sha256": "6a8d04f3796bfc9b788147ca3433a94bcf63a3ce0a2612fc09bf7951f0c71cc6",
+      "canvas": [768, 768],
+      "alpha_bbox": [69, 265, 699, 720]
+    },
     "silhouette_25pct": null,
     "godot_bench_1920x1080": null
   },
   "criteria": {
-    "neutral_pose": {"status": "pending", "notes": "candidate missing"},
-    "combat_stance": {"status": "pending", "notes": "candidate missing"},
-    "identity_continuity": {"status": "pending", "notes": "cannot compare missing candidates"},
-    "weapon_continuity": {"status": "pending", "notes": "turnaround remains art_correction_required"},
-    "silhouette_25pct": {"status": "pending", "notes": "silhouette file missing"},
-    "transparent_background": {"status": "pending", "notes": "candidate PNGs missing"},
-    "native_facing_right": {"status": "pending", "notes": "candidate PNGs missing"},
-    "pivot_x_0_5_y_0_92": {"status": "pending", "notes": "Godot bench missing"},
-    "feet_baseline_tolerance_3px": {"status": "pending", "notes": "candidate PNGs missing"},
-    "bounds_variation_max_8_percent": {"status": "pending", "notes": "candidate PNGs missing"},
-    "godot_scale_bench": {"status": "pending", "notes": "runtime evidence missing"},
-    "horizontal_flip": {"status": "pending", "notes": "runtime evidence missing"},
-    "hitbox_alignment": {"status": "pending", "notes": "runtime evidence missing"},
-    "contact_shadow": {"status": "pending", "notes": "runtime evidence missing"},
-    "zoom_min_readability": {"status": "pending", "notes": "runtime evidence missing"},
-    "zoom_max_readability": {"status": "pending", "notes": "runtime evidence missing"},
-    "fallback_replacement_ready": {"status": "pending", "notes": "runtime evidence missing"}
+    "neutral_pose": {
+      "status": "fail",
+      "notes": "Technically valid RGBA candidate, but the character identity does not match the canonical Lian Wu source/turnaround."
+    },
+    "combat_stance": {
+      "status": "fail",
+      "notes": "Technically valid RGBA candidate, but it repeats the same non-canonical character identity and cannot advance to runtime bench."
+    },
+    "identity_continuity": {
+      "status": "fail",
+      "notes": "Canonical Lian Wu has a boyish fighter read, high blue-tied topknot, asymmetric white/water-blue/black/gold outfit, broad blue sash and black trousers. Candidate 01 reads as a different feminine character with long loose hair, purple sash and different costume construction."
+    },
+    "weapon_continuity": {
+      "status": "blocked",
+      "notes": "Candidate cannot be approved against a canonical turnaround that is itself art_correction_required; weapon and sheath design also diverge from the current canonical source."
+    },
+    "silhouette_25pct": {
+      "status": "not_run",
+      "notes": "Upstream identity gate failed; creating silhouette evidence from a rejected candidate is forbidden."
+    },
+    "transparent_background": {
+      "status": "pass",
+      "notes": "Both candidates are 768x768 truecolor RGBA with transparent pixels outside the character silhouette."
+    },
+    "native_facing_right": {
+      "status": "pass",
+      "notes": "Both candidates visually face right."
+    },
+    "pivot_x_0_5_y_0_92": {
+      "status": "not_run",
+      "notes": "Godot runtime bench was not executed because identity gate failed."
+    },
+    "feet_baseline_tolerance_3px": {
+      "status": "pass",
+      "notes": "Both alpha bounds end at y=720; measured baseline delta is 0 px."
+    },
+    "bounds_variation_max_8_percent": {
+      "status": "not_applicable_at_character_lock_cross_pose",
+      "notes": "Neutral and crouched combat stance have intentionally different pose bounds; animation-frame variation remains a later gate."
+    },
+    "godot_scale_bench": {
+      "status": "not_run",
+      "notes": "Blocked by failed identity continuity."
+    },
+    "horizontal_flip": {
+      "status": "not_run",
+      "notes": "Blocked by failed identity continuity."
+    },
+    "hitbox_alignment": {
+      "status": "not_run",
+      "notes": "Blocked by failed identity continuity."
+    },
+    "contact_shadow": {
+      "status": "not_run",
+      "notes": "Blocked by failed identity continuity."
+    },
+    "zoom_min_readability": {
+      "status": "not_run",
+      "notes": "Blocked by failed identity continuity."
+    },
+    "zoom_max_readability": {
+      "status": "not_run",
+      "notes": "Blocked by failed identity continuity."
+    },
+    "fallback_replacement_ready": {
+      "status": "fail",
+      "notes": "Rejected candidates cannot replace the procedural fallback."
+    }
   },
   "decision": {
     "approved": false,
     "may_generate_animation_packs": false,
+    "candidate_disposition": "rejected_do_not_promote",
     "blocking_reasons": [
-      "neutral candidate missing",
-      "combat stance candidate missing",
-      "silhouette evidence missing",
-      "Godot runtime bench missing",
-      "turnaround weapon continuity not yet visually approved"
-    ]
+      "candidate identity does not match canonical Lian Wu",
+      "canonical turnaround weapon continuity remains art_correction_required",
+      "silhouette evidence intentionally not produced from rejected art",
+      "Godot runtime bench intentionally not executed for rejected art"
+    ],
+    "next_action": "Regenerate neutral and combat stance using the canonical Lian Wu source and turnaround as strict identity references, then rerun this gate."
   }
 }
