@@ -1,0 +1,76 @@
+name: Validate First Playable Candidate Intake
+
+on:
+  pull_request:
+    paths:
+      - "intake/first_playable/**"
+      - "production/first_playable/generation-batch-01.json"
+      - "tools/import_first_playable_spritesheet.py"
+      - "tools/prepare_first_playable_generation_batch.py"
+      - "tools/validate_first_playable_spritesheet_candidate.py"
+      - "tests/test_first_playable_spritesheet_candidate.py"
+      - ".github/workflows/validate-first-playable-candidate-intake.yml"
+  push:
+    branches: [main]
+    paths:
+      - "intake/first_playable/**"
+      - "production/first_playable/generation-batch-01.json"
+      - "tools/import_first_playable_spritesheet.py"
+      - "tools/prepare_first_playable_generation_batch.py"
+      - "tools/validate_first_playable_spritesheet_candidate.py"
+      - "tests/test_first_playable_spritesheet_candidate.py"
+      - ".github/workflows/validate-first-playable-candidate-intake.yml"
+  workflow_dispatch:
+
+jobs:
+  candidate-intake:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout com Git LFS
+        uses: actions/checkout@v4
+        with:
+          lfs: true
+
+      - name: Configurar Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+
+      - name: Instalar dependências
+        run: python -m pip install --upgrade Pillow pytest
+
+      - name: Testar gate de intake
+        run: python -m pytest -q tests/test_first_playable_spritesheet_candidate.py
+
+      - name: Preparar layouts canônicos
+        run: python tools/prepare_first_playable_generation_batch.py
+
+      - name: Validar candidatos presentes
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p artifacts/candidate-intake
+          shopt -s nullglob
+          sheets=(intake/first_playable/FP_CHAR_*.png)
+          if (( ${#sheets[@]} == 0 )); then
+            echo "Nenhum spritesheet candidato presente; testes estruturais concluídos."
+            exit 0
+          fi
+          for sheet in "${sheets[@]}"; do
+            layout="${sheet%.png}.layout.json"
+            report="artifacts/candidate-intake/$(basename "${sheet%.png}").json"
+            python tools/validate_first_playable_spritesheet_candidate.py \
+              "$sheet" "$layout" --report "$report"
+          done
+
+      - name: Publicar relatórios
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: first-playable-candidate-intake
+          path: artifacts/candidate-intake/
+          if-no-files-found: ignore
+          retention-days: 30
+
+# Tehkné Solutions
