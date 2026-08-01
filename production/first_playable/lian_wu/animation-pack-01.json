@@ -1,0 +1,137 @@
+{
+  "schema": "taijifu-first-playable-animation-pack-v1",
+  "pack_id": "FP_CHAR_01_LIAN_WU_ANIMATION_PACK_01",
+  "character_id": "lian_wu",
+  "status": "ready_for_animation_pack_production",
+  "strategy": "horizontal_strip_per_animation_then_assemble",
+  "cell": {
+    "width": 512,
+    "height": 512,
+    "background": "transparent",
+    "margin": 0,
+    "gutter": 0,
+    "pivot": "bottom_center"
+  },
+  "final_sheet": {
+    "columns": 8,
+    "rows": 6,
+    "width": 4096,
+    "height": 3072,
+    "output": "intake/first_playable/FP_CHAR_01_LIAN_WU.png",
+    "layout": "intake/first_playable/FP_CHAR_01_LIAN_WU.layout.json",
+    "unused_cells": [[4, 5], [5, 5], [6, 5], [7, 5]]
+  },
+  "source_dir": "intake/first_playable/FP_CHAR_01_LIAN_WU.animation-packs",
+  "visual_lock": {
+    "native_facing": "right",
+    "silhouette": "lean martial swordsman",
+    "outfit": "white martial jacket with blue and gold accents, dark trousers",
+    "weapon": "one katana only",
+    "hair": "dark tied hair",
+    "linework": "comic manga 2.5D with readable outline",
+    "lighting": "consistent warm key light and restrained rim light",
+    "forbidden": [
+      "text",
+      "logos",
+      "cell borders",
+      "opaque background",
+      "extra weapons",
+      "costume changes",
+      "camera angle changes",
+      "cropped body parts"
+    ]
+  },
+  "animation_packs": [
+    {
+      "order": 1,
+      "id": "LNW_IDLE_01",
+      "animation": "idle",
+      "frames": 6,
+      "source": "idle.png",
+      "brief": "breathing martial guard, subtle weight shift, feet anchored"
+    },
+    {
+      "order": 2,
+      "id": "LNW_RUN_01",
+      "animation": "run",
+      "frames": 8,
+      "source": "run.png",
+      "brief": "fast grounded run cycle, readable silhouette, weapon continuity"
+    },
+    {
+      "order": 3,
+      "id": "LNW_JUMP_START_01",
+      "animation": "jump_start",
+      "frames": 3,
+      "source": "jump_start.png",
+      "brief": "crouch compression into upward launch"
+    },
+    {
+      "order": 4,
+      "id": "LNW_AIRBORNE_01",
+      "animation": "airborne",
+      "frames": 2,
+      "source": "airborne.png",
+      "brief": "controlled airborne pose with compact center of mass"
+    },
+    {
+      "order": 5,
+      "id": "LNW_FALL_01",
+      "animation": "fall",
+      "frames": 2,
+      "source": "fall.png",
+      "brief": "descending recovery pose prepared for landing"
+    },
+    {
+      "order": 6,
+      "id": "LNW_ATTACK_LIGHT_01",
+      "animation": "attack_light",
+      "frames": 6,
+      "source": "attack_light.png",
+      "brief": "single fast katana strike with anticipation, contact and recovery"
+    },
+    {
+      "order": 7,
+      "id": "LNW_GUARD_01",
+      "animation": "guard",
+      "frames": 3,
+      "source": "guard.png",
+      "brief": "compact defensive guard, stable feet, blade protecting torso"
+    },
+    {
+      "order": 8,
+      "id": "LNW_DODGE_01",
+      "animation": "dodge",
+      "frames": 5,
+      "source": "dodge.png",
+      "brief": "low evasive dash with clear start, travel and recovery"
+    },
+    {
+      "order": 9,
+      "id": "LNW_HIT_01",
+      "animation": "hit",
+      "frames": 3,
+      "source": "hit.png",
+      "brief": "readable impact reaction without changing costume or weapon"
+    },
+    {
+      "order": 10,
+      "id": "LNW_KO_01",
+      "animation": "ko",
+      "frames": 6,
+      "source": "ko.png",
+      "brief": "loss of balance into grounded knockout pose"
+    }
+  ],
+  "acceptance": {
+    "all_strips_rgba": true,
+    "all_frames_non_empty": true,
+    "transparent_background": true,
+    "consistent_scale": true,
+    "consistent_ground_line": true,
+    "same_character_identity": true,
+    "same_weapon": true,
+    "total_frames": 44
+  },
+  "signature": "Tehkné Solutions"
+}
