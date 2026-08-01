@@ -4,7 +4,7 @@
   "lock_id": "VM01-A1-LIAN-WU-CHARACTER-LOCK",
   "character_id": "lian_wu",
   "version": "1.0.0",
-  "status": "blocked_missing_art_and_godot_evidence",
+  "status": "rejected_candidate_01_identity_mismatch",
   "canonical_sources": [
     "contracts/pack_01_lian_wu/first-playable-lot-01.json",
     "reviews/pack_01_lian_wu_base/v1.0.1-turnaround-art-brief.md",
@@ -21,12 +21,21 @@
     "bench_resolution": {"width": 1920, "height": 1080}
   },
   "required_files": [
-    {"path": "lian_wu_neutral.png", "kind": "rgba_character_pose", "status": "missing"},
-    {"path": "lian_wu_combat_stance.png", "kind": "rgba_character_pose", "status": "missing"},
-    {"path": "lian_wu_silhouette_25pct.png", "kind": "rgba_silhouette_test", "status": "missing"},
-    {"path": "godot-bench-1920x1080.png", "kind": "godot_runtime_evidence", "status": "missing"},
-    {"path": "visual-review.json", "kind": "review_record", "status": "present"},
+    {"path": "lian_wu_neutral.png", "kind": "rgba_character_pose", "status": "missing_valid_candidate"},
+    {"path": "lian_wu_combat_stance.png", "kind": "rgba_character_pose", "status": "missing_valid_candidate"},
+    {"path": "lian_wu_silhouette_25pct.png", "kind": "rgba_silhouette_test", "status": "blocked_by_identity_gate"},
+    {"path": "godot-bench-1920x1080.png", "kind": "godot_runtime_evidence", "status": "blocked_by_identity_gate"},
+    {"path": "visual-review.json", "kind": "review_record", "status": "present_rejected_candidate_01"},
     {"path": "README.md", "kind": "operational_contract", "status": "present"}
+  ],
+  "candidate_history": [
+    {
+      "candidate_id": "candidate_01",
+      "status": "rejected_do_not_promote",
+      "neutral_sha256": "d29ed9fc2e443d35fb11e9c4028cb8fa13cd1741d527d3b9bc997ca773b9fc9f",
+      "combat_stance_sha256": "6a8d04f3796bfc9b788147ca3433a94bcf63a3ce0a2612fc09bf7951f0c71cc6",
+      "reason": "identity_mismatch_against_canonical_lian_wu"
+    }
   ],
   "image_rules": {
     "format": "png",
@@ -43,8 +52,10 @@
   "identity_rules": {
     "style": "comic_manga_2_5d",
     "proportions": "chibi_large_head_fighter_read",
+    "canonical_read": "boyish_martial_fighter",
     "topknot_blue_tie": true,
     "outfit_colors": ["white", "water_blue", "black", "gold"],
+    "outfit_construction": "asymmetric_canonical_turnaround",
     "single_katana": true,
     "sheath_side": "left_hip",
     "sheath_color": "water_blue",
@@ -52,15 +63,15 @@
     "second_weapon_read": false
   },
   "acceptance": {
-    "neutral_pose": "pending",
-    "combat_stance": "pending",
-    "identity_continuity": "pending",
-    "weapon_continuity": "pending",
-    "silhouette_25pct": "pending",
-    "transparent_background": "pending",
-    "pivot_bottom_center": "pending",
-    "godot_scale_bench": "pending",
-    "fallback_replacement_ready": "pending"
+    "neutral_pose": "fail",
+    "combat_stance": "fail",
+    "identity_continuity": "fail",
+    "weapon_continuity": "blocked",
+    "silhouette_25pct": "blocked",
+    "transparent_background": "pass",
+    "pivot_bottom_center": "blocked",
+    "godot_scale_bench": "blocked",
+    "fallback_replacement_ready": "fail"
   },
   "promotion": {
     "approved": false,
