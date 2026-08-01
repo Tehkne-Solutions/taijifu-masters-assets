@@ -1,0 +1,184 @@
+{
+  "schema": "taijifu-first-playable-visual-milestone/v1",
+  "milestone_id": "VISUAL_MILESTONE_01",
+  "status": "production_required",
+  "goal": "Entregar um duelo completo com dois personagens em sprites reais, animacoes de combate Tai/Ji/Fu, arena 2.5D animada, VFX elementais e UI sprite-based premium.",
+  "direction": {
+    "style": "comic_manga_2_5d_martial_fantasy",
+    "character_read": "gunbound_like_fighter_readability",
+    "arena_read": "layered_parallax_fighter_first",
+    "ui_read": "martial_fantasy_ink",
+    "forbidden": [
+      "site_like_panels",
+      "purple_tech_glow",
+      "generic_neon_gradients",
+      "glassmorphism_dashboard",
+      "embedded_text_in_art",
+      "procedural_character_as_final"
+    ]
+  },
+  "characters": [
+    {
+      "id": "lian_wu",
+      "pack_id": "FP_CHAR_01_LIAN_WU_PREMIUM",
+      "native_facing": "right",
+      "pivot": "bottom_center",
+      "identity": [
+        "chibi_comic_manga",
+        "large_head_fighter_read",
+        "white_blue_black_gold_outfit",
+        "topknot_blue_tie",
+        "single_katana_left_hip",
+        "katana_sheathed_in_neutral"
+      ]
+    },
+    {
+      "id": "training_rival",
+      "pack_id": "FP_CHAR_02_TRAINING_RIVAL_PREMIUM",
+      "native_facing": "left",
+      "pivot": "bottom_center",
+      "identity": [
+        "chibi_comic_manga",
+        "dark_armor_ember_metal_brass",
+        "heavy_gauntlets",
+        "strong_readable_silhouette"
+      ]
+    }
+  ],
+  "animation_contract": {
+    "locomotion": {
+      "idle": 6,
+      "run": 8,
+      "jump_start": 3,
+      "airborne": 2,
+      "fall": 2,
+      "land": 3,
+      "air_jump": 4,
+      "wall_climb": 4
+    },
+    "defense": {
+      "guard": 4,
+      "parry": 4,
+      "dodge": 5,
+      "hit": 3,
+      "posture_break": 4,
+      "ko": 6
+    },
+    "tai": {
+      "tai_1": 6,
+      "tai_2": 6,
+      "tai_3": 7
+    },
+    "ji": {
+      "ji_1": 6,
+      "ji_2": 6,
+      "ji_3": 7
+    },
+    "fu": {
+      "fu_1": 6,
+      "fu_2": 6,
+      "fu_3": 7
+    },
+    "climax": {
+      "climax_charge": 6,
+      "climax_cast": 8
+    }
+  },
+  "arena": {
+    "pack_id": "FP_ARENA_01_TRIPLE_PATH_RUINS_PREMIUM",
+    "layers": [
+      "sky_far",
+      "mountains_far",
+      "temple_silhouette",
+      "mist_mid",
+      "ruins_mid",
+      "foliage_mid",
+      "playfield_ground",
+      "platform_surfaces",
+      "foreground_rocks",
+      "foreground_foliage"
+    ],
+    "animated": [
+      "mist",
+      "leaves",
+      "cloth_banners",
+      "embers",
+      "water_or_stream",
+      "ambient_dust"
+    ],
+    "requirements": [
+      "no_embedded_borders_between_tiles",
+      "fighter_first_contrast",
+      "clear_platform_edges",
+      "no_purple_tech_glow",
+      "parallax_ready",
+      "camera_safe_16_9"
+    ]
+  },
+  "vfx": {
+    "pack_id": "FP_VFX_01_MARTIAL_ELEMENTS_PREMIUM",
+    "required": [
+      "hit_light",
+      "hit_heavy",
+      "guard_impact",
+      "parry_flash",
+      "dodge_trail",
+      "posture_break",
+      "fire_climax",
+      "water_climax",
+      "earth_climax",
+      "air_climax",
+      "mana_cast",
+      "stamina_exhaust"
+    ]
+  },
+  "ui": {
+    "pack_id": "FP_UI_01_MARTIAL_PREMIUM",
+    "required": [
+      "health_frame_p1",
+      "health_frame_p2",
+      "posture_bar",
+      "stamina_bar",
+      "mana_bar",
+      "combo_badge",
+      "tai_icon",
+      "ji_icon",
+      "fu_icon",
+      "climax_warning",
+      "round_start",
+      "victory",
+      "defeat",
+      "pause_panel",
+      "primary_button",
+      "secondary_button",
+      "control_keycap"
+    ],
+    "rules": [
+      "sprite_based",
+      "ink_brush_martial_fantasy",
+      "compact_fighting_game_layout",
+      "no_dashboard_cards",
+      "no_generic_gradients",
+      "no_glow_as_primary_language"
+    ]
+  },
+  "integration_order": [
+    "lian_wu_complete",
+    "training_rival_complete",
+    "arena_complete",
+    "combat_vfx_complete",
+    "ui_complete",
+    "final_visual_pass"
+  ],
+  "acceptance": {
+    "procedural_character_fallback_visible": false,
+    "procedural_arena_is_primary": false,
+    "site_like_ui": false,
+    "both_characters_real_animated": true,
+    "tai_ji_fu_have_distinct_animations": true,
+    "climax_has_real_cast_animation": true,
+    "arena_is_layered_and_animated": true,
+    "ui_uses_premium_sprites": true
+  },
+  "signature": "Tehkné Solutions"
+}
