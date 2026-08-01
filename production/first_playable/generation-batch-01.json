@@ -1,0 +1,65 @@
+{
+  "schema": "taijifu-first-playable-generation-batch-v1",
+  "batch_id": "first_playable_generation_batch_01",
+  "status": "ready_for_generation",
+  "strategy": "spritesheet_per_character",
+  "sheet": {
+    "columns": 8,
+    "rows": 6,
+    "cell_width": 512,
+    "cell_height": 512,
+    "sheet_width": 4096,
+    "sheet_height": 3072,
+    "margin": 0,
+    "gutter": 0,
+    "background": "transparent",
+    "borders": false
+  },
+  "packs": [
+    {
+      "pack_id": "FP_CHAR_01_LIAN_WU",
+      "character_id": "lian_wu",
+      "source_file": "intake/first_playable/FP_CHAR_01_LIAN_WU.png",
+      "layout_file": "intake/first_playable/FP_CHAR_01_LIAN_WU.layout.json",
+      "required_frames": 44,
+      "native_facing": "right",
+      "pivot": "bottom_center",
+      "destination": "production/first_playable/lian_wu/first_playable_lot_01/frames"
+    },
+    {
+      "pack_id": "FP_CHAR_02_TRAINING_RIVAL",
+      "character_id": "training_rival",
+      "source_file": "intake/first_playable/FP_CHAR_02_TRAINING_RIVAL.png",
+      "layout_file": "intake/first_playable/FP_CHAR_02_TRAINING_RIVAL.layout.json",
+      "required_frames": 44,
+      "native_facing": "left",
+      "pivot": "bottom_center",
+      "destination": "production/first_playable/training_rival/first_playable_lot_01/frames"
+    }
+  ],
+  "animations": [
+    {"id": "idle", "frames": 6},
+    {"id": "run", "frames": 8},
+    {"id": "jump_start", "frames": 3},
+    {"id": "airborne", "frames": 2},
+    {"id": "fall", "frames": 2},
+    {"id": "attack_light", "frames": 6},
+    {"id": "guard", "frames": 3},
+    {"id": "dodge", "frames": 5},
+    {"id": "hit", "frames": 3},
+    {"id": "ko", "frames": 6}
+  ],
+  "acceptance": {
+    "alpha_required": true,
+    "one_character_per_cell": true,
+    "consistent_scale": true,
+    "consistent_ground_line": true,
+    "no_text": true,
+    "no_logos": true,
+    "no_cell_borders": true,
+    "no_embedded_labels": true,
+    "exactly_44_used_cells": true,
+    "unused_cells_transparent": true
+  },
+  "signature": "Tehkné Solutions"
+}
