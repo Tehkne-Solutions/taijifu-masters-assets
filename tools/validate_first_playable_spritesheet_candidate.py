@@ -27,7 +27,8 @@ from import_first_playable_spritesheet import load_layout, validate_frame_map
 def _alpha_stats(image: Image.Image, threshold: int) -> tuple[int, int, float]:
     alpha = image.getchannel("A")
     total = image.width * image.height
-    occupied = sum(count for value, count in alpha.getcolors(maxcolors=256) or [] if value > threshold)
+    colors = alpha.getcolors(maxcolors=256) or []
+    occupied = sum(pixel_count for pixel_count, alpha_value in colors if alpha_value > threshold)
     transparent = total - occupied
     return occupied, transparent, occupied / max(1, total)
 
