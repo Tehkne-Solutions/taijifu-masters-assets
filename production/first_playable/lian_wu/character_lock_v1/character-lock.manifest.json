@@ -1,0 +1,70 @@
+{
+  "schema": "tehkne/taijifu-character-lock/v1",
+  "signature": "Tehkné Solutions",
+  "lock_id": "VM01-A1-LIAN-WU-CHARACTER-LOCK",
+  "character_id": "lian_wu",
+  "version": "1.0.0",
+  "status": "blocked_missing_art_and_godot_evidence",
+  "canonical_sources": [
+    "contracts/pack_01_lian_wu/first-playable-lot-01.json",
+    "reviews/pack_01_lian_wu_base/v1.0.1-turnaround-art-brief.md",
+    "production/first_playable/visual-milestone-01.json",
+    "production/first_playable/VISUAL_EXECUTION_PLAN.md"
+  ],
+  "runtime": {
+    "engine": "godot-4.3",
+    "native_facing": "right",
+    "pivot": {"x": 0.5, "y": 0.92},
+    "feet_baseline_tolerance_px": 3,
+    "max_frame_bounds_variation_percent": 8,
+    "preserve_gameplay_collision": true,
+    "bench_resolution": {"width": 1920, "height": 1080}
+  },
+  "required_files": [
+    {"path": "lian_wu_neutral.png", "kind": "rgba_character_pose", "status": "missing"},
+    {"path": "lian_wu_combat_stance.png", "kind": "rgba_character_pose", "status": "missing"},
+    {"path": "lian_wu_silhouette_25pct.png", "kind": "rgba_silhouette_test", "status": "missing"},
+    {"path": "godot-bench-1920x1080.png", "kind": "godot_runtime_evidence", "status": "missing"},
+    {"path": "visual-review.json", "kind": "review_record", "status": "present"},
+    {"path": "README.md", "kind": "operational_contract", "status": "present"}
+  ],
+  "image_rules": {
+    "format": "png",
+    "color_mode": "rgba",
+    "alpha_required": true,
+    "background": "transparent",
+    "one_character_per_file": true,
+    "embedded_text": false,
+    "embedded_logo": false,
+    "embedded_border": false,
+    "embedded_scene": false,
+    "contact_sheet_allowed": false
+  },
+  "identity_rules": {
+    "style": "comic_manga_2_5d",
+    "proportions": "chibi_large_head_fighter_read",
+    "topknot_blue_tie": true,
+    "outfit_colors": ["white", "water_blue", "black", "gold"],
+    "single_katana": true,
+    "sheath_side": "left_hip",
+    "sheath_color": "water_blue",
+    "neutral_katana_sheathed": true,
+    "second_weapon_read": false
+  },
+  "acceptance": {
+    "neutral_pose": "pending",
+    "combat_stance": "pending",
+    "identity_continuity": "pending",
+    "weapon_continuity": "pending",
+    "silhouette_25pct": "pending",
+    "transparent_background": "pending",
+    "pivot_bottom_center": "pending",
+    "godot_scale_bench": "pending",
+    "fallback_replacement_ready": "pending"
+  },
+  "promotion": {
+    "approved": false,
+    "may_generate_animation_packs": false,
+    "may_replace_procedural_fallback": false
+  }
+}
