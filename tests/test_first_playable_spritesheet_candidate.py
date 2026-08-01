@@ -94,6 +94,7 @@ def test_rejects_opaque_background(tmp_path: Path) -> None:
     Image.new("RGBA", (1024, 768), (40, 40, 40, 255)).save(sheet)
     report = validate_candidate(sheet, layout)
     assert report["passed"] is False
+    assert report["sheet_transparent_ratio"] == 0.0
     assert any("fundo global" in error for error in report["errors"])
 
 
