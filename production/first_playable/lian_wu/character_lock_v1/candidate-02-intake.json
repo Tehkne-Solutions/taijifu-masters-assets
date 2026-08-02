@@ -2,20 +2,25 @@
   "schema": "tehkne/taijifu-character-lock-intake/v1",
   "signature": "Tehkné Solutions",
   "candidate_id": "VM01-A1-LIAN-WU-CANDIDATE-02",
-  "status": "blocked_missing_canonical_binary_references",
+  "status": "blocked_missing_release_archive_bytes",
   "source_release": {
     "tag": "assets-pack-01-v1.0.1",
     "archive": "PACK_01_LIAN_WU_BASE_FINAL_v1.0.1.zip",
     "required": true,
+    "release_existence_verified": true,
+    "evidence": "User File Library screenshots show the GitHub release, one attached asset named PACK_01_LIAN_WU_BASE_FINAL_v1.0.1.zip, and a published SHA-256.",
+    "expected_size_mb": 5.25,
+    "expected_sha256": "b38d1347b5eee3d0c53432302cf2b175d663a1864efe33a5a4e413a6a7443a8d",
+    "archive_bytes_available_to_pipeline": false,
     "available_in_branch": false,
     "available_in_repository_search": false
   },
   "required_reference_files": [
-    {"path": "source/char_lian_wu__master_raw.png", "purpose": "primary identity master", "status": "missing"},
-    {"path": "turnaround/char_lian_wu__front_raw.png", "purpose": "front-view proportion and costume continuity", "status": "missing"},
-    {"path": "turnaround/char_lian_wu__side_left_raw.png", "purpose": "left-hip sheath geometry", "status": "missing"},
-    {"path": "turnaround/char_lian_wu__back_raw.png", "purpose": "back costume and sheath continuity", "status": "missing"},
-    {"path": "turnaround/char_lian_wu__side_right_raw.png", "purpose": "opposite-side silhouette continuity", "status": "missing"}
+    {"path": "source/char_lian_wu__master_raw.png", "purpose": "primary identity master", "status": "blocked_archive_not_materialized"},
+    {"path": "turnaround/char_lian_wu__front_raw.png", "purpose": "front-view proportion and costume continuity", "status": "blocked_archive_not_materialized"},
+    {"path": "turnaround/char_lian_wu__side_left_raw.png", "purpose": "left-hip sheath geometry", "status": "blocked_archive_not_materialized"},
+    {"path": "turnaround/char_lian_wu__back_raw.png", "purpose": "back costume and sheath continuity", "status": "blocked_archive_not_materialized"},
+    {"path": "turnaround/char_lian_wu__side_right_raw.png", "purpose": "opposite-side silhouette continuity", "status": "blocked_archive_not_materialized"}
   ],
   "generation_policy": {
     "text_only_regeneration_allowed": false,
@@ -35,5 +40,5 @@
     "may_enter_visual_review": false,
     "may_enter_godot_bench": false
   },
-  "next_action": "Recover and verify PACK_01_LIAN_WU_BASE_FINAL_v1.0.1.zip, materialize the canonical reference files, record their SHA256 values, then generate Candidate 02 using those images as strict references."
+  "next_action": "Obtain the exact release archive bytes, verify SHA-256 against b38d1347b5eee3d0c53432302cf2b175d663a1864efe33a5a4e413a6a7443a8d, extract the five canonical PNG references, hash each one, then unlock Candidate 02 generation."
 }
