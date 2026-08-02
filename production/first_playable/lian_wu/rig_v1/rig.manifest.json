@@ -1,0 +1,56 @@
+{
+  "schema": "tehkne/taijifu-lian-wu-rig/v1",
+  "signature": "Tehkné Solutions",
+  "character_id": "lian_wu",
+  "source": "VM01-A2 canonical neutral",
+  "source_sha256": "0e435757b5c8a114f3ba91653f79bc86db51ee9cf3bfb74c529efed5d4ff7ab5",
+  "canvas": [1024, 1024],
+  "method": "deterministic_disjoint_pixel_partition",
+  "parts": [
+    "head_hair",
+    "torso",
+    "arm_left",
+    "arm_right",
+    "waist_sash",
+    "leg_left",
+    "leg_right",
+    "weapon"
+  ],
+  "anchors": {
+    "root": [512, 930],
+    "hips": [512, 650],
+    "chest": [512, 500],
+    "neck": [512, 385],
+    "head": [512, 280],
+    "shoulder_left": [420, 435],
+    "elbow_left": [385, 545],
+    "wrist_left": [365, 655],
+    "shoulder_right": [610, 435],
+    "elbow_right": [655, 545],
+    "wrist_right": [665, 655],
+    "knee_left": [460, 805],
+    "ankle_left": [430, 910],
+    "knee_right": [565, 805],
+    "ankle_right": [600, 910],
+    "weapon_socket": [355, 670]
+  },
+  "reconstruction": {
+    "opaque_source_pixels": 245156,
+    "assigned_exactly_once": true,
+    "pixel_diff_sum": 0,
+    "status": "pass"
+  },
+  "combat_stance": {
+    "rigid_piece_transform_candidate": "rejected_visible_seams",
+    "continuous_canonical_warp_candidate": "candidate_pending_godot_bench",
+    "policy": "do_not_promote_until_runtime_visual_gate"
+  },
+  "gates": {
+    "source_identity_preserved": true,
+    "rig_v1_reconstruction": "pass",
+    "combat_stance_authoring_allowed": true,
+    "godot_bench_required": true,
+    "character_lock": "blocked_until_godot_bench",
+    "animation_pack_allowed": false
+  }
+}
