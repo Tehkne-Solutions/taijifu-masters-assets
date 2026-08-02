@@ -2,38 +2,32 @@
   "schema": "tehkne/taijifu-character-lock-intake/v1",
   "signature": "Tehkné Solutions",
   "candidate_id": "VM01-A1-LIAN-WU-CANDIDATE-02",
-  "status": "blocked_missing_canonical_binary_references",
+  "status": "canonical_inputs_recovered_v1_0_0_pending_art_correction",
   "source_release": {
-    "tag": "assets-pack-01-v1.0.1",
-    "archive": "PACK_01_LIAN_WU_BASE_FINAL_v1.0.1.zip",
-    "required": true,
-    "available_in_branch": false,
-    "available_in_repository_search": false
+    "requested_tag": "assets-pack-01-v1.0.1",
+    "recovered_archive": "PACK_01_LIAN_WU_BASE_FINAL_v1.0.0(1).zip",
+    "recovered_version": "1.0.0",
+    "archive_bytes_available_to_pipeline": true,
+    "archive_file_count": 27,
+    "note": "v1.0.0 contains the required canonical master and four turnaround views. It is accepted as the recovered identity source, but not yet as final corrected art."
   },
   "required_reference_files": [
-    {"path": "source/char_lian_wu__master_raw.png", "purpose": "primary identity master", "status": "missing"},
-    {"path": "turnaround/char_lian_wu__front_raw.png", "purpose": "front-view proportion and costume continuity", "status": "missing"},
-    {"path": "turnaround/char_lian_wu__side_left_raw.png", "purpose": "left-hip sheath geometry", "status": "missing"},
-    {"path": "turnaround/char_lian_wu__back_raw.png", "purpose": "back costume and sheath continuity", "status": "missing"},
-    {"path": "turnaround/char_lian_wu__side_right_raw.png", "purpose": "opposite-side silhouette continuity", "status": "missing"}
+    {"path":"source/char_lian_wu__master_raw.png","purpose":"primary identity master","status":"recovered_identity_reference_only","sha256":"97f18a8fe1cdefb9a1ee3db82dc8f4e101e77af7ca458eaf6cf35698d7f993d5","size":[1024,1024],"mode":"RGBA","review":"identity is canonical; image contains embedded branding/text and cannot be used directly as runtime sprite"},
+    {"path":"turnaround/char_lian_wu__front_raw.png","purpose":"front-view proportion and costume continuity","status":"recovered_requires_art_correction","sha256":"047de240f47d6b8ba1e0605dd3353dc3bd6921ae7589163b74c1855d1b5cf1ec","size":[1024,1024],"mode":"RGBA","review":"character identity matches; weapon-hand area contains extra blade-like artifacts"},
+    {"path":"turnaround/char_lian_wu__side_left_raw.png","purpose":"left-hip sheath geometry","status":"recovered_requires_art_correction","sha256":"458a3ed289dad5f2f9714625847e87e270ea6e027d8d281f67c3507ee77465df","size":[1024,1024],"mode":"RGBA","review":"identity and silhouette match; hand/weapon area has stray blade-like artifacts and must preserve one sheathed katana only"},
+    {"path":"turnaround/char_lian_wu__back_raw.png","purpose":"back costume and sheath continuity","status":"recovered_visual_reference_pass","sha256":"fbfa0c5a678d515cde9b61fbee445ff35efa0713415960f15e43efa88359c3b3","size":[1024,1024],"mode":"RGBA","review":"best continuity reference for back costume, sash and single sheath"},
+    {"path":"turnaround/char_lian_wu__side_right_raw.png","purpose":"opposite-side silhouette continuity","status":"recovered_requires_art_correction","sha256":"7858b89976d8fd5968ca404e490927d37894f1146dd2452c872992c797a39168","size":[1024,1024],"mode":"RGBA","review":"identity matches but weapon geometry is invalid: drawn blade plus additional blade-like artifacts while sheath remains visible"}
   ],
   "generation_policy": {
     "text_only_regeneration_allowed": false,
     "use_rejected_candidate_as_identity_reference": false,
     "canonical_images_required_before_generation": true,
+    "correct_recovered_art_before_character_lock": true,
     "one_pose_per_output": true,
     "transparent_rgba_required": true,
     "embedded_scene_text_logo_border_forbidden": true
   },
-  "outputs": [
-    "lian_wu_neutral_candidate_02.png",
-    "lian_wu_combat_stance_candidate_02.png"
-  ],
-  "promotion": {
-    "approved": false,
-    "may_generate": false,
-    "may_enter_visual_review": false,
-    "may_enter_godot_bench": false
-  },
-  "next_action": "Recover and verify PACK_01_LIAN_WU_BASE_FINAL_v1.0.1.zip, materialize the canonical reference files, record their SHA256 values, then generate Candidate 02 using those images as strict references."
+  "outputs": ["corrected_turnaround_v1","lian_wu_neutral_candidate_02.png","lian_wu_combat_stance_candidate_02.png"],
+  "promotion": {"approved":false,"may_generate":false,"may_enter_visual_review":false,"may_enter_godot_bench":false},
+  "next_action": "Correct weapon continuity in front/side-left/side-right while preserving the recovered identity and using back view as continuity anchor. Then run a corrected-turnaround gate before generating Candidate 02 neutral and combat stance."
 }
