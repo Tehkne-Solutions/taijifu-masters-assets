@@ -1,0 +1,44 @@
+{
+  "schema": "tehkne/taijifu-lian-wu-canonical-clean/v1",
+  "signature": "Tehkné Solutions",
+  "version": "1.0.1-partial",
+  "source_pack": "PACK_01_LIAN_WU_BASE_FINAL_v1.0.0",
+  "status": "blocked_side_right_manual_repair_required",
+  "files": {
+    "char_lian_wu__front_clean.png": {
+      "sha256": "follows_local_artifact_package",
+      "size": [1024, 1024],
+      "mode": "RGBA",
+      "status": "pass_candidate"
+    },
+    "char_lian_wu__side_left_clean.png": {
+      "sha256": "follows_local_artifact_package",
+      "size": [1024, 1024],
+      "mode": "RGBA",
+      "status": "pass_candidate"
+    },
+    "char_lian_wu__back_clean.png": {
+      "sha256": "follows_local_artifact_package",
+      "size": [1024, 1024],
+      "mode": "RGBA",
+      "status": "reference_pass"
+    },
+    "char_lian_wu__side_right_BLOCKED_source.png": {
+      "sha256": "7858b89976d8fd5968ca404e490927d37894f1146dd2452c872992c797a39168",
+      "size": [1024, 1024],
+      "mode": "RGBA",
+      "status": "blocked_manual_localized_repair_required"
+    }
+  },
+  "gates": {
+    "identity_continuity": "pass",
+    "front_weapon_artifact": "pass_candidate",
+    "side_left_weapon_artifact": "pass_candidate",
+    "back_reference": "pass",
+    "side_right_weapon_artifact": "blocked",
+    "turnaround_complete": false,
+    "character_lock_allowed": false,
+    "animation_generation_allowed": false
+  },
+  "next_action": "Manual localized repair of side_right only; then rerun turnaround consistency gate."
+}
