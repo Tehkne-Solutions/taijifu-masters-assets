@@ -1,0 +1,39 @@
+{
+  "schema": "tehkne/taijifu-character-lock-intake/v1",
+  "signature": "Tehkné Solutions",
+  "candidate_id": "VM01-A1-LIAN-WU-CANDIDATE-02",
+  "status": "blocked_missing_canonical_binary_references",
+  "source_release": {
+    "tag": "assets-pack-01-v1.0.1",
+    "archive": "PACK_01_LIAN_WU_BASE_FINAL_v1.0.1.zip",
+    "required": true,
+    "available_in_branch": false,
+    "available_in_repository_search": false
+  },
+  "required_reference_files": [
+    {"path": "source/char_lian_wu__master_raw.png", "purpose": "primary identity master", "status": "missing"},
+    {"path": "turnaround/char_lian_wu__front_raw.png", "purpose": "front-view proportion and costume continuity", "status": "missing"},
+    {"path": "turnaround/char_lian_wu__side_left_raw.png", "purpose": "left-hip sheath geometry", "status": "missing"},
+    {"path": "turnaround/char_lian_wu__back_raw.png", "purpose": "back costume and sheath continuity", "status": "missing"},
+    {"path": "turnaround/char_lian_wu__side_right_raw.png", "purpose": "opposite-side silhouette continuity", "status": "missing"}
+  ],
+  "generation_policy": {
+    "text_only_regeneration_allowed": false,
+    "use_rejected_candidate_as_identity_reference": false,
+    "canonical_images_required_before_generation": true,
+    "one_pose_per_output": true,
+    "transparent_rgba_required": true,
+    "embedded_scene_text_logo_border_forbidden": true
+  },
+  "outputs": [
+    "lian_wu_neutral_candidate_02.png",
+    "lian_wu_combat_stance_candidate_02.png"
+  ],
+  "promotion": {
+    "approved": false,
+    "may_generate": false,
+    "may_enter_visual_review": false,
+    "may_enter_godot_bench": false
+  },
+  "next_action": "Recover and verify PACK_01_LIAN_WU_BASE_FINAL_v1.0.1.zip, materialize the canonical reference files, record their SHA256 values, then generate Candidate 02 using those images as strict references."
+}
