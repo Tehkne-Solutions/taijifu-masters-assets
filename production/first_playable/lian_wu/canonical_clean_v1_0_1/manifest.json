@@ -1,0 +1,50 @@
+{
+  "schema": "tehkne/taijifu-lian-wu-canonical-clean/v1",
+  "signature": "Tehkné Solutions",
+  "version": "1.0.1",
+  "source_pack": "PACK_01_LIAN_WU_BASE_FINAL_v1.0.0",
+  "method": "deterministic_pixel_repair",
+  "status": "turnaround_gate_pass",
+  "files": {
+    "char_lian_wu__front_clean.png": {
+      "sha256": "0e435757b5c8a114f3ba91653f79bc86db51ee9cf3bfb74c529efed5d4ff7ab5",
+      "size": [1024, 1024],
+      "mode": "RGBA",
+      "bbox": [320, 70, 720, 970]
+    },
+    "char_lian_wu__side_left_clean.png": {
+      "sha256": "1144177a07b0775acac309eca0498e2401e03941b03b81b7326bc672725549ac",
+      "size": [1024, 1024],
+      "mode": "RGBA",
+      "bbox": [326, 70, 698, 970]
+    },
+    "char_lian_wu__back_clean.png": {
+      "sha256": "fbfa0c5a678d515cde9b61fbee445ff35efa0713415960f15e43efa88359c3b3",
+      "size": [1024, 1024],
+      "mode": "RGBA",
+      "bbox": [303, 70, 721, 970]
+    },
+    "char_lian_wu__side_right_clean.png": {
+      "sha256": "660280433b6ab5828f34e756205569a535c0c5e4238f1c308ff45ae4a4259c5f",
+      "size": [1024, 1024],
+      "mode": "RGBA",
+      "bbox": [326, 70, 698, 970]
+    }
+  },
+  "gates": {
+    "identity_continuity": "pass",
+    "transparent_rgba": "pass",
+    "canvas_1024": "pass",
+    "feet_baseline_y_970": "pass",
+    "front_weapon_artifact": "pass",
+    "side_left_weapon_artifact": "pass",
+    "back_reference": "pass",
+    "side_right_reconstructed_from_canonical_side_left_mirror": "pass",
+    "exposed_loose_blades": 0,
+    "single_sheathed_katana": "pass",
+    "turnaround_complete": true,
+    "character_lock_allowed": true,
+    "animation_generation_allowed": false
+  },
+  "next_action": "Generate neutral + combat stance from the locked turnaround, then silhouette 25% and Godot bench."
+}
