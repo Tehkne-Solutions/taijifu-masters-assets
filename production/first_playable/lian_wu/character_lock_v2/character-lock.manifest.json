@@ -1,0 +1,30 @@
+{
+  "schema": "tehkne/taijifu-character-lock/v2",
+  "signature": "Tehkné Solutions",
+  "character_id": "lian_wu",
+  "source": "PACK_01_LIAN_WU_CANONICAL_CLEAN_v1.0.1",
+  "status": "partial_blocked_combat_stance",
+  "canonical_runtime_contract": {
+    "native_facing": "right",
+    "pivot_normalized": [0.5, 0.92],
+    "fighter_capsule": {"radius": 16.0, "height": 78.0, "position": [0, -16]},
+    "runtime_sprite_position": [0, -17]
+  },
+  "artifacts": {
+    "neutral": {"file": "lian_wu_neutral.png", "status": "pass_canonical_source", "sha256": "0e435757b5c8a114f3ba91653f79bc86db51ee9cf3bfb74c529efed5d4ff7ab5"},
+    "silhouette_25pct": {"file": "lian_wu_silhouette_25pct.png", "status": "pass_derived_alpha", "sha256": "31709a38a04129956f260483e6fa86509e02c5aef1251a1f5ce837c699a228eb"},
+    "combat_stance": {"file": "lian_wu_combat_stance.png", "status": "blocked_not_fabricated"},
+    "godot_bench": {"file": "godot-bench-1920x1080.png", "status": "blocked_until_combat_stance"}
+  },
+  "gates": {
+    "identity_continuity": "pass",
+    "neutral_pose": "pass",
+    "silhouette_25pct": "pass",
+    "combat_stance": "blocked",
+    "godot_bench": "blocked",
+    "character_lock": "blocked",
+    "rig_generation_allowed": true,
+    "animation_generation_allowed": false
+  },
+  "decision": "Build Rig v1 from canonical neutral before authoring combat stance; do not generatively redraw the character."
+}
