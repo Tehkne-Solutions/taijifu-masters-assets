@@ -1,0 +1,35 @@
+{
+  "product": "Taijifu Masters",
+  "signature": "Tehkné Solutions",
+  "gate": "VM02-C31-V2-ARENA-CANONICAL-PRODUCTION",
+  "arena_id": "mountain_dojo_night",
+  "status": "production_ready",
+  "required_files": [
+    "background.png",
+    "midground.png",
+    "foreground.png",
+    "collision.json",
+    "lighting.json",
+    "manifest.json"
+  ],
+  "visual_direction": {
+    "theme": "mountain dojo at night",
+    "style": "martial-fantasy 2.5D layered parallax",
+    "forbidden": ["visible grid", "tech glow", "generic website panels", "procedural placeholder geometry"],
+    "layers": {
+      "background": "moonlit mountains, sky, distant silhouettes",
+      "midground": "canonical dojo, lanterns, vegetation and architectural depth",
+      "foreground": "combat floor, near props, occlusion details and atmospheric accents"
+    }
+  },
+  "runtime_contract": {
+    "canvas": "1920x1080",
+    "parallax_layers": 3,
+    "combat_floor_y": 850,
+    "safe_fighter_zone": [280, 1640],
+    "collision_required": true,
+    "lighting_required": true
+  },
+  "promotion_rule": "Only promote when all 6 required files exist, manifest validates, runtime capture passes and visual review approves the complete arena.",
+  "handoff": "VM02-C30 automatically imports this canonical pack when complete."
+}
