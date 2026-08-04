@@ -1,0 +1,28 @@
+name: Validate Training Rival Canonical Production
+
+on:
+  pull_request:
+    paths:
+      - "production/first_playable/training_rival/**"
+      - "tools/validate_training_rival_canonical_production.py"
+      - ".github/workflows/validate-training-rival-canonical-production.yml"
+  push:
+    branches: [main]
+    paths:
+      - "production/first_playable/training_rival/**"
+      - "tools/validate_training_rival_canonical_production.py"
+  workflow_dispatch:
+
+jobs:
+  c29-training-rival-production:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          lfs: true
+      - name: Materialize LFS
+        run: git lfs pull
+      - name: Run C29 canonical production preflight
+        run: python tools/validate_training_rival_canonical_production.py
+
+# Tehkné Solutions
