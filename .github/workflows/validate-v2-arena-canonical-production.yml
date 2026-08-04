@@ -1,0 +1,24 @@
+name: Validate V2 Arena Canonical Production
+
+on:
+  pull_request:
+    paths:
+      - 'production/v2/arena/mountain_dojo_night/**'
+      - 'tools/validate_v2_arena_canonical_production.py'
+      - '.github/workflows/validate-v2-arena-canonical-production.yml'
+  workflow_dispatch:
+
+jobs:
+  validate-arena-production:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          lfs: true
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Materialize LFS
+        run: git lfs pull
+      - name: Run C31 arena production preflight
+        run: python tools/validate_v2_arena_canonical_production.py
