@@ -1,0 +1,60 @@
+{
+  "schema": "tehkne/taijifu-training-rival-canonical-production/v1",
+  "signature": "Tehkné Solutions",
+  "character_id": "training_rival",
+  "milestone": "Taijifu Masters v.2 playable",
+  "status": "production_open_0_of_44",
+  "identity_lock": {
+    "style": "comic_manga_2_5d_martial_fantasy",
+    "role": "martial_training_opponent",
+    "native_facing": "left",
+    "proportions": "compact_heavy_fighter_read",
+    "palette": ["charcoal", "ember", "bone", "muted_gold"],
+    "silhouette": "compact_guarded_swordsman",
+    "hair": "dark_tied_or_short_martial_hair",
+    "armor": "dark_training_armor_with_ember_and_brass_accents",
+    "weapon_count": 1,
+    "weapon": "wooden_training_saber",
+    "weapon_handling": "single_weapon_continuity_all_frames",
+    "forbidden": [
+      "mirrored_lian_wu_identity",
+      "second_weapon",
+      "purple_tech_glow",
+      "embedded_background",
+      "embedded_text",
+      "embedded_logo",
+      "contact_sheet_runtime_asset",
+      "costume_mutation_between_frames"
+    ]
+  },
+  "runtime": {
+    "pivot": "bottom_center",
+    "feet_line_tolerance_px": 3,
+    "frame_bounds_variation_max_percent": 8,
+    "transparent_rgba_required": true,
+    "mirror_for_right": true
+  },
+  "animation_matrix": {
+    "idle": 6,
+    "run": 8,
+    "jump_start": 3,
+    "airborne": 2,
+    "fall": 2,
+    "attack_light": 6,
+    "guard": 3,
+    "dodge": 5,
+    "hit": 3,
+    "ko": 6
+  },
+  "required_total_frames": 44,
+  "source_root": "production/first_playable/training_rival/first_playable_lot_01/animations",
+  "naming": "char_training_rival__<animation>__f<frame-3-digits>.png",
+  "promotion": {
+    "current_proxy_may_be_removed": false,
+    "requires_44_of_44": true,
+    "requires_visual_review": true,
+    "requires_godot_runtime_bench": true,
+    "requires_game_c28_import_gate": true
+  },
+  "next_action": "Materialize real canonical Training Rival animation frames into the production root, run the C29 preflight, then let the game-side C28 bridge import the complete lot atomically."
+}
