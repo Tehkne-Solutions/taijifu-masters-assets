@@ -1,0 +1,35 @@
+{
+  "schema": "tehkne/taijifu-stage-pack/v1",
+  "signature": "Tehkné Solutions",
+  "arena_id": "mountain_dojo_night",
+  "display_name": "Mountain Dojo Night",
+  "version": "1.0.0-candidate",
+  "status": "art_pending",
+  "viewport": "1920x1080",
+  "layers": [
+    {"file": "background.png", "role": "background", "parallax": 0.18, "required": true},
+    {"file": "midground.png", "role": "midground", "parallax": 0.48, "required": true},
+    {"file": "foreground.png", "role": "foreground", "parallax": 1.0, "required": true, "transparent": true}
+  ],
+  "runtime_files": ["collision.json", "lighting.json"],
+  "runtime_contract": {
+    "ground_y": 820,
+    "safe_fighter_zone": [280, 1640],
+    "no_visible_grid": true,
+    "no_procedural_placeholder": true,
+    "transparent_foreground_required": true
+  },
+  "visual_direction": {
+    "theme": "mountain dojo at night",
+    "style": "martial-fantasy 2.5D layered parallax",
+    "mood": "calm, disciplined, cinematic, readable for combat",
+    "forbidden": ["tech glow", "generic website panels", "visible grid", "procedural placeholder geometry"]
+  },
+  "promotion": {
+    "canonical_ready": false,
+    "required_image_count": 3,
+    "visual_review_required": true,
+    "godot_runtime_capture_required": true,
+    "handoff_gate": "VM02-C30-V2-ARENA-INTAKE-BRIDGE"
+  }
+}
