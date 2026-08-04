@@ -1,0 +1,30 @@
+{
+  "schema": "tehkne/taijifu-stage-collision/v1",
+  "signature": "Tehkné Solutions",
+  "arena_id": "mountain_dojo_night",
+  "viewport": [1920, 1080],
+  "ground_y": 820,
+  "camera_bounds": {
+    "left": 0,
+    "right": 1920,
+    "top": 0,
+    "bottom": 1080
+  },
+  "fighter_bounds": {
+    "left": 280,
+    "right": 1640,
+    "floor": 820
+  },
+  "surfaces": [
+    {
+      "id": "main_combat_floor",
+      "type": "floor",
+      "points": [[0, 820], [1920, 820], [1920, 1080], [0, 1080]]
+    }
+  ],
+  "walls": [
+    {"id": "left_limit", "x": 240},
+    {"id": "right_limit", "x": 1680}
+  ],
+  "notes": "Runtime metadata only. Visual collision must remain aligned to the approved foreground artwork before canonical promotion."
+}
