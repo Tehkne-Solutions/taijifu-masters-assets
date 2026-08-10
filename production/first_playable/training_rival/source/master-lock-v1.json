@@ -1,0 +1,35 @@
+{
+  "schema": "tehkne/taijifu-training-rival-master-lock/v1",
+  "signature": "Tehkné Solutions",
+  "character_id": "training_rival",
+  "stage": "PRESET-02.1 Clean Master",
+  "status": "owner_approved_exact_binary_pending_repository_ingress",
+  "canonical_target": "production/first_playable/training_rival/source/training_rival_master.png",
+  "approved_binary": {
+    "sha256": "ce76243a4b89147a4900e823041b5392e2b19b13549aaa9fcd95cbf3e34d3fe3",
+    "canvas": [1024, 1024],
+    "mode": "RGBA",
+    "alpha_bounds_threshold_3": [77, 48, 927, 971],
+    "transparent_corners": true,
+    "foreground_touches_canvas_edge": false,
+    "native_facing": "left",
+    "weapon_count": 1,
+    "weapon": "wooden_training_saber"
+  },
+  "owner_visual_review": "approved",
+  "runtime_ready": false,
+  "frame_materialization_ready": false,
+  "p01_local_dry_run": {
+    "status": "generated_rejected_visual_review",
+    "idle_frames": 6,
+    "run_frames": 8,
+    "unique_hashes": 12,
+    "baseline_y": 970,
+    "blocking_observation": "Current articulated-region P01 generator duplicates/splits the wooden saber and overlapping body regions during run poses. P01 must not be promoted until articulation masks are made disjoint/weapon-aware and visual review is repeated."
+  },
+  "blockers": [
+    "exact_binary_not_yet_present_at_canonical_target",
+    "p01_run_articulation_overlap_requires_generator_fix"
+  ],
+  "next_action": "Ingress the exact approved PNG at canonical_target, run PRESET-02 Source Intake, then rerun P01 after fixing articulated-region overlap; do not promote the current 14-frame dry run."
+}
