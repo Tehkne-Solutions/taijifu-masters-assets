@@ -34,10 +34,18 @@ jobs:
         id: mode
         shell: bash
         run: |
+          count_png() {
+            local root="$1"
+            if [[ -d "$root" ]]; then
+              find "$root" -type f -name '*.png' | wc -l | tr -d ' '
+            else
+              echo 0
+            fi
+          }
           STRICT=true
           if [[ "${{ github.event_name }}" == "pull_request" ]]; then
-            LIAN_COUNT=$(find production/first_playable/lian_wu/first_playable_lot_01/animations -type f -name '*.png' 2>/dev/null | wc -l | tr -d ' ')
-            RIVAL_COUNT=$(find production/first_playable/training_rival/first_playable_lot_01/animations -type f -name '*.png' 2>/dev/null | wc -l | tr -d ' ')
+            LIAN_COUNT=$(count_png production/first_playable/lian_wu/first_playable_lot_01/animations)
+            RIVAL_COUNT=$(count_png production/first_playable/training_rival/first_playable_lot_01/animations)
             if [[ "$LIAN_COUNT" != "44" || "$RIVAL_COUNT" != "44" ]]; then
               STRICT=false
             fi
