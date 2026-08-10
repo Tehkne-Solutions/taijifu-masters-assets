@@ -1,11 +1,26 @@
 param(
   [Parameter(Mandatory=$true)][string]$MasterPath,
   [string]$Branch = "agent/preset02-p01-binary-ingress",
-  [string]$RepoRoot = (Resolve-Path "$PSScriptRoot\..")
+  [string]$RepoRoot = ""
 )
 
 $ErrorActionPreference = "Stop"
+
+$ScriptPath = $MyInvocation.MyCommand.Path
+if ([string]::IsNullOrWhiteSpace($ScriptPath)) {
+  throw "PRESET02_INGRESS=BLOCKED script_path_unavailable"
+}
+$ScriptRoot = Split-Path -Parent $ScriptPath
+if ([string]::IsNullOrWhiteSpace($RepoRoot)) {
+  $RepoRoot = (Resolve-Path (Join-Path $ScriptRoot "..")).Path
+} else {
+  $RepoRoot = (Resolve-Path $RepoRoot).Path
+}
+if (-not (Test-Path (Join-Path $RepoRoot ".git"))) {
+  throw "PRESET02_INGRESS=BLOCKED repo_root_invalid=$RepoRoot"
+}
 Set-Location $RepoRoot
+Write-Host "PRESET02_REPO_ROOT=$RepoRoot"
 
 $ApprovedRawSha = "de532ea47c0b16921bfb84d3826fe1a2a51cf9f10aa8f6d8b98a90d9a457be6d"
 $ApprovedRawBytes = 1273838
