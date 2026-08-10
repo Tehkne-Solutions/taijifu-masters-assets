@@ -1,0 +1,108 @@
+{
+  "schema": "tehkne/taijifu-training-rival-p03/v1",
+  "signature": "Tehkné Solutions",
+  "character_id": "training_rival",
+  "pack": "P03",
+  "version": "1.0.0-attack-light-v2-candidate",
+  "source": {
+    "pixel_sha256": "67abba855b18ea6cc5ef62c4e382041d5ca69eb9902d9b3c6ead9329a163531e",
+    "alpha_bounds": [
+      77,
+      48,
+      927,
+      971
+    ]
+  },
+  "contract": {
+    "native_facing": "left",
+    "weapon": "single_wooden_training_saber",
+    "upper_and_weapon_rigid_block": true,
+    "leg_masks_mutually_exclusive": true,
+    "safe_canvas_margin_px": 3,
+    "beats": [
+      "guard",
+      "chamber",
+      "release",
+      "impact",
+      "follow_through",
+      "recover"
+    ],
+    "canonical_naming": "char_training_rival__attack_light__f<frame-3-digits>.png"
+  },
+  "attack_light": [
+    {
+      "index": 1,
+      "file": "attack_light/char_training_rival__attack_light__f001.png",
+      "sha256": "4b0c0371fbb5678a8cea3d4609cbc526091de3ec23483790714b307e528767b8",
+      "alpha_bounds": [
+        77,
+        48,
+        927,
+        971
+      ]
+    },
+    {
+      "index": 2,
+      "file": "attack_light/char_training_rival__attack_light__f002.png",
+      "sha256": "a34f6c5b52f76e67825742cf25c26fed5c24e95f1132089fb86b97ab77534404",
+      "alpha_bounds": [
+        39,
+        69,
+        942,
+        965
+      ]
+    },
+    {
+      "index": 3,
+      "file": "attack_light/char_training_rival__attack_light__f003.png",
+      "sha256": "5a4eaaa30a4639fe65b1815a0f2f773ef09a89acc7a14a66a7a384c6562e83fc",
+      "alpha_bounds": [
+        57,
+        51,
+        906,
+        981
+      ]
+    },
+    {
+      "index": 4,
+      "file": "attack_light/char_training_rival__attack_light__f004.png",
+      "sha256": "ed3eaa00dc539563cf9d53352a1e0f4564c928bcfc55c4dec999dbf230a0d152",
+      "alpha_bounds": [
+        147,
+        52,
+        930,
+        989
+      ]
+    },
+    {
+      "index": 5,
+      "file": "attack_light/char_training_rival__attack_light__f005.png",
+      "sha256": "b0e59d91cb49a86d45501021cd174ad966a07db3c50b135540543b9a5f269840",
+      "alpha_bounds": [
+        125,
+        53,
+        921,
+        981
+      ]
+    },
+    {
+      "index": 6,
+      "file": "attack_light/char_training_rival__attack_light__f006.png",
+      "sha256": "e8606f45b24dd82c957243457017b2be21cdb86f49fc68e21017fd1119ff9ebf",
+      "alpha_bounds": [
+        90,
+        48,
+        922,
+        973
+      ]
+    }
+  ],
+  "gates": {
+    "source_pixel_identity": "pass",
+    "weapon_duplication_structurally_prevented": "pass",
+    "frame_count_6": "pass",
+    "unique_frame_floor": "pass",
+    "safe_canvas_margin": "pass",
+    "visual_review": "pending"
+  }
+}
