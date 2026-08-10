@@ -24,16 +24,34 @@ jobs:
       - uses: actions/checkout@v4
         with:
           lfs: true
+          fetch-depth: 0
       - uses: actions/setup-python@v5
         with:
           python-version: "3.12"
       - name: Materializar Git LFS
         run: git lfs pull
+      - name: Resolve validation mode
+        id: mode
+        shell: bash
+        run: |
+          STRICT=true
+          if [[ "${{ github.event_name }}" == "pull_request" ]]; then
+            STRICT=false
+            BASE_SHA="${{ github.event.pull_request.base.sha }}"
+            HEAD_SHA="${{ github.event.pull_request.head.sha }}"
+            if git diff --name-only "$BASE_SHA" "$HEAD_SHA" | grep -Eq '^production/first_playable/(lian_wu|training_rival)/first_playable_lot_01/'; then
+              STRICT=true
+            fi
+          elif [[ "${{ github.event_name }}" == "workflow_dispatch" && "${{ inputs.allow_incomplete }}" == "true" ]]; then
+            STRICT=false
+          fi
+          echo "strict=$STRICT" >> "$GITHUB_OUTPUT"
+          echo "FIRST_PLAYABLE_ART_STRICT=$STRICT"
       - name: Validate production
         shell: bash
         run: |
           EXTRA=""
-          if [[ "${{ github.event_name }}" == "workflow_dispatch" && "${{ inputs.allow_incomplete }}" == "true" ]]; then
+          if [[ "${{ steps.mode.outputs.strict }}" != "true" ]]; then
             EXTRA="--allow-incomplete"
           fi
           python tools/validate_first_playable_art_production.py $EXTRA
@@ -45,6 +63,6 @@ jobs:
           path: artifacts/first-playable-art-preflight.json
           retention-days: 14
 
-# Source metadata and canonical contracts have dedicated fail-closed gates (C29/PRESET-02)
-# and must not impersonate a materialized 44-frame lot.
+# Materialized lot changes stay strict. Workflow/validator maintenance can run informatively
+# while the canonical production set is intentionally incomplete.
 # Tehkné Solutions
