@@ -1,0 +1,53 @@
+name: PRESET-02 Training Rival P01
+
+on:
+  pull_request:
+    paths:
+      - 'production/first_playable/training_rival/source/**'
+      - 'production/first_playable/training_rival/first_playable_lot_01/animations/idle/**'
+      - 'production/first_playable/training_rival/first_playable_lot_01/animations/run/**'
+      - 'tools/validate_training_rival_p01.py'
+      - '.github/workflows/validate-training-rival-p01.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  p01:
+    runs-on: ubuntu-22.04
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          lfs: true
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Materialize LFS references
+        run: git lfs pull
+      - name: Validate P01 14/14
+        shell: bash
+        run: |
+          set -o pipefail
+          if [[ ! -f production/first_playable/training_rival/source/training_rival_master.png ]]; then
+            echo 'PRESET02_P01=BLOCKED source_master_missing'
+            exit 1
+          fi
+          python tools/validate_training_rival_p01.py 2>&1 | tee preset02-p01.log
+          grep -q 'PRESET02_P01_FRAME_COUNT=14/14' preset02-p01.log
+          grep -q 'PRESET02_P01_VISUAL_REVIEW=PASS' preset02-p01.log
+          grep -q 'PRESET02_P01=PASS' preset02-p01.log
+          grep -q 'PRESET02_RUNTIME_PROMOTION=BLOCKED requires_44_of_44=true' preset02-p01.log
+          grep -q 'SIGNATURE=Tehkné Solutions' preset02-p01.log
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: PRESET02-P01-VALIDATION
+          path: |
+            preset02-p01.log
+            production/first_playable/training_rival/source/PRESET02_P01_V3_REVIEW.json
+          if-no-files-found: ignore
+          retention-days: 30
+      - name: Summary
+        run: echo 'PRESET-02 P01 — 14-frame pack gate — Tehkné Solutions' >> "$GITHUB_STEP_SUMMARY"
