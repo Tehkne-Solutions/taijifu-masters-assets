@@ -10,6 +10,7 @@ from PIL import Image, ImageChops, ImageDraw
 
 CANVAS = (1024, 1024)
 ALPHA_THRESHOLD = 3
+SAFE_MARGIN = 3
 EXPECTED_PIXEL_SHA256 = "67abba855b18ea6cc5ef62c4e382041d5ca69eb9902d9b3c6ead9329a163531e"
 COUNTS = {"jump_start": 3, "airborne": 2, "fall": 2}
 
@@ -53,7 +54,6 @@ def build_regions(source: Image.Image):
         ImageDraw.Draw(mask).rectangle([p(nx0, ny0), p(nx1, ny1)], fill=255)
         return ImageChops.multiply(mask, visible)
 
-    # Preserve the P01 v3 ownership model: arms + torso + bokken remain one rigid block.
     back_mask = rect_mask(0.00, 0.575, 0.485, 1.00)
     front_mask = rect_mask(0.515, 0.575, 1.00, 1.00)
     front_mask = ImageChops.subtract(front_mask, back_mask)
@@ -82,18 +82,18 @@ def compose(source: Image.Image, mode: str, index: int) -> Image.Image:
             front = offset(rotate(front_base, 18, p(.66, .64)), 7, -15)
     elif mode == "airborne":
         if index == 0:
-            upper = offset(rotate(upper_base, -3.5, p(.50, .70)), -6, -48)
-            back = offset(rotate(back_base, 28, p(.36, .64)), 5, -34)
-            front = offset(rotate(front_base, -30, p(.66, .64)), -4, -40)
+            upper = offset(rotate(upper_base, -3.5, p(.50, .70)), -6, -36)
+            back = offset(rotate(back_base, 28, p(.36, .64)), 5, -22)
+            front = offset(rotate(front_base, -30, p(.66, .64)), -4, -28)
         else:
-            upper = offset(rotate(upper_base, -1.5, p(.50, .70)), 2, -55)
-            back = offset(rotate(back_base, 20, p(.36, .64)), 9, -38)
-            front = offset(rotate(front_base, -22, p(.66, .64)), -8, -42)
+            upper = offset(rotate(upper_base, -1.5, p(.50, .70)), 2, -40)
+            back = offset(rotate(back_base, 20, p(.36, .64)), 9, -24)
+            front = offset(rotate(front_base, -22, p(.66, .64)), -8, -28)
     elif mode == "fall":
         if index == 0:
-            upper = offset(rotate(upper_base, 2.5, p(.50, .70)), 4, -34)
-            back = offset(rotate(back_base, 10, p(.36, .64)), 2, -20)
-            front = offset(rotate(front_base, -12, p(.66, .64)), -2, -22)
+            upper = offset(rotate(upper_base, 2.5, p(.50, .70)), 4, -30)
+            back = offset(rotate(back_base, 10, p(.36, .64)), 2, -16)
+            front = offset(rotate(front_base, -12, p(.66, .64)), -2, -18)
         else:
             upper = offset(rotate(upper_base, 1.0, p(.50, .76)), 1, -12)
             back = offset(rotate(back_base, 4, p(.36, .64)), 0, -6)
@@ -137,6 +137,15 @@ def main() -> int:
         records[mode] = []
         for index in range(count):
             frame = compose(source, mode, index)
+            frame_bounds = alpha_bounds(frame)
+            if (
+                frame_bounds[0] <= SAFE_MARGIN
+                or frame_bounds[1] <= SAFE_MARGIN
+                or frame_bounds[2] >= CANVAS[0] - SAFE_MARGIN
+                or frame_bounds[3] >= CANVAS[1] - SAFE_MARGIN
+            ):
+                print(f"PRESET02_P02=BLOCKED unsafe_canvas_margin={mode}/f{index + 1:03d}:{frame_bounds}")
+                return 3
             name = f"char_training_rival__{mode}__f{index + 1:03d}.png"
             path = folder / name
             frame.save(path, "PNG", optimize=True, compress_level=9)
@@ -146,7 +155,7 @@ def main() -> int:
                 "index": index + 1,
                 "file": f"{mode}/{name}",
                 "sha256": digest,
-                "alpha_bounds": list(alpha_bounds(frame)),
+                "alpha_bounds": list(frame_bounds),
             })
 
     if len(unique_hashes) < 6:
@@ -158,7 +167,7 @@ def main() -> int:
         "signature": "Tehkné Solutions",
         "character_id": "training_rival",
         "pack": "P02",
-        "version": "1.0.0-airborne-candidate",
+        "version": "1.0.1-airborne-candidate-safe-margin",
         "source": {"pixel_sha256": actual_pixel_sha, "alpha_bounds": list(alpha_bounds(source))},
         "contract": {
             "native_facing": "left",
@@ -166,6 +175,7 @@ def main() -> int:
             "weapon": "single_wooden_training_saber",
             "upper_and_weapon_rigid_block": True,
             "leg_masks_mutually_exclusive": True,
+            "safe_canvas_margin_px": SAFE_MARGIN,
             "canonical_naming": "char_training_rival__<animation>__f<frame-3-digits>.png",
         },
         "frames": records,
@@ -173,6 +183,7 @@ def main() -> int:
             "source_pixel_identity": "pass",
             "weapon_duplication_structurally_prevented": "pass",
             "frame_count_7": "pass",
+            "safe_canvas_margin": "pass",
             "unique_frame_floor": "pass",
             "visual_review": "pending",
         },
@@ -185,6 +196,7 @@ def main() -> int:
     print("PRESET02_P02_AIRBORNE=2")
     print("PRESET02_P02_FALL=2")
     print(f"PRESET02_P02_UNIQUE_HASHES={len(unique_hashes)}")
+    print("PRESET02_P02_SAFE_CANVAS_MARGIN=PASS")
     print("PRESET02_P02_WEAPON_SAFE=PASS")
     print("PRESET02_P02_VISUAL_REVIEW=PENDING")
     print("SIGNATURE=Tehkné Solutions")
