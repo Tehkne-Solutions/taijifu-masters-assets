@@ -1,7 +1,8 @@
 param(
   [Parameter(Mandatory=$true)][string]$MasterPath,
   [string]$Branch = "agent/preset02-p01-binary-ingress",
-  [string]$RepoRoot = ""
+  [string]$RepoRoot = "",
+  [switch]$ProbePythonInvocation
 )
 
 $ErrorActionPreference = "Stop"
@@ -55,10 +56,17 @@ function Resolve-Python {
   throw "PRESET02_INGRESS=BLOCKED python_missing"
 }
 
-function Run-Python([string]$Python, [string[]]$Args) {
-  if ($Python -eq "py") { & py -3 @Args }
-  else { & $Python @Args }
-  if ($LASTEXITCODE -ne 0) { throw "PRESET02_INGRESS=BLOCKED python_exit=$LASTEXITCODE args=$($Args -join ' ')" }
+function Run-Python {
+  param(
+    [Parameter(Mandatory=$true)][string]$Python,
+    [Parameter(Mandatory=$true)][string[]]$PythonArgs
+  )
+  Write-Host "PRESET02_PYTHON_EXEC=$Python args=$($PythonArgs -join ' ')"
+  if ($Python -eq "py") { & py -3 @PythonArgs }
+  else { & $Python @PythonArgs }
+  if ($LASTEXITCODE -ne 0) {
+    throw "PRESET02_INGRESS=BLOCKED python_exit=$LASTEXITCODE args=$($PythonArgs -join ' ')"
+  }
 }
 
 function Require-Pillow([string]$Python) {
@@ -67,6 +75,15 @@ function Require-Pillow([string]$Python) {
   if ($LASTEXITCODE -ne 0) {
     throw "PRESET02_INGRESS=BLOCKED Pillow_missing install_with='py -3 -m pip install Pillow'"
   }
+}
+
+if ($ProbePythonInvocation) {
+  $probePython = Resolve-Python
+  $probeCode = 'import sys; assert sys.argv[1:] == ["probe-a", "probe-b"]; print("PRESET02_PYTHON_ARGV=PASS")'
+  Run-Python -Python $probePython -PythonArgs @("-c", $probeCode, "probe-a", "probe-b")
+  Write-Host "PRESET02_PYTHON_INVOCATION_PROBE=PASS"
+  Write-Host "SIGNATURE=Tehkné Solutions"
+  exit 0
 }
 
 if (-not (Test-Path $MasterPath -PathType Leaf)) { throw "PRESET02_INGRESS=BLOCKED master_missing=$MasterPath" }
@@ -101,25 +118,48 @@ if ($LASTEXITCODE -ne 0) { throw "PRESET02_INGRESS=BLOCKED git_pull_main" }
 Require-CleanRepo
 Write-Host "PRESET02_MAIN_SYNC=PASS"
 
-$existing = git show-ref --verify --quiet "refs/heads/$Branch"
-if ($LASTEXITCODE -eq 0) { throw "PRESET02_INGRESS=BLOCKED local_branch_exists=$Branch" }
-git switch -c $Branch origin/main
-if ($LASTEXITCODE -ne 0) { throw "PRESET02_INGRESS=BLOCKED branch_create" }
-Write-Host "PRESET02_BRANCH=PASS name=$Branch"
+# A failed prior ingress may have created the local target branch before any commit.
+# Reuse it only when it has no commits not already contained in origin/main and no remote branch exists.
+git ls-remote --exit-code --heads origin "refs/heads/$Branch" | Out-Null
+$remoteBranchExists = ($LASTEXITCODE -eq 0)
+git show-ref --verify --quiet "refs/heads/$Branch"
+$localBranchExists = ($LASTEXITCODE -eq 0)
+
+if ($remoteBranchExists) {
+  throw "PRESET02_INGRESS=BLOCKED remote_branch_exists=$Branch"
+}
+
+if ($localBranchExists) {
+  $uniqueCommitsText = (git rev-list --count "origin/main..$Branch").Trim()
+  if ($LASTEXITCODE -ne 0) { throw "PRESET02_INGRESS=BLOCKED local_branch_inspection_failed=$Branch" }
+  $uniqueCommits = [int]$uniqueCommitsText
+  if ($uniqueCommits -ne 0) {
+    throw "PRESET02_INGRESS=BLOCKED local_branch_has_unique_commits=$Branch count=$uniqueCommits"
+  }
+  git branch -f $Branch origin/main
+  if ($LASTEXITCODE -ne 0) { throw "PRESET02_INGRESS=BLOCKED local_branch_reset_failed=$Branch" }
+  git switch $Branch
+  if ($LASTEXITCODE -ne 0) { throw "PRESET02_INGRESS=BLOCKED local_branch_switch_failed=$Branch" }
+  Write-Host "PRESET02_BRANCH=PASS name=$Branch resumed_clean_local=true"
+} else {
+  git switch -c $Branch origin/main
+  if ($LASTEXITCODE -ne 0) { throw "PRESET02_INGRESS=BLOCKED branch_create" }
+  Write-Host "PRESET02_BRANCH=PASS name=$Branch resumed_clean_local=false"
+}
 
 $python = Resolve-Python
 Require-Pillow $python
 
 New-Item -ItemType Directory -Force -Path (Split-Path $Canonical -Parent) | Out-Null
-Run-Python $python @($Canonicalizer, "--source", $MasterPath, "--output", $Canonical)
+Run-Python -Python $python -PythonArgs @($Canonicalizer, "--source", $MasterPath, "--output", $Canonical)
 Write-Host "PRESET02_CANONICAL_MASTER_COPY=PASS source_kind=$inputKind"
 
-Run-Python $python @($SourceValidator)
+Run-Python -Python $python -PythonArgs @($SourceValidator)
 Write-Host "PRESET02_SOURCE_INTAKE_LOCAL=PASS"
 
 if (Test-Path $Staging) { Remove-Item $Staging -Recurse -Force }
 New-Item -ItemType Directory -Force -Path $Staging | Out-Null
-Run-Python $python @($Generator, "--source", $Canonical, "--output-root", $Staging)
+Run-Python -Python $python -PythonArgs @($Generator, "--source", $Canonical, "--output-root", $Staging)
 
 foreach ($mode in @("idle", "run")) {
   $src = Join-Path $Staging $mode
@@ -138,8 +178,8 @@ Move-Item $generatedManifest (Join-Path $Lot "p01-manifest.json") -Force
 Remove-Item $Staging -Recurse -Force
 Write-Host "PRESET02_P01_GENERATION=PASS method=weapon_safe_v3"
 
-Run-Python $python @($P01Validator)
-Run-Python $python @($GlobalValidator, "--allow-incomplete")
+Run-Python -Python $python -PythonArgs @($P01Validator)
+Run-Python -Python $python -PythonArgs @($GlobalValidator, "--allow-incomplete")
 Write-Host "PRESET02_P01_LOCAL_GATES=PASS"
 
 git lfs install --local | Out-Null
