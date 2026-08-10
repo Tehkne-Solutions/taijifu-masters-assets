@@ -1,0 +1,31 @@
+{
+  "schema": "tehkne/taijifu-training-rival-p03-review/v1",
+  "signature": "Tehkné Solutions",
+  "character_id": "training_rival",
+  "pack": "P03",
+  "status": "visually_approved_attack_light_v2",
+  "frames": {"attack_light": 6, "total": 6},
+  "source_pixel_sha256": "67abba855b18ea6cc5ef62c4e382041d5ca69eb9902d9b3c6ead9329a163531e",
+  "manifest_version": "1.0.0-attack-light-v2-candidate",
+  "visual_review": {
+    "weapon_duplication": "pass",
+    "detached_fragments": "pass",
+    "identity_continuity": "pass",
+    "native_facing_left": "pass",
+    "attack_arc_readability": "pass",
+    "impact_readability": "pass",
+    "safe_canvas_margin": "pass",
+    "approved_for_next_pack": true,
+    "runtime_promotion": "blocked_until_44_of_44"
+  },
+  "evidence": {
+    "workflow_run_id": 31441547569,
+    "artifact_id": 9083015383,
+    "artifact_name": "PRESET02-P03-ATTACK-LIGHT-REVIEW",
+    "artifact_digest": "sha256:c9c70ae0442525efd8a83ce6f655ee0fbadc00d3d731558e22612c8d7c94819b",
+    "review_sheet": "artifacts/PRESET02_P03_ATTACK_LIGHT_REVIEW.jpg"
+  },
+  "progress_after_merge": "27/44",
+  "next_pack": "P04_guard3+dodge5",
+  "runtime_ready": false
+}
