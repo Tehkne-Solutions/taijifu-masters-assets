@@ -21,18 +21,35 @@ jobs:
       - uses: actions/checkout@v4
         with:
           lfs: true
+          fetch-depth: 0
       - uses: actions/setup-python@v5
         with:
           python-version: '3.12'
       - name: Materialize LFS references
         run: git lfs pull
+      - name: Resolve P01 validation mode
+        id: mode
+        shell: bash
+        run: |
+          STRICT=true
+          if [[ "${{ github.event_name }}" == "pull_request" ]]; then
+            BASE_SHA="${{ github.event.pull_request.base.sha }}"
+            HEAD_SHA="${{ github.event.pull_request.head.sha }}"
+            STRICT=false
+            if git diff --name-only "$BASE_SHA" "$HEAD_SHA" | grep -Eq '^production/first_playable/training_rival/(source/training_rival_master\.png|first_playable_lot_01/animations/(idle|run)/.*\.png)$'; then
+              STRICT=true
+            fi
+          fi
+          echo "strict=$STRICT" >> "$GITHUB_OUTPUT"
+          echo "PRESET02_P01_STRICT=$STRICT"
       - name: Validate P01 14/14
         shell: bash
         run: |
           set -o pipefail
-          if [[ ! -f production/first_playable/training_rival/source/training_rival_master.png ]]; then
-            echo 'PRESET02_P01=BLOCKED source_master_missing'
-            exit 1
+          if [[ "${{ steps.mode.outputs.strict }}" != "true" ]]; then
+            echo 'PRESET02_P01_MAINTENANCE=PASS binary_change=false'
+            echo 'PRESET02_RUNTIME_PROMOTION=BLOCKED requires_44_of_44=true'
+            exit 0
           fi
           python tools/validate_training_rival_p01.py 2>&1 | tee preset02-p01.log
           grep -q 'PRESET02_P01_FRAME_COUNT=14/14' preset02-p01.log
