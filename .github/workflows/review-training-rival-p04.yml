@@ -1,0 +1,74 @@
+name: PRESET-02 Training Rival P04 Review
+
+on:
+  pull_request:
+    paths:
+      - 'production/first_playable/training_rival/first_playable_lot_01/animations/guard/**'
+      - 'production/first_playable/training_rival/first_playable_lot_01/animations/dodge/**'
+      - 'production/first_playable/training_rival/first_playable_lot_01/p04-manifest.json'
+      - 'tools/materialize_training_rival_p04_guard_dodge.py'
+      - 'tools/validate_training_rival_p04.py'
+      - '.github/workflows/review-training-rival-p04.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  p04-review:
+    runs-on: ubuntu-22.04
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          lfs: true
+          fetch-depth: 0
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: python -m pip install --disable-pip-version-check Pillow==11.3.0
+      - run: git lfs pull
+      - name: Validate P04 candidate and regressions
+        shell: bash
+        run: |
+          set -o pipefail
+          python tools/validate_training_rival_p04.py 2>&1 | tee preset02-p04.log
+          grep -q 'PRESET02_P04_FRAME_COUNT=8/8' preset02-p04.log
+          grep -q 'PRESET02_P04_WEAPON_SAFE=PASS' preset02-p04.log
+          grep -q 'PRESET02_P04_DISPOSABLE_WRITER=ABSENT' preset02-p04.log
+          grep -q 'PRESET02_P03_REGRESSION=PASS frames=6/6' preset02-p04.log
+          grep -q 'PRESET02_RIVAL_GLOBAL_PROGRESS=35/44' preset02-p04.log
+          grep -q 'PRESET02_P04_CANDIDATE=PASS visual_review=pending' preset02-p04.log
+      - name: Build guard and dodge review sheet
+        shell: bash
+        run: |
+          python - <<'PY'
+          from PIL import Image,ImageDraw
+          from pathlib import Path
+          root=Path('production/first_playable/training_rival/first_playable_lot_01/animations')
+          files=[root/'guard'/f'char_training_rival__guard__f{i:03d}.png' for i in range(1,4)]
+          files += [root/'dodge'/f'char_training_rival__dodge__f{i:03d}.png' for i in range(1,6)]
+          thumb=(280,280); margin=20; cols=4; rows=2
+          sheet=Image.new('RGBA',(cols*(thumb[0]+margin)+margin,rows*(thumb[1]+50)+margin),(26,26,26,255)); draw=ImageDraw.Draw(sheet)
+          for idx,path in enumerate(files):
+              im=Image.open(path).convert('RGBA'); im.thumbnail(thumb,Image.Resampling.LANCZOS)
+              cx=margin+(idx%cols)*(thumb[0]+margin); cy=margin+(idx//cols)*(thumb[1]+50)
+              x=cx+(thumb[0]-im.width)//2; y=cy+(thumb[1]-im.height)//2
+              sheet.alpha_composite(im,(x,y)); draw.text((cx,cy+thumb[1]+6),path.stem.replace('char_training_rival__',''),fill='white')
+          Path('artifacts').mkdir(exist_ok=True)
+          sheet.convert('RGB').save('artifacts/PRESET02_P04_GUARD_DODGE_REVIEW.jpg',quality=94)
+          PY
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: PRESET02-P04-GUARD-DODGE-REVIEW
+          path: |
+            preset02-p04.log
+            artifacts/PRESET02_P04_GUARD_DODGE_REVIEW.jpg
+            production/first_playable/training_rival/first_playable_lot_01/p04-manifest.json
+          if-no-files-found: ignore
+          retention-days: 30
+      - name: Summary
+        run: |
+          echo 'PRESET-02 P04 — Guard3 + Dodge5 review — Tehkné Solutions' >> "$GITHUB_STEP_SUMMARY"
+          echo 'Runtime remains blocked until 44/44.' >> "$GITHUB_STEP_SUMMARY"
