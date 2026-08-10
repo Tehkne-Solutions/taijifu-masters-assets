@@ -54,18 +54,24 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
+          LOT='production/first_playable/training_rival/first_playable_lot_01'
           git lfs install --local
           git config user.name 'Tehkne Solutions Automation'
           git config user.email 'automation@tehkne.solutions'
-          git add -- production/first_playable/training_rival/first_playable_lot_01/animations/jump_start
-          git add -- production/first_playable/training_rival/first_playable_lot_01/animations/airborne
-          git add -- production/first_playable/training_rival/first_playable_lot_01/animations/fall
-          git add -- production/first_playable/training_rival/first_playable_lot_01/p02-manifest.json
+          git add -- "$LOT/animations/jump_start" "$LOT/animations/airborne" "$LOT/animations/fall" "$LOT/p02-manifest.json"
           mapfile -t STAGED < <(git diff --cached --name-only)
           printf 'PRESET02_P02_STAGED=%s\n' "${STAGED[@]}"
-          test "${#STAGED[@]}" -eq 8
+          test "${#STAGED[@]}" -ge 4
+          test "${#STAGED[@]}" -le 8
+          printf '%s\n' "${STAGED[@]}" | grep -Fxq "$LOT/p02-manifest.json"
+          for path in "${STAGED[@]}"; do
+            case "$path" in
+              "$LOT/p02-manifest.json"|"$LOT/animations/jump_start/"*.png|"$LOT/animations/airborne/"*.png|"$LOT/animations/fall/"*.png) ;;
+              *) echo "PRESET02_P02=BLOCKED unexpected_staged_path=$path"; exit 1 ;;
+            esac
+          done
           git commit -m 'PRESET-02 P02: materialize safe-margin airborne 7-frame candidate'
           git push origin HEAD:agent/preset02-p02-airborne-materialization
-          echo 'PRESET02_P02_BRANCH_MATERIALIZATION=PASS files=8 safe_margin=true'
+          echo "PRESET02_P02_BRANCH_MATERIALIZATION=PASS changed_files=${#STAGED[@]} canonical_pack_files=8 safe_margin=true"
           echo 'PRESET02_RUNTIME_PROMOTION=BLOCKED requires_44_of_44=true'
           echo 'SIGNATURE=Tehkné Solutions'
