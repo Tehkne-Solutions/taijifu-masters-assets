@@ -42,6 +42,7 @@ jobs:
           grep -q 'PRESET02_P02_JUMP_START=3' preset02-p02-materialize.log
           grep -q 'PRESET02_P02_AIRBORNE=2' preset02-p02-materialize.log
           grep -q 'PRESET02_P02_FALL=2' preset02-p02-materialize.log
+          grep -q 'PRESET02_P02_SAFE_CANVAS_MARGIN=PASS' preset02-p02-materialize.log
           grep -q 'PRESET02_P02_WEAPON_SAFE=PASS' preset02-p02-materialize.log
           for mode in jump_start airborne fall; do
             rm -rf "$LOT/animations/$mode"
