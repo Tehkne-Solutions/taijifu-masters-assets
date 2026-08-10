@@ -19,26 +19,21 @@
     "visual_review_required_before_frame_materialization": true
   },
   "identity_lock": {
-    "style": "comic_manga_2_5d_martial_fantasy",
-    "role": "martial_training_opponent",
     "native_facing": "left",
-    "proportions": "compact_heavy_fighter_read",
+    "pivot": "bottom_center",
+    "style": "comic_manga_2_5d",
     "palette": ["charcoal", "ember", "bone", "muted_gold"],
-    "silhouette": "compact_guarded_swordsman",
+    "silhouette": "compact_guarded_fighter",
+    "weapon": "wooden_training_saber",
+    "weapon_count": 1,
+    "forbidden": ["mirrored_lian_wu_proxy", "second_weapon", "purple_tech_glow", "embedded_background", "embedded_text"]
+  },
+  "design_extension": {
+    "role": "martial_training_opponent",
+    "proportions": "compact_heavy_fighter_read",
     "hair": "dark_tied_or_short_martial_hair",
     "armor": "dark_training_armor_with_ember_and_brass_accents",
-    "weapon_count": 1,
-    "weapon": "wooden_training_saber",
-    "forbidden": [
-      "mirrored_lian_wu_identity",
-      "second_weapon",
-      "purple_tech_glow",
-      "embedded_background",
-      "embedded_text",
-      "embedded_logo",
-      "contact_sheet_runtime_asset",
-      "costume_mutation_between_frames"
-    ]
+    "additional_forbidden": ["embedded_logo", "contact_sheet_runtime_asset", "costume_mutation_between_frames"]
   },
   "production_plan": {
     "P01": {"frames": 14, "animations": {"idle": 6, "run": 8}},
