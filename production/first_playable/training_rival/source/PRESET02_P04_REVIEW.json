@@ -1,0 +1,29 @@
+{
+  "schema": "tehkne/taijifu-training-rival-p04-review/v1",
+  "signature": "Tehkné Solutions",
+  "character_id": "training_rival",
+  "pack": "P04",
+  "status": "visually_approved_guard_dodge_v1",
+  "manifest_version": "1.0.0-guard-dodge-candidate",
+  "source_pixel_sha256": "67abba855b18ea6cc5ef62c4e382041d5ca69eb9902d9b3c6ead9329a163531e",
+  "frames": {"guard": 3, "dodge": 5, "total": 8},
+  "visual_review": {
+    "guard_readability": "pass",
+    "dodge_readability": "pass",
+    "weapon_duplication": "pass",
+    "detached_fragments": "pass",
+    "native_facing_left": "pass",
+    "safe_canvas_margin": "pass",
+    "identity_continuity": "pass",
+    "approved_for_next_pack": true
+  },
+  "evidence": {
+    "workflow_run_id": 31444164331,
+    "artifact_id": 9083897648,
+    "artifact_digest": "sha256:bfd6c6ed83ff6d78a5785e28a07e3312cbe14b204a5c79408f150a7ca76a764a",
+    "artifact_name": "PRESET02-P04-GUARD-DODGE-REVIEW"
+  },
+  "runtime_ready": false,
+  "global_progress_after_pack": "35/44",
+  "next_action": "Validate frozen P04 evidence read-only, merge P04, then start P05 Hit3 + KO6. Runtime remains blocked until 44/44."
+}

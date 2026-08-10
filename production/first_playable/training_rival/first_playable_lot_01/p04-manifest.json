@@ -1,0 +1,137 @@
+{
+  "schema": "tehkne/taijifu-training-rival-p04/v1",
+  "signature": "Tehkné Solutions",
+  "character_id": "training_rival",
+  "pack": "P04",
+  "version": "1.0.0-guard-dodge-candidate",
+  "source": {
+    "pixel_sha256": "67abba855b18ea6cc5ef62c4e382041d5ca69eb9902d9b3c6ead9329a163531e",
+    "alpha_bounds": [
+      77,
+      48,
+      927,
+      971
+    ]
+  },
+  "contract": {
+    "native_facing": "left",
+    "weapon": "single_wooden_training_saber",
+    "upper_and_weapon_rigid_block": true,
+    "leg_masks_mutually_exclusive": true,
+    "safe_canvas_margin_px": 3,
+    "guard_beats": [
+      "ready",
+      "brace",
+      "settle"
+    ],
+    "dodge_beats": [
+      "anticipation",
+      "shift",
+      "peak_evade",
+      "return",
+      "recover"
+    ]
+  },
+  "frames": {
+    "guard": [
+      {
+        "index": 1,
+        "file": "guard/char_training_rival__guard__f001.png",
+        "sha256": "a8b993c08c53d6f7ccdd901ee0a2acdb0a5640d408e8e1ef2ffc1d82f5b9b8d6",
+        "alpha_bounds": [
+          86,
+          47,
+          937,
+          967
+        ]
+      },
+      {
+        "index": 2,
+        "file": "guard/char_training_rival__guard__f002.png",
+        "sha256": "2ae4aafe48c0410f9bca8aca9f61d907724faa3ef408af73b28546cd6b126461",
+        "alpha_bounds": [
+          105,
+          46,
+          945,
+          963
+        ]
+      },
+      {
+        "index": 3,
+        "file": "guard/char_training_rival__guard__f003.png",
+        "sha256": "3af220dc1eb97a4f339b424df8e013bc79b042b42249faf97b9476ee6204b620",
+        "alpha_bounds": [
+          95,
+          47,
+          941,
+          965
+        ]
+      }
+    ],
+    "dodge": [
+      {
+        "index": 1,
+        "file": "dodge/char_training_rival__dodge__f001.png",
+        "sha256": "1830061976eb95c45347bb80d5415e6702ab3e4c1f9d8353df9076ba39acccb5",
+        "alpha_bounds": [
+          67,
+          52,
+          919,
+          975
+        ]
+      },
+      {
+        "index": 2,
+        "file": "dodge/char_training_rival__dodge__f002.png",
+        "sha256": "0bc03465e6459f7abaa0b8d3fab0b95c4d6833954bb43cb2a606a10ca1b2c4e4",
+        "alpha_bounds": [
+          60,
+          57,
+          901,
+          989
+        ]
+      },
+      {
+        "index": 3,
+        "file": "dodge/char_training_rival__dodge__f003.png",
+        "sha256": "50d5abea31509026b1a57961051e15ef415cf7e13db8a1246110664e987c1f7c",
+        "alpha_bounds": [
+          61,
+          64,
+          888,
+          1001
+        ]
+      },
+      {
+        "index": 4,
+        "file": "dodge/char_training_rival__dodge__f004.png",
+        "sha256": "c9076ec2b55c787c7900a3cdb5f3190d383ac22464827f8789d8b3589eabc8f8",
+        "alpha_bounds": [
+          69,
+          55,
+          907,
+          985
+        ]
+      },
+      {
+        "index": 5,
+        "file": "dodge/char_training_rival__dodge__f005.png",
+        "sha256": "d3a3b6dce710ddd32a6a40ef5857d1dee348a48b8d858abb830e6c5ffca82fcf",
+        "alpha_bounds": [
+          74,
+          50,
+          919,
+          975
+        ]
+      }
+    ]
+  },
+  "gates": {
+    "source_pixel_identity": "pass",
+    "weapon_duplication_structurally_prevented": "pass",
+    "frame_count_8": "pass",
+    "unique_hash_floor": "pass",
+    "safe_canvas_margin": "pass",
+    "visual_review": "pending"
+  }
+}
