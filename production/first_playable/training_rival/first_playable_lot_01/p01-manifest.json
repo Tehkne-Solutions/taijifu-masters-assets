@@ -1,0 +1,200 @@
+{
+  "schema": "tehkne/taijifu-training-rival-p01/v3",
+  "signature": "Tehkné Solutions",
+  "character_id": "training_rival",
+  "pack": "P01",
+  "version": "3.0.0-weapon-safe",
+  "source": {
+    "file_sha256": "ae6eec72a2d85ddd4a3048b17f2b6a0d64d4f0340776b0aefa28ccb378f9c09d",
+    "pixel_sha256": "67abba855b18ea6cc5ef62c4e382041d5ca69eb9902d9b3c6ead9329a163531e",
+    "alpha_bounds": [
+      77,
+      48,
+      927,
+      971
+    ],
+    "baseline_y": 970
+  },
+  "contract": {
+    "native_facing": "left",
+    "pivot": "bottom_center",
+    "weapon": "single_wooden_training_saber",
+    "canonical_naming": "char_training_rival__<animation>__f<frame-3-digits>.png"
+  },
+  "generation": {
+    "method": "disjoint_side_leg_masks_rigid_upper_weapon",
+    "weapon_owner": "upper_rigid_block",
+    "central_sash_owner": "upper_rigid_block",
+    "overlapping_region_masks": false,
+    "idle_frames": 6,
+    "run_frames": 8
+  },
+  "idle": [
+    {
+      "file": "idle/char_training_rival__idle__f001.png",
+      "sha256": "e02b6f0e46dac8864663fe7b51109a38b0192367d2e272066bfdeee64c1c4d38",
+      "alpha_bounds": [
+        77,
+        48,
+        927,
+        971
+      ],
+      "baseline_y": 970
+    },
+    {
+      "file": "idle/char_training_rival__idle__f002.png",
+      "sha256": "8bfa284cc1346bfba2e9750c281f7acbdfd9f8d5e6b88942389510628129f2f6",
+      "alpha_bounds": [
+        76,
+        47,
+        928,
+        971
+      ],
+      "baseline_y": 970
+    },
+    {
+      "file": "idle/char_training_rival__idle__f003.png",
+      "sha256": "8bfa284cc1346bfba2e9750c281f7acbdfd9f8d5e6b88942389510628129f2f6",
+      "alpha_bounds": [
+        76,
+        47,
+        928,
+        971
+      ],
+      "baseline_y": 970
+    },
+    {
+      "file": "idle/char_training_rival__idle__f004.png",
+      "sha256": "e02b6f0e46dac8864663fe7b51109a38b0192367d2e272066bfdeee64c1c4d38",
+      "alpha_bounds": [
+        77,
+        48,
+        927,
+        971
+      ],
+      "baseline_y": 970
+    },
+    {
+      "file": "idle/char_training_rival__idle__f005.png",
+      "sha256": "f0c297ad69e87a2e4594bce458f915e4cfcf6de4a5925bac664ce7206d09d10b",
+      "alpha_bounds": [
+        79,
+        50,
+        926,
+        971
+      ],
+      "baseline_y": 970
+    },
+    {
+      "file": "idle/char_training_rival__idle__f006.png",
+      "sha256": "f0c297ad69e87a2e4594bce458f915e4cfcf6de4a5925bac664ce7206d09d10b",
+      "alpha_bounds": [
+        79,
+        50,
+        926,
+        971
+      ],
+      "baseline_y": 970
+    }
+  ],
+  "run": [
+    {
+      "file": "run/char_training_rival__run__f001.png",
+      "sha256": "43cc5cd0e6bc919fff75b64e32dee998b36647f3e6e73be7f3b67b55c72ac9b6",
+      "alpha_bounds": [
+        77,
+        48,
+        927,
+        971
+      ],
+      "baseline_y": 970
+    },
+    {
+      "file": "run/char_training_rival__run__f002.png",
+      "sha256": "027883071afaa49b06e43511205bdcf04763edfb12e788f07e6359f0d991c07c",
+      "alpha_bounds": [
+        75,
+        73,
+        987,
+        971
+      ],
+      "baseline_y": 970
+    },
+    {
+      "file": "run/char_training_rival__run__f003.png",
+      "sha256": "2f39dd9ff51c02278d836c0e0efc55f8b8ab90bd120c56204a1eacddecdedc56",
+      "alpha_bounds": [
+        75,
+        85,
+        1008,
+        971
+      ],
+      "baseline_y": 970
+    },
+    {
+      "file": "run/char_training_rival__run__f004.png",
+      "sha256": "027883071afaa49b06e43511205bdcf04763edfb12e788f07e6359f0d991c07c",
+      "alpha_bounds": [
+        75,
+        73,
+        987,
+        971
+      ],
+      "baseline_y": 970
+    },
+    {
+      "file": "run/char_training_rival__run__f005.png",
+      "sha256": "43cc5cd0e6bc919fff75b64e32dee998b36647f3e6e73be7f3b67b55c72ac9b6",
+      "alpha_bounds": [
+        77,
+        48,
+        927,
+        971
+      ],
+      "baseline_y": 970
+    },
+    {
+      "file": "run/char_training_rival__run__f006.png",
+      "sha256": "6cb310c66242cff0e4ffc2e0c81b638a87c22e8bc53e3e49a1ab22aa8ca60337",
+      "alpha_bounds": [
+        79,
+        13,
+        892,
+        971
+      ],
+      "baseline_y": 970
+    },
+    {
+      "file": "run/char_training_rival__run__f007.png",
+      "sha256": "64112275347c2585e59a8703bf431bd9285581c600039512115f686f725a7fc0",
+      "alpha_bounds": [
+        79,
+        0,
+        892,
+        971
+      ],
+      "baseline_y": 970
+    },
+    {
+      "file": "run/char_training_rival__run__f008.png",
+      "sha256": "6cb310c66242cff0e4ffc2e0c81b638a87c22e8bc53e3e49a1ab22aa8ca60337",
+      "alpha_bounds": [
+        79,
+        13,
+        892,
+        971
+      ],
+      "baseline_y": 970
+    }
+  ],
+  "gates": {
+    "clean_source": "pass",
+    "transparent_background": "pass",
+    "weapon_duplication_prevented": "pass",
+    "detached_lower_body_fragment_prevented": "pass",
+    "baseline_continuity": "pass",
+    "canonical_naming": "pass",
+    "unique_frame_floor": "pass",
+    "visual_review": "approved_from_v3_reference"
+  }
+}
