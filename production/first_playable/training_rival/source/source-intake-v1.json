@@ -1,0 +1,70 @@
+{
+  "schema": "tehkne/taijifu-training-rival-source-intake/v1",
+  "signature": "Tehkné Solutions",
+  "stage": "PRESET-02 Foundation",
+  "character_id": "training_rival",
+  "status": "source_master_missing_fail_closed",
+  "master": {
+    "path": "production/first_playable/training_rival/source/training_rival_master.png",
+    "required": true,
+    "current_presence": false,
+    "canvas": [1024, 1024],
+    "mode": "RGBA",
+    "native_transparency_required": true,
+    "transparent_corners_required": true,
+    "foreground_must_not_touch_canvas_edge": true,
+    "background_removal_allowed": false,
+    "contact_sheet_as_source_allowed": false,
+    "lian_wu_source_reuse_allowed": false,
+    "visual_review_required_before_frame_materialization": true
+  },
+  "identity_lock": {
+    "style": "comic_manga_2_5d_martial_fantasy",
+    "role": "martial_training_opponent",
+    "native_facing": "left",
+    "proportions": "compact_heavy_fighter_read",
+    "palette": ["charcoal", "ember", "bone", "muted_gold"],
+    "silhouette": "compact_guarded_swordsman",
+    "hair": "dark_tied_or_short_martial_hair",
+    "armor": "dark_training_armor_with_ember_and_brass_accents",
+    "weapon_count": 1,
+    "weapon": "wooden_training_saber",
+    "weapon_handling": "single_weapon_continuity_all_frames",
+    "forbidden": [
+      "mirrored_lian_wu_identity",
+      "second_weapon",
+      "purple_tech_glow",
+      "embedded_background",
+      "embedded_text",
+      "embedded_logo",
+      "contact_sheet_runtime_asset",
+      "costume_mutation_between_frames"
+    ]
+  },
+  "design_extension": {
+    "source_pivot": "bottom_center",
+    "clean_master_only": true,
+    "native_alpha_only": true,
+    "background_removal_allowed": false,
+    "contact_sheet_source_allowed": false,
+    "owner_visual_review_before_frame_materialization": true
+  },
+  "production_plan": {
+    "P01": {"frames": 14, "animations": {"idle": 6, "run": 8}},
+    "P02": {"frames": 7, "animations": {"jump_start": 3, "airborne": 2, "fall": 2}},
+    "P03": {"frames": 6, "animations": {"attack_light": 6}},
+    "P04": {"frames": 8, "animations": {"guard": 3, "dodge": 5}},
+    "P05": {"frames": 9, "animations": {"hit": 3, "ko": 6}}
+  },
+  "required_total_frames": 44,
+  "runtime_promotion": {
+    "current_proxy_may_be_removed": false,
+    "partial_pack_promotion_allowed": false,
+    "requires_44_of_44": true,
+    "requires_visual_review": true,
+    "requires_godot_runtime_bench": true,
+    "requires_game_c28_import_gate": true
+  },
+  "blockers": ["training_rival_clean_master_missing"],
+  "next_action": "Materialize one clean canonical Training Rival master candidate, run source-intake validation, perform owner visual review, then start P01 idle6+run8 materialization."
+}
