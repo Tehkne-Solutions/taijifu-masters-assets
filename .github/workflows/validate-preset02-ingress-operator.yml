@@ -53,6 +53,15 @@ jobs:
           printf '%s\n' "$OUTPUT" | grep -Fq "PRESET02_REPO_ROOT=$GITHUB_WORKSPACE"
           printf '%s\n' "$OUTPUT" | grep -q 'PRESET02_INGRESS=BLOCKED input_not_approved'
           echo 'PRESET02_REPO_ROOT_RESOLUTION=PASS'
+      - name: Validate Python argv forwarding
+        shell: bash
+        run: |
+          set -euo pipefail
+          OUTPUT="$(pwsh -NoProfile -File tools/INGRESS-PRESET02-P01.ps1 -MasterPath tools/INGRESS-PRESET02-P01.ps1 -ProbePythonInvocation 2>&1)"
+          printf '%s\n' "$OUTPUT"
+          printf '%s\n' "$OUTPUT" | grep -q 'PRESET02_PYTHON_ARGV=PASS'
+          printf '%s\n' "$OUTPUT" | grep -q 'PRESET02_PYTHON_INVOCATION_PROBE=PASS'
+          echo 'PRESET02_PYTHON_ARGV_FORWARDING=PASS'
       - name: Parse Python helpers
         run: |
           python -m py_compile tools/canonicalize_training_rival_master.py
@@ -68,6 +77,12 @@ jobs:
           grep -q '\$MyInvocation.MyCommand.Path' "$FILE"
           grep -q 'repo_root_invalid=' "$FILE"
           grep -q 'PRESET02_REPO_ROOT=' "$FILE"
+          grep -q '\[string\[\]\]\$PythonArgs' "$FILE"
+          ! grep -q '\[string\[\]\]\$Args' "$FILE"
+          grep -q 'PRESET02_PYTHON_INVOCATION_PROBE=PASS' "$FILE"
+          grep -q 'local_branch_has_unique_commits=' "$FILE"
+          grep -q 'resumed_clean_local=true' "$FILE"
+          grep -q 'remote_branch_exists=' "$FILE"
           grep -q 'de532ea47c0b16921bfb84d3826fe1a2a51cf9f10aa8f6d8b98a90d9a457be6d' "$FILE"
           grep -q '\$ApprovedRawBytes = 1273838' "$FILE"
           grep -q 'ce76243a4b89147a4900e823041b5392e2b19b13549aaa9fcd95cbf3e34d3fe3' "$FILE"
@@ -81,5 +96,5 @@ jobs:
           grep -q 'PRESET02_RUNTIME_PROMOTION=BLOCKED requires_44_of_44=true' "$FILE"
           grep -q '67abba855b18ea6cc5ef62c4e382041d5ca69eb9902d9b3c6ead9329a163531e' tools/canonicalize_training_rival_master.py
           grep -q 'disjoint_side_leg_masks_rigid_upper_weapon' tools/materialize_training_rival_p01_weapon_safe.py
-          echo 'PRESET02_INGRESS_OPERATOR_CONTRACT=PASS reporoot=true original_sha=true canonical_pixels=true weapon_safe=true lfs=true gates=true runtime_blocked=true'
+          echo 'PRESET02_INGRESS_OPERATOR_CONTRACT=PASS reporoot=true python_argv=true resumable_branch=true original_sha=true canonical_pixels=true weapon_safe=true lfs=true gates=true runtime_blocked=true'
           echo 'SIGNATURE=Tehkné Solutions'
