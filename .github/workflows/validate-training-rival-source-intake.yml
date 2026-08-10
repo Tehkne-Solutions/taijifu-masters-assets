@@ -1,0 +1,50 @@
+name: PRESET-02 Training Rival Source Intake
+
+on:
+  pull_request:
+    paths:
+      - 'production/first_playable/training_rival/source/**'
+      - 'production/first_playable/training_rival/canonical-production-v1.json'
+      - 'tools/validate_training_rival_source_intake.py'
+      - '.github/workflows/validate-training-rival-source-intake.yml'
+  push:
+    branches: [main]
+    paths:
+      - 'production/first_playable/training_rival/source/**'
+      - 'production/first_playable/training_rival/canonical-production-v1.json'
+      - 'tools/validate_training_rival_source_intake.py'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  source-intake:
+    runs-on: ubuntu-22.04
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          lfs: true
+      - name: Materialize LFS references
+        run: git lfs pull
+      - name: Validate PRESET-02 source foundation and clean-master intake
+        run: |
+          set -o pipefail
+          python tools/validate_training_rival_source_intake.py 2>&1 | tee preset02-source-intake.log
+          grep -q 'PRESET02_FOUNDATION=PASS identity_lock=true packs=5 total_frames=44' preset02-source-intake.log
+          grep -q 'PRESET02_RUNTIME_POLICY=PASS partial_promotion=false requires_44_of_44=true proxy_retire=false' preset02-source-intake.log
+          grep -q 'PRESET02_SOURCE_INTAKE=PASS' preset02-source-intake.log
+          grep -q 'SIGNATURE=Tehkné Solutions' preset02-source-intake.log
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: PRESET02-TRAINING-RIVAL-SOURCE-INTAKE
+          path: |
+            preset02-source-intake.log
+            production/first_playable/training_rival/source/source-intake-v1.json
+            production/first_playable/training_rival/canonical-production-v1.json
+          if-no-files-found: ignore
+          retention-days: 30
+      - name: Summary
+        run: echo 'PRESET-02 Training Rival remote source intake — Tehkné Solutions' >> "$GITHUB_STEP_SUMMARY"
