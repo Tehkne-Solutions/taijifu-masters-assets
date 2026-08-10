@@ -1,0 +1,48 @@
+name: PRESET-02 Exact Binary Ingress Operator
+
+on:
+  pull_request:
+    paths:
+      - 'tools/INGRESS-PRESET02-P01.ps1'
+      - '.github/workflows/validate-preset02-ingress-operator.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  validate-operator:
+    runs-on: ubuntu-22.04
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - name: Parse PowerShell operator
+        shell: pwsh
+        run: |
+          $tokens = $null
+          $errors = $null
+          [void][System.Management.Automation.Language.Parser]::ParseFile(
+            (Resolve-Path 'tools/INGRESS-PRESET02-P01.ps1'),
+            [ref]$tokens,
+            [ref]$errors
+          )
+          if ($errors.Count -gt 0) {
+            $errors | ForEach-Object { Write-Error $_.Message }
+            exit 1
+          }
+          Write-Host 'PRESET02_INGRESS_OPERATOR_PARSE=PASS'
+      - name: Validate fail-closed invariants
+        shell: bash
+        run: |
+          set -euo pipefail
+          FILE='tools/INGRESS-PRESET02-P01.ps1'
+          grep -q 'ce76243a4b89147a4900e823041b5392e2b19b13549aaa9fcd95cbf3e34d3fe3' "$FILE"
+          grep -q '\$ExpectedBytes = 747624' "$FILE"
+          grep -q 'validate_training_rival_source_intake.py' "$FILE"
+          grep -q 'validate_training_rival_p01.py' "$FILE"
+          grep -q 'validate_first_playable_art_production.py' "$FILE"
+          grep -q 'git lfs install --local' "$FILE"
+          grep -q 'staged_file_count=.*expected=16' "$FILE"
+          grep -q 'PRESET02_RUNTIME_PROMOTION=BLOCKED requires_44_of_44=true' "$FILE"
+          echo 'PRESET02_INGRESS_OPERATOR_CONTRACT=PASS exact_sha=true exact_bytes=true lfs=true gates=true runtime_blocked=true'
+          echo 'SIGNATURE=Tehkné Solutions'
