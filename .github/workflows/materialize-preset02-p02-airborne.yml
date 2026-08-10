@@ -1,16 +1,71 @@
-name: PRESET-02 P02 Airborne Materializer (disabled)
+name: PRESET-02 P02 Airborne Materializer
 
 on:
-  workflow_dispatch:
+  push:
+    branches:
+      - agent/preset02-p02-airborne-materialization
+    paths:
+      - 'tools/materialize_training_rival_p02_airborne.py'
+      - '.github/workflows/materialize-preset02-p02-airborne.yml'
 
 permissions:
-  contents: read
+  contents: write
 
 jobs:
-  disabled:
+  materialize:
     runs-on: ubuntu-22.04
+    timeout-minutes: 10
     steps:
-      - run: |
-          echo 'PRESET02_P02_DISPOSABLE_WRITER=DISABLED'
+      - uses: actions/checkout@v4
+        with:
+          lfs: true
+          fetch-depth: 0
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install deterministic image dependency
+        run: python -m pip install --disable-pip-version-check Pillow==11.3.0
+      - name: Materialize LFS references
+        run: git lfs pull
+      - name: Generate safe-margin P02
+        shell: bash
+        run: |
+          set -euo pipefail
+          ROOT='production/first_playable/training_rival'
+          LOT="$ROOT/first_playable_lot_01"
+          SOURCE="$ROOT/source/training_rival_master.png"
+          STAGING="$LOT/__p02_materialize_staging"
+          rm -rf "$STAGING"
+          python tools/materialize_training_rival_p02_airborne.py --source "$SOURCE" --output-root "$STAGING" | tee preset02-p02-materialize.log
+          grep -q 'PRESET02_P02_MATERIALIZE=PASS' preset02-p02-materialize.log
+          grep -q 'PRESET02_P02_JUMP_START=3' preset02-p02-materialize.log
+          grep -q 'PRESET02_P02_AIRBORNE=2' preset02-p02-materialize.log
+          grep -q 'PRESET02_P02_FALL=2' preset02-p02-materialize.log
+          grep -q 'PRESET02_P02_SAFE_CANVAS_MARGIN=PASS' preset02-p02-materialize.log
+          grep -q 'PRESET02_P02_WEAPON_SAFE=PASS' preset02-p02-materialize.log
+          for mode in jump_start airborne fall; do
+            rm -rf "$LOT/animations/$mode"
+            mkdir -p "$LOT/animations/$mode"
+            mv "$STAGING/$mode"/*.png "$LOT/animations/$mode/"
+          done
+          mv "$STAGING/manifest.json" "$LOT/p02-manifest.json"
+          rm -rf "$STAGING"
+      - name: Commit safe-margin P02 once
+        shell: bash
+        run: |
+          set -euo pipefail
+          git lfs install --local
+          git config user.name 'Tehkne Solutions Automation'
+          git config user.email 'automation@tehkne.solutions'
+          git add -- production/first_playable/training_rival/first_playable_lot_01/animations/jump_start
+          git add -- production/first_playable/training_rival/first_playable_lot_01/animations/airborne
+          git add -- production/first_playable/training_rival/first_playable_lot_01/animations/fall
+          git add -- production/first_playable/training_rival/first_playable_lot_01/p02-manifest.json
+          mapfile -t STAGED < <(git diff --cached --name-only)
+          printf 'PRESET02_P02_STAGED=%s\n' "${STAGED[@]}"
+          test "${#STAGED[@]}" -eq 8
+          git commit -m 'PRESET-02 P02: materialize safe-margin airborne 7-frame candidate'
+          git push origin HEAD:agent/preset02-p02-airborne-materialization
+          echo 'PRESET02_P02_BRANCH_MATERIALIZATION=PASS files=8 safe_margin=true'
           echo 'PRESET02_RUNTIME_PROMOTION=BLOCKED requires_44_of_44=true'
           echo 'SIGNATURE=Tehkné Solutions'
