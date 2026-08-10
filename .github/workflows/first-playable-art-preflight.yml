@@ -3,7 +3,8 @@ name: First Playable Art Preflight
 on:
   pull_request:
     paths:
-      - "production/first_playable/**"
+      - "production/first_playable/lian_wu/first_playable_lot_01/**"
+      - "production/first_playable/training_rival/first_playable_lot_01/**"
       - ".gitattributes"
       - ".gitignore"
       - "tools/validate_first_playable_art_production.py"
@@ -44,4 +45,6 @@ jobs:
           path: artifacts/first-playable-art-preflight.json
           retention-days: 14
 
+# Source metadata and canonical contracts have dedicated fail-closed gates (C29/PRESET-02)
+# and must not impersonate a materialized 44-frame lot.
 # Tehkné Solutions
