@@ -13,6 +13,13 @@ INTAKE = ROOT / "production/first_playable/training_rival/source/source-intake-v
 CANONICAL = ROOT / "production/first_playable/training_rival/canonical-production-v1.json"
 PNG_SIGNATURE = b"\x89PNG\r\n\x1a\n"
 LIAN_WU_LOCK_SHA256 = "0e435757b5c8a114f3ba91653f79bc86db51ee9cf3bfb74c529efed5d4ff7ab5"
+EXPECTED_PACKS = {
+    "P01": 14,
+    "P02": 7,
+    "P03": 6,
+    "P04": 8,
+    "P05": 9,
+}
 
 
 def sha256(path: Path) -> str:
@@ -103,6 +110,62 @@ def inflate_rgba_alpha(width: int, height: int, depth: int, color_type: int, chu
     return bytes(alpha)
 
 
+def validate_identity_core(canonical: dict, intake: dict) -> list[str]:
+    canonical_lock = canonical.get("identity_lock", {})
+    intake_lock = intake.get("identity_lock", {})
+    failures: list[str] = []
+    if not isinstance(canonical_lock, dict) or not isinstance(intake_lock, dict):
+        return ["identity_lock_not_dictionary"]
+    for key, expected in canonical_lock.items():
+        if key not in intake_lock:
+            failures.append(f"identity_missing:{key}")
+        elif intake_lock[key] != expected:
+            failures.append(f"identity_drift:{key}")
+    for key in intake_lock:
+        if key not in canonical_lock:
+            failures.append(f"identity_extra_noncanonical:{key}")
+    return failures
+
+
+def validate_plan(canonical: dict, intake: dict) -> list[str]:
+    failures: list[str] = []
+    if canonical.get("required_total_frames") != 44 or intake.get("required_total_frames") != 44:
+        failures.append("required_total_frames")
+    canonical_matrix = canonical.get("animation_matrix", {})
+    plan = intake.get("production_plan", {})
+    if not isinstance(plan, dict) or set(plan) != set(EXPECTED_PACKS):
+        failures.append("pack_set")
+        return failures
+    total = 0
+    flattened: dict[str, int] = {}
+    for pack_id, expected_frames in EXPECTED_PACKS.items():
+        pack = plan.get(pack_id, {})
+        frames = int(pack.get("frames", -1)) if isinstance(pack, dict) else -1
+        animations = pack.get("animations", {}) if isinstance(pack, dict) else {}
+        if frames != expected_frames:
+            failures.append(f"pack_frames:{pack_id}")
+        if not isinstance(animations, dict) or sum(int(v) for v in animations.values()) != expected_frames:
+            failures.append(f"pack_animation_sum:{pack_id}")
+        total += max(frames, 0)
+        if isinstance(animations, dict):
+            for name, count in animations.items():
+                if name in flattened:
+                    failures.append(f"animation_duplicate:{name}")
+                flattened[name] = int(count)
+    if total != 44:
+        failures.append("plan_total")
+    if flattened != canonical_matrix:
+        failures.append("animation_matrix_drift")
+    promotion = intake.get("runtime_promotion", {})
+    canonical_promotion = canonical.get("promotion", {})
+    for key in ("current_proxy_may_be_removed", "requires_44_of_44", "requires_visual_review", "requires_godot_runtime_bench", "requires_game_c28_import_gate"):
+        if promotion.get(key) != canonical_promotion.get(key):
+            failures.append(f"promotion_drift:{key}")
+    if promotion.get("partial_pack_promotion_allowed") is not False:
+        failures.append("partial_pack_promotion_allowed")
+    return failures
+
+
 def main() -> int:
     if not INTAKE.is_file() or not CANONICAL.is_file():
         print("PRESET02_SOURCE_INTAKE=BLOCKED contract_missing")
@@ -112,12 +175,21 @@ def main() -> int:
     if intake.get("signature") != "Tehkné Solutions" or intake.get("character_id") != "training_rival":
         print("PRESET02_SOURCE_INTAKE=BLOCKED intake_schema")
         return 2
-    if canonical.get("required_total_frames") != 44 or canonical.get("identity_lock") != intake.get("identity_lock"):
-        print("PRESET02_SOURCE_INTAKE=BLOCKED canonical_identity_drift")
+
+    identity_failures = validate_identity_core(canonical, intake)
+    plan_failures = validate_plan(canonical, intake)
+    failures = identity_failures + plan_failures
+    if failures:
+        for failure in failures:
+            print(f"PRESET02_CONTRACT_DRIFT={failure}")
+        print("PRESET02_SOURCE_INTAKE=BLOCKED canonical_contract_drift")
         return 2
-    master = ROOT / intake["master"]["path"]
+
     print("PRESET02_FOUNDATION=PASS identity_lock=true packs=5 total_frames=44")
+    print("PRESET02_CANONICAL_CORE=PASS source=C29 identity_fields=%d" % len(canonical.get("identity_lock", {})))
     print("PRESET02_RUNTIME_POLICY=PASS partial_promotion=false requires_44_of_44=true proxy_retire=false")
+
+    master = ROOT / intake["master"]["path"]
     if not master.is_file():
         if intake.get("status") != "source_master_missing_fail_closed":
             print("PRESET02_SOURCE_INTAKE=BLOCKED missing_master_status_mismatch")
@@ -146,12 +218,12 @@ def main() -> int:
     if any(corners):
         print("PRESET02_SOURCE_INTAKE=BLOCKED transparent_corners_required")
         return 3
-    visible = [(index % width, index // width) for index, value in enumerate(alpha) if value > 3]
-    if not visible:
+    visible_indices = [index for index, value in enumerate(alpha) if value > 3]
+    if not visible_indices:
         print("PRESET02_SOURCE_INTAKE=BLOCKED empty_alpha")
         return 3
-    xs = [x for x, _y in visible]
-    ys = [y for _x, y in visible]
+    xs = [index % width for index in visible_indices]
+    ys = [index // width for index in visible_indices]
     bbox = [min(xs), min(ys), max(xs) + 1, max(ys) + 1]
     if bbox[0] <= 1 or bbox[1] <= 1 or bbox[2] >= 1023 or bbox[3] >= 1023:
         print(f"PRESET02_SOURCE_INTAKE=BLOCKED foreground_touches_canvas_edge bbox={bbox}")
