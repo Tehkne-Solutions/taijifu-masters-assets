@@ -1,0 +1,30 @@
+name: PRESET-02 Drive Ingress Probe
+
+on:
+  pull_request:
+    paths:
+      - '.github/workflows/preset02-drive-ingress-probe.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  probe:
+    runs-on: ubuntu-22.04
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - name: Probe exact binary without publishing source
+        shell: bash
+        run: |
+          set -euo pipefail
+          URL='https://drive.usercontent.google.com/download?id=1I3eYHxzM8UacegdPK0GuutcCKUvZasN_&export=download&confirm=t'
+          curl --fail --location --retry 3 --retry-all-errors --silent --show-error "$URL" -o /tmp/training_rival_master.png
+          ACTUAL=$(sha256sum /tmp/training_rival_master.png | awk '{print $1}')
+          BYTES=$(stat -c%s /tmp/training_rival_master.png)
+          echo "PRESET02_DRIVE_PROBE_BYTES=$BYTES"
+          echo "PRESET02_DRIVE_PROBE_SHA256=$ACTUAL"
+          test "$ACTUAL" = 'ce76243a4b89147a4900e823041b5392e2b19b13549aaa9fcd95cbf3e34d3fe3'
+          echo 'PRESET02_DRIVE_INGRESS=PASS exact_binary=true'
+          echo 'SIGNATURE=Tehkné Solutions'
