@@ -4,7 +4,7 @@ on:
   workflow_dispatch:
   pull_request:
     paths:
-      - "production/first_playable/**"
+      - "production/first_playable/lian_wu/first_playable_lot_01/**"
       - "tools/validate_first_playable_art_production.py"
       - ".github/workflows/build-first-playable-lot01.yml"
 
@@ -54,4 +54,5 @@ jobs:
           if-no-files-found: error
           retention-days: 30
 
+# This workflow packages Lian Wu only; Training Rival source intake has its own PRESET-02 gate.
 # Tehkné Solutions
