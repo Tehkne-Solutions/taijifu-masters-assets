@@ -20,16 +20,20 @@
   "runtime_ready": false,
   "frame_materialization_ready": false,
   "p01_local_dry_run": {
-    "status": "generated_rejected_visual_review",
+    "status": "weapon_safe_v3_visual_review_pass",
     "idle_frames": 6,
     "run_frames": 8,
-    "unique_hashes": 12,
+    "total_frames": 14,
+    "minimum_unique_hashes": 8,
     "baseline_y": 970,
-    "blocking_observation": "Current articulated-region P01 generator duplicates/splits the wooden saber and overlapping body regions during run poses. P01 must not be promoted until articulation masks are made disjoint/weapon-aware and visual review is repeated."
+    "generation_method": "disjoint_side_leg_masks_rigid_upper_weapon",
+    "weapon_duplication": false,
+    "detached_lower_body_fragments": false,
+    "canonical_naming": true,
+    "review_record": "production/first_playable/training_rival/source/PRESET02_P01_V3_REVIEW.json"
   },
   "blockers": [
-    "exact_binary_not_yet_present_at_canonical_target",
-    "p01_run_articulation_overlap_requires_generator_fix"
+    "exact_binary_not_yet_present_at_canonical_target"
   ],
-  "next_action": "Ingress the exact approved PNG at canonical_target, run PRESET-02 Source Intake, then rerun P01 after fixing articulated-region overlap; do not promote the current 14-frame dry run."
+  "next_action": "Ingress the exact approved PNG at canonical_target, run PRESET-02 Source Intake, materialize the reviewed P01 v3 as canonical 14/14, then run the dedicated P01 gate. Runtime remains blocked until 44/44."
 }
