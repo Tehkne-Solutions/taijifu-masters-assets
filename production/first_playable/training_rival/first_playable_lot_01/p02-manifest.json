@@ -3,7 +3,7 @@
   "signature": "Tehkné Solutions",
   "character_id": "training_rival",
   "pack": "P02",
-  "version": "1.0.0-airborne-candidate",
+  "version": "1.0.1-airborne-candidate-safe-margin",
   "source": {
     "pixel_sha256": "67abba855b18ea6cc5ef62c4e382041d5ca69eb9902d9b3c6ead9329a163531e",
     "alpha_bounds": [
@@ -19,6 +19,7 @@
     "weapon": "single_wooden_training_saber",
     "upper_and_weapon_rigid_block": true,
     "leg_masks_mutually_exclusive": true,
+    "safe_canvas_margin_px": 3,
     "canonical_naming": "char_training_rival__<animation>__f<frame-3-digits>.png"
   },
   "frames": {
@@ -61,23 +62,23 @@
       {
         "index": 1,
         "file": "airborne/char_training_rival__airborne__f001.png",
-        "sha256": "05493cb2463cf781bbf7337f598b5cbf2f9a9fc87e1f07eac159074cd0929bfb",
+        "sha256": "ec3be8ae7b492bf10015f1548e4990228f2ed93453c5d8213094511aaf40764f",
         "alpha_bounds": [
           90,
-          1,
+          13,
           900,
-          984
+          996
         ]
       },
       {
         "index": 2,
         "file": "airborne/char_training_rival__airborne__f002.png",
-        "sha256": "5f75cc5f6381ee8ecef1ba1d3e3e6b0d83ddbf2af41da71e5eb1852c284b224c",
+        "sha256": "3e33e3be7a9a93a9cea8ace3301a628f14654ebd11deed123ebf7d4ce551517d",
         "alpha_bounds": [
           87,
-          0,
+          8,
           899,
-          982
+          996
         ]
       }
     ],
@@ -85,12 +86,12 @@
       {
         "index": 1,
         "file": "fall/char_training_rival__fall__f001.png",
-        "sha256": "e2481ddc84230f05e6af825342aa547baa10ea5bce2d8fa217522f73df6144ef",
+        "sha256": "379935dd4aa31b3302e1a67d258ba079d9eb275e44e3c92d6fb171226844bd9d",
         "alpha_bounds": [
           68,
-          15,
+          19,
           882,
-          989
+          993
         ]
       },
       {
@@ -110,6 +111,7 @@
     "source_pixel_identity": "pass",
     "weapon_duplication_structurally_prevented": "pass",
     "frame_count_7": "pass",
+    "safe_canvas_margin": "pass",
     "unique_frame_floor": "pass",
     "visual_review": "pending"
   }
