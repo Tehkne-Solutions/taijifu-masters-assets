@@ -6,7 +6,6 @@ on:
     paths:
       - "production/first_playable/lian_wu/first_playable_lot_01/**"
       - "tools/validate_first_playable_art_production.py"
-      - ".github/workflows/build-first-playable-lot01.yml"
 
 permissions:
   contents: read
@@ -55,4 +54,5 @@ jobs:
           retention-days: 30
 
 # This workflow packages Lian Wu only; Training Rival source intake has its own PRESET-02 gate.
+# Workflow maintenance is exercised manually through workflow_dispatch.
 # Tehkné Solutions
