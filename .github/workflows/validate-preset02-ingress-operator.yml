@@ -4,6 +4,11 @@ on:
   pull_request:
     paths:
       - 'tools/INGRESS-PRESET02-P01.ps1'
+      - 'tools/canonicalize_training_rival_master.py'
+      - 'tools/materialize_training_rival_p01_weapon_safe.py'
+      - 'tools/validate_training_rival_p01.py'
+      - 'production/first_playable/training_rival/source/master-lock-v1.json'
+      - 'production/first_playable/training_rival/source/PRESET02_P01_V3_REVIEW.json'
       - '.github/workflows/validate-preset02-ingress-operator.yml'
   workflow_dispatch:
 
@@ -13,9 +18,14 @@ permissions:
 jobs:
   validate-operator:
     runs-on: ubuntu-22.04
-    timeout-minutes: 5
+    timeout-minutes: 6
     steps:
       - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install deterministic image dependency
+        run: python -m pip install --disable-pip-version-check Pillow==11.3.0
       - name: Parse PowerShell operator
         shell: pwsh
         run: |
@@ -31,18 +41,29 @@ jobs:
             exit 1
           }
           Write-Host 'PRESET02_INGRESS_OPERATOR_PARSE=PASS'
+      - name: Parse Python helpers
+        run: |
+          python -m py_compile tools/canonicalize_training_rival_master.py
+          python -m py_compile tools/materialize_training_rival_p01_weapon_safe.py
+          python -m py_compile tools/validate_training_rival_p01.py
+          echo 'PRESET02_INGRESS_PYTHON_PARSE=PASS'
       - name: Validate fail-closed invariants
         shell: bash
         run: |
           set -euo pipefail
           FILE='tools/INGRESS-PRESET02-P01.ps1'
+          grep -q 'de532ea47c0b16921bfb84d3826fe1a2a51cf9f10aa8f6d8b98a90d9a457be6d' "$FILE"
+          grep -q '\$ApprovedRawBytes = 1273838' "$FILE"
           grep -q 'ce76243a4b89147a4900e823041b5392e2b19b13549aaa9fcd95cbf3e34d3fe3' "$FILE"
-          grep -q '\$ExpectedBytes = 747624' "$FILE"
+          grep -q 'canonicalize_training_rival_master.py' "$FILE"
+          grep -q 'materialize_training_rival_p01_weapon_safe.py' "$FILE"
           grep -q 'validate_training_rival_source_intake.py' "$FILE"
           grep -q 'validate_training_rival_p01.py' "$FILE"
           grep -q 'validate_first_playable_art_production.py' "$FILE"
           grep -q 'git lfs install --local' "$FILE"
           grep -q 'staged_file_count=.*expected=16' "$FILE"
           grep -q 'PRESET02_RUNTIME_PROMOTION=BLOCKED requires_44_of_44=true' "$FILE"
-          echo 'PRESET02_INGRESS_OPERATOR_CONTRACT=PASS exact_sha=true exact_bytes=true lfs=true gates=true runtime_blocked=true'
+          grep -q '67abba855b18ea6cc5ef62c4e382041d5ca69eb9902d9b3c6ead9329a163531e' tools/canonicalize_training_rival_master.py
+          grep -q 'disjoint_side_leg_masks_rigid_upper_weapon' tools/materialize_training_rival_p01_weapon_safe.py
+          echo 'PRESET02_INGRESS_OPERATOR_CONTRACT=PASS original_sha=true canonical_pixels=true weapon_safe=true lfs=true gates=true runtime_blocked=true'
           echo 'SIGNATURE=Tehkné Solutions'

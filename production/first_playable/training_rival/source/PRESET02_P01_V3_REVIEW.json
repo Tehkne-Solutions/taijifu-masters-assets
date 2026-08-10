@@ -3,10 +3,12 @@
   "signature": "Tehkné Solutions",
   "character_id": "training_rival",
   "pack": "P01",
-  "source_sha256": "ce76243a4b89147a4900e823041b5392e2b19b13549aaa9fcd95cbf3e34d3fe3",
+  "approved_original_sha256": "de532ea47c0b16921bfb84d3826fe1a2a51cf9f10aa8f6d8b98a90d9a457be6d",
+  "canonical_reference_file_sha256": "ce76243a4b89147a4900e823041b5392e2b19b13549aaa9fcd95cbf3e34d3fe3",
+  "canonical_pixel_sha256": "67abba855b18ea6cc5ef62c4e382041d5ca69eb9902d9b3c6ead9329a163531e",
   "status": "weapon_safe_v3_visually_approved_awaiting_repository_binary_materialization",
   "frames": {"idle": 6, "run": 8, "total": 14},
-  "baseline_y": 970,
+  "baseline_y_reference": 970,
   "generation_contract": {
     "method": "disjoint_side_leg_masks_rigid_upper_weapon",
     "upper_and_weapon_are_single_rigid_block": true,
@@ -28,5 +30,5 @@
     {"version": "v1", "reason": "overlapping articulated masks duplicated/split wooden saber"},
     {"version": "v2", "reason": "residual lower-body fragments remained outside side-leg masks"}
   ],
-  "next_action": "Ingress the exact approved master binary and the 14 v3 P01 frames, then run Source Intake + PRESET-02 P01 + global incomplete-safe preflight."
+  "next_action": "Ingress the exact approved original or canonical reference, canonicalize to the approved pixel identity, materialize the 14 weapon-safe v3 P01 frames, then run Source Intake + PRESET-02 P01 + global incomplete-safe preflight."
 }

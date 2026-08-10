@@ -1,19 +1,22 @@
 param(
   [Parameter(Mandatory=$true)][string]$MasterPath,
   [string]$Branch = "agent/preset02-p01-binary-ingress",
-  [string]$RepoRoot = (Resolve-Path "$PSScriptRoot\.."),
-  [string]$GameRepoRoot = ""
+  [string]$RepoRoot = (Resolve-Path "$PSScriptRoot\..")
 )
 
 $ErrorActionPreference = "Stop"
 Set-Location $RepoRoot
 
-$ExpectedSha = "ce76243a4b89147a4900e823041b5392e2b19b13549aaa9fcd95cbf3e34d3fe3"
-$ExpectedBytes = 747624
+$ApprovedRawSha = "de532ea47c0b16921bfb84d3826fe1a2a51cf9f10aa8f6d8b98a90d9a457be6d"
+$ApprovedRawBytes = 1273838
+$ReferenceCanonicalSha = "ce76243a4b89147a4900e823041b5392e2b19b13549aaa9fcd95cbf3e34d3fe3"
+$ReferenceCanonicalBytes = 747624
 $Canonical = Join-Path $RepoRoot "production\first_playable\training_rival\source\training_rival_master.png"
 $Lot = Join-Path $RepoRoot "production\first_playable\training_rival\first_playable_lot_01"
 $Animations = Join-Path $Lot "animations"
 $Staging = Join-Path $Lot "__p01_ingress_staging"
+$Canonicalizer = Join-Path $RepoRoot "tools\canonicalize_training_rival_master.py"
+$Generator = Join-Path $RepoRoot "tools\materialize_training_rival_p01_weapon_safe.py"
 $SourceValidator = Join-Path $RepoRoot "tools\validate_training_rival_source_intake.py"
 $P01Validator = Join-Path $RepoRoot "tools\validate_training_rival_p01.py"
 $GlobalValidator = Join-Path $RepoRoot "tools\validate_first_playable_art_production.py"
@@ -43,17 +46,32 @@ function Run-Python([string]$Python, [string[]]$Args) {
   if ($LASTEXITCODE -ne 0) { throw "PRESET02_INGRESS=BLOCKED python_exit=$LASTEXITCODE args=$($Args -join ' ')" }
 }
 
+function Require-Pillow([string]$Python) {
+  if ($Python -eq "py") { & py -3 -c "import PIL; print('PRESET02_PILLOW_VERSION=' + PIL.__version__)" }
+  else { & $Python -c "import PIL; print('PRESET02_PILLOW_VERSION=' + PIL.__version__)" }
+  if ($LASTEXITCODE -ne 0) {
+    throw "PRESET02_INGRESS=BLOCKED Pillow_missing install_with='py -3 -m pip install Pillow'"
+  }
+}
+
+if (-not (Test-Path $MasterPath -PathType Leaf)) { throw "PRESET02_INGRESS=BLOCKED master_missing=$MasterPath" }
 $MasterPath = (Resolve-Path $MasterPath).Path
-if (-not (Test-Path $MasterPath -PathType Leaf)) { throw "PRESET02_INGRESS=BLOCKED master_missing" }
 $actualBytes = (Get-Item $MasterPath).Length
 $actualSha = (Get-FileHash $MasterPath -Algorithm SHA256).Hash.ToLowerInvariant()
 Write-Host "PRESET02_MASTER_BYTES=$actualBytes"
 Write-Host "PRESET02_MASTER_SHA256=$actualSha"
-if ($actualBytes -ne $ExpectedBytes) { throw "PRESET02_INGRESS=BLOCKED byte_count_mismatch expected=$ExpectedBytes" }
-if ($actualSha -ne $ExpectedSha) { throw "PRESET02_INGRESS=BLOCKED sha256_mismatch expected=$ExpectedSha" }
-Write-Host "PRESET02_EXACT_BINARY=PASS"
 
-foreach ($required in @($SourceValidator, $P01Validator, $GlobalValidator)) {
+$inputKind = ""
+if ($actualBytes -eq $ApprovedRawBytes -and $actualSha -eq $ApprovedRawSha) {
+  $inputKind = "approved_original_raw"
+} elseif ($actualBytes -eq $ReferenceCanonicalBytes -and $actualSha -eq $ReferenceCanonicalSha) {
+  $inputKind = "reference_canonical_exact"
+} else {
+  throw "PRESET02_INGRESS=BLOCKED input_not_approved raw_expected=$ApprovedRawSha/$ApprovedRawBytes canonical_expected=$ReferenceCanonicalSha/$ReferenceCanonicalBytes"
+}
+Write-Host "PRESET02_APPROVED_INPUT=PASS kind=$inputKind"
+
+foreach ($required in @($Canonicalizer, $Generator, $SourceValidator, $P01Validator, $GlobalValidator)) {
   if (-not (Test-Path $required)) { throw "PRESET02_INGRESS=BLOCKED missing_required_file=$required" }
 }
 Require-CleanRepo
@@ -74,38 +92,19 @@ git switch -c $Branch origin/main
 if ($LASTEXITCODE -ne 0) { throw "PRESET02_INGRESS=BLOCKED branch_create" }
 Write-Host "PRESET02_BRANCH=PASS name=$Branch"
 
-New-Item -ItemType Directory -Force -Path (Split-Path $Canonical -Parent) | Out-Null
-Copy-Item $MasterPath $Canonical -Force
-$canonicalSha = (Get-FileHash $Canonical -Algorithm SHA256).Hash.ToLowerInvariant()
-if ($canonicalSha -ne $ExpectedSha) { throw "PRESET02_INGRESS=BLOCKED post_copy_sha256_mismatch" }
-Write-Host "PRESET02_CANONICAL_MASTER_COPY=PASS"
-
 $python = Resolve-Python
+Require-Pillow $python
+
+New-Item -ItemType Directory -Force -Path (Split-Path $Canonical -Parent) | Out-Null
+Run-Python $python @($Canonicalizer, "--source", $MasterPath, "--output", $Canonical)
+Write-Host "PRESET02_CANONICAL_MASTER_COPY=PASS source_kind=$inputKind"
+
 Run-Python $python @($SourceValidator)
 Write-Host "PRESET02_SOURCE_INTAKE_LOCAL=PASS"
 
-if (-not $GameRepoRoot) {
-  $candidateGameRepo = Join-Path (Split-Path $RepoRoot -Parent) "taijifu-masters"
-  if (Test-Path (Join-Path $candidateGameRepo "tools\materialize_training_rival_p01.py")) {
-    $GameRepoRoot = $candidateGameRepo
-  }
-}
-
-$tempGenerator = $null
-if ($GameRepoRoot -and (Test-Path (Join-Path $GameRepoRoot "tools\materialize_training_rival_p01.py"))) {
-  $generator = Join-Path $GameRepoRoot "tools\materialize_training_rival_p01.py"
-  Write-Host "PRESET02_GENERATOR_SOURCE=sibling_repo"
-} else {
-  $tempGenerator = Join-Path ([System.IO.Path]::GetTempPath()) "taijifu_materialize_training_rival_p01.py"
-  $raw = "https://raw.githubusercontent.com/Tehkne-Solutions/taijifu-masters/main/tools/materialize_training_rival_p01.py"
-  Invoke-WebRequest -UseBasicParsing -Uri $raw -OutFile $tempGenerator
-  $generator = $tempGenerator
-  Write-Host "PRESET02_GENERATOR_SOURCE=github_main"
-}
-
 if (Test-Path $Staging) { Remove-Item $Staging -Recurse -Force }
 New-Item -ItemType Directory -Force -Path $Staging | Out-Null
-Run-Python $python @($generator, "--source", $Canonical, "--output-root", $Staging)
+Run-Python $python @($Generator, "--source", $Canonical, "--output-root", $Staging)
 
 foreach ($mode in @("idle", "run")) {
   $src = Join-Path $Staging $mode
@@ -122,8 +121,7 @@ $generatedManifest = Join-Path $Staging "manifest.json"
 if (-not (Test-Path $generatedManifest)) { throw "PRESET02_INGRESS=BLOCKED p01_manifest_missing" }
 Move-Item $generatedManifest (Join-Path $Lot "p01-manifest.json") -Force
 Remove-Item $Staging -Recurse -Force
-if ($tempGenerator -and (Test-Path $tempGenerator)) { Remove-Item $tempGenerator -Force }
-Write-Host "PRESET02_P01_GENERATION=PASS"
+Write-Host "PRESET02_P01_GENERATION=PASS method=weapon_safe_v3"
 
 Run-Python $python @($P01Validator)
 Run-Python $python @($GlobalValidator, "--allow-incomplete")
@@ -142,7 +140,7 @@ if ($staged.Count -ne 16) {
 }
 Write-Host "PRESET02_STAGED_CONTRACT=PASS files=16"
 
-git commit -m "PRESET-02 P01: materialize exact Training Rival master and locomotion pack"
+git commit -m "PRESET-02 P01: materialize approved Training Rival master and weapon-safe locomotion"
 if ($LASTEXITCODE -ne 0) { throw "PRESET02_INGRESS=BLOCKED git_commit" }
 $commit = (git rev-parse HEAD).Trim()
 

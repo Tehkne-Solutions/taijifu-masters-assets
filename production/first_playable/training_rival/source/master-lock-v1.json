@@ -3,13 +3,29 @@
   "signature": "Tehkné Solutions",
   "character_id": "training_rival",
   "stage": "PRESET-02.1 Clean Master",
-  "status": "owner_approved_exact_binary_pending_repository_ingress",
+  "status": "owner_approved_original_source_pending_repository_ingress",
   "canonical_target": "production/first_playable/training_rival/source/training_rival_master.png",
+  "approved_original_binary": {
+    "sha256": "de532ea47c0b16921bfb84d3826fe1a2a51cf9f10aa8f6d8b98a90d9a457be6d",
+    "bytes": 1273838,
+    "canvas": [1254, 1254],
+    "mode": "RGBA",
+    "owner_visual_review": "approved"
+  },
   "approved_binary": {
-    "sha256": "ce76243a4b89147a4900e823041b5392e2b19b13549aaa9fcd95cbf3e34d3fe3",
+    "reference_file_sha256": "ce76243a4b89147a4900e823041b5392e2b19b13549aaa9fcd95cbf3e34d3fe3",
+    "reference_file_bytes": 747624,
+    "pixel_sha256": "67abba855b18ea6cc5ef62c4e382041d5ca69eb9902d9b3c6ead9329a163531e",
     "canvas": [1024, 1024],
     "mode": "RGBA",
-    "alpha_bounds_threshold_3": [77, 48, 927, 971],
+    "canonicalization": {
+      "fit_box": [940, 980],
+      "resample": "Pillow LANCZOS",
+      "placement": "centered_on_1024_transparent_canvas",
+      "file_encoding_may_vary": true,
+      "pixel_sha_is_authoritative": true
+    },
+    "alpha_bounds_threshold_3_reference": [77, 48, 927, 971],
     "transparent_corners": true,
     "foreground_touches_canvas_edge": false,
     "native_facing": "left",
@@ -25,7 +41,7 @@
     "run_frames": 8,
     "total_frames": 14,
     "minimum_unique_hashes": 8,
-    "baseline_y": 970,
+    "baseline_y_reference": 970,
     "generation_method": "disjoint_side_leg_masks_rigid_upper_weapon",
     "weapon_duplication": false,
     "detached_lower_body_fragments": false,
@@ -33,7 +49,7 @@
     "review_record": "production/first_playable/training_rival/source/PRESET02_P01_V3_REVIEW.json"
   },
   "blockers": [
-    "exact_binary_not_yet_present_at_canonical_target"
+    "approved_original_not_yet_materialized_into_canonical_target"
   ],
-  "next_action": "Ingress the exact approved PNG at canonical_target, run PRESET-02 Source Intake, materialize the reviewed P01 v3 as canonical 14/14, then run the dedicated P01 gate. Runtime remains blocked until 44/44."
+  "next_action": "Ingress either the exact owner-approved original PNG or the exact reference canonical PNG. Canonicalize to the authoritative pixel hash, run Source Intake, materialize weapon-safe P01 v3 as 14/14, then run the dedicated P01 gate. Runtime remains blocked until 44/44."
 }
