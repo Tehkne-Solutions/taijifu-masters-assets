@@ -1,0 +1,32 @@
+{
+  "schema": "tehkne/taijifu-training-rival-p01-review/v3",
+  "signature": "Tehkné Solutions",
+  "character_id": "training_rival",
+  "pack": "P01",
+  "source_sha256": "ce76243a4b89147a4900e823041b5392e2b19b13549aaa9fcd95cbf3e34d3fe3",
+  "status": "weapon_safe_v3_visually_approved_awaiting_repository_binary_materialization",
+  "frames": {"idle": 6, "run": 8, "total": 14},
+  "baseline_y": 970,
+  "generation_contract": {
+    "method": "disjoint_side_leg_masks_rigid_upper_weapon",
+    "upper_and_weapon_are_single_rigid_block": true,
+    "leg_masks_mutually_exclusive": true,
+    "central_sash_owned_by_upper": true,
+    "canonical_naming": "animations/<animation>/char_training_rival__<animation>__fNNN.png"
+  },
+  "visual_review": {
+    "weapon_duplication": "pass",
+    "detached_lower_body_fragments": "pass",
+    "identity_continuity": "pass",
+    "single_weapon_continuity": "pass",
+    "native_facing_left": "pass",
+    "idle_readability": "pass",
+    "run_readability": "pass_first_playable_candidate",
+    "runtime_promotion": "blocked_until_44_of_44_and_runtime_review"
+  },
+  "previous_rejected_versions": [
+    {"version": "v1", "reason": "overlapping articulated masks duplicated/split wooden saber"},
+    {"version": "v2", "reason": "residual lower-body fragments remained outside side-leg masks"}
+  ],
+  "next_action": "Ingress the exact approved master binary and the 14 v3 P01 frames, then run Source Intake + PRESET-02 P01 + global incomplete-safe preflight."
+}

@@ -34,14 +34,22 @@ jobs:
         id: mode
         shell: bash
         run: |
+          count_png() {
+            local root="$1"
+            if [[ -d "$root" ]]; then
+              find "$root" -type f -name '*.png' | wc -l | tr -d ' '
+            else
+              echo 0
+            fi
+          }
           STRICT=true
           if [[ "${{ github.event_name }}" == "pull_request" ]]; then
-            STRICT=false
-            BASE_SHA="${{ github.event.pull_request.base.sha }}"
-            HEAD_SHA="${{ github.event.pull_request.head.sha }}"
-            if git diff --name-only "$BASE_SHA" "$HEAD_SHA" | grep -Eq '^production/first_playable/(lian_wu|training_rival)/first_playable_lot_01/'; then
-              STRICT=true
+            LIAN_COUNT=$(count_png production/first_playable/lian_wu/first_playable_lot_01/animations)
+            RIVAL_COUNT=$(count_png production/first_playable/training_rival/first_playable_lot_01/animations)
+            if [[ "$LIAN_COUNT" != "44" || "$RIVAL_COUNT" != "44" ]]; then
+              STRICT=false
             fi
+            echo "FIRST_PLAYABLE_COUNTS=lian:$LIAN_COUNT rival:$RIVAL_COUNT"
           elif [[ "${{ github.event_name }}" == "workflow_dispatch" && "${{ inputs.allow_incomplete }}" == "true" ]]; then
             STRICT=false
           fi
@@ -63,6 +71,6 @@ jobs:
           path: artifacts/first-playable-art-preflight.json
           retention-days: 14
 
-# Materialized lot changes stay strict. Workflow/validator maintenance can run informatively
-# while the canonical production set is intentionally incomplete.
+# Partial packs are allowed to be incomplete only by missing-frame findings.
+# All PNG/name/dimension/alpha/false-approval errors remain blocking; 88/88 restores strict mode.
 # Tehkné Solutions
