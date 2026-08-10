@@ -1,0 +1,39 @@
+{
+  "schema": "tehkne/taijifu-training-rival-master-candidate/v1",
+  "signature": "Tehkné Solutions",
+  "stage": "PRESET-02.1 Clean Master",
+  "character_id": "training_rival",
+  "candidate_id": "training_rival_master_candidate_v1",
+  "owner_visual_review": "approved_direction",
+  "source_contract": {
+    "target_path": "production/first_playable/training_rival/source/training_rival_master.png",
+    "canvas": [1024, 1024],
+    "mode": "RGBA",
+    "native_facing": "left",
+    "single_character": true,
+    "weapon_count": 1,
+    "weapon": "wooden_training_saber",
+    "background": "transparent",
+    "embedded_text": false,
+    "embedded_logo": false,
+    "contact_sheet": false
+  },
+  "canonicalized_candidate": {
+    "sha256": "ce76243a4b89147a4900e823041b5392e2b19b13549aaa9fcd95cbf3e34d3fe3",
+    "alpha_bbox": [65, 47, 955, 982],
+    "transparent_corners": true,
+    "foreground_touches_canvas_edge": false,
+    "visual_notes": [
+      "compact guarded swordsman silhouette",
+      "charcoal armor with ember and muted-gold accents",
+      "dark martial hair with red headband",
+      "single wooden training saber",
+      "full body and feet visible",
+      "distinct from Lian Wu"
+    ]
+  },
+  "status": "approved_candidate_awaiting_binary_ingress",
+  "runtime_ready": false,
+  "frame_materialization_ready": false,
+  "next_gate": "PRESET-02 Source Intake must validate the exact binary at target_path before P01 starts."
+}
