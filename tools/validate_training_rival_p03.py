@@ -10,6 +10,7 @@ ROOT = Path(__file__).resolve().parents[1]
 RIVAL = ROOT / "production/first_playable/training_rival"
 LOT = RIVAL / "first_playable_lot_01"
 SOURCE = RIVAL / "source/training_rival_master.png"
+REVIEW = RIVAL / "source/PRESET02_P03_REVIEW.json"
 P01 = LOT / "p01-manifest.json"
 P02 = LOT / "p02-manifest.json"
 P03 = LOT / "p03-manifest.json"
@@ -17,6 +18,9 @@ DISPOSABLE_WRITER = ROOT / ".github/workflows/materialize-preset02-p03-attack-li
 EXPECTED_PIXEL_SHA = "67abba855b18ea6cc5ef62c4e382041d5ca69eb9902d9b3c6ead9329a163531e"
 SAFE_MARGIN = 3
 BEATS = ["guard", "chamber", "release", "impact", "follow_through", "recover"]
+EXPECTED_REVIEW_RUN = 31441547569
+EXPECTED_REVIEW_ARTIFACT = 9083015383
+EXPECTED_REVIEW_DIGEST = "sha256:c9c70ae0442525efd8a83ce6f655ee0fbadc00d3d731558e22612c8d7c94819b"
 
 
 def digest(path: Path) -> str:
@@ -39,13 +43,32 @@ def block(reason: str) -> int:
 
 
 def main() -> int:
-    for path in (SOURCE, P01, P02, P03):
+    for path in (SOURCE, REVIEW, P01, P02, P03):
         if not path.is_file():
             return block(f"missing={path.relative_to(ROOT).as_posix()}")
     if DISPOSABLE_WRITER.exists():
         return block("disposable_writer_present")
     if pixel_sha(SOURCE) != EXPECTED_PIXEL_SHA:
         return block("source_pixel_identity")
+
+    review = json.loads(REVIEW.read_text(encoding="utf-8"))
+    if review.get("schema") != "tehkne/taijifu-training-rival-p03-review/v1":
+        return block("review_schema")
+    if review.get("status") != "visually_approved_attack_light_v2":
+        return block("review_status")
+    if review.get("source_pixel_sha256") != EXPECTED_PIXEL_SHA:
+        return block("review_source_identity")
+    if review.get("visual_review", {}).get("approved_for_next_pack") is not True:
+        return block("review_not_approved")
+    if review.get("runtime_ready") is not False:
+        return block("review_runtime_must_remain_blocked")
+    evidence = review.get("evidence", {})
+    if evidence.get("workflow_run_id") != EXPECTED_REVIEW_RUN:
+        return block("review_run_id")
+    if evidence.get("artifact_id") != EXPECTED_REVIEW_ARTIFACT:
+        return block("review_artifact_id")
+    if evidence.get("artifact_digest") != EXPECTED_REVIEW_DIGEST:
+        return block("review_artifact_digest")
 
     p01 = json.loads(P01.read_text(encoding="utf-8"))
     p02 = json.loads(P02.read_text(encoding="utf-8"))
@@ -54,6 +77,8 @@ def main() -> int:
         return block("schema")
     if p03.get("signature") != "Tehkné Solutions" or p03.get("character_id") != "training_rival":
         return block("identity")
+    if p03.get("version") != review.get("manifest_version"):
+        return block("review_manifest_version_drift")
     if p03.get("source", {}).get("pixel_sha256") != EXPECTED_PIXEL_SHA:
         return block("manifest_source_pixel_identity")
     contract = p03.get("contract", {})
@@ -107,6 +132,7 @@ def main() -> int:
     print("PRESET02_P03_UNIQUE_HASHES=6")
     print("PRESET02_P03_SAFE_CANVAS_MARGIN=PASS")
     print("PRESET02_P03_WEAPON_SAFE=PASS")
+    print("PRESET02_P03_VISUAL_REVIEW=PASS evidence_frozen=true")
     print("PRESET02_P03_DISPOSABLE_WRITER=ABSENT")
     print("PRESET02_P01_REGRESSION=PASS frames=14/14")
     print("PRESET02_P02_REGRESSION=PASS frames=7/7")
