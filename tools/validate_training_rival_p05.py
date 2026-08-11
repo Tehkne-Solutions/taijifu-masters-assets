@@ -10,11 +10,15 @@ ROOT=Path(__file__).resolve().parents[1]
 RIVAL=ROOT/'production/first_playable/training_rival'
 LOT=RIVAL/'first_playable_lot_01'
 SOURCE=RIVAL/'source/training_rival_master.png'
+REVIEW=RIVAL/'source/PRESET02_P05_REVIEW.json'
 P01=LOT/'p01-manifest.json'; P02=LOT/'p02-manifest.json'; P03=LOT/'p03-manifest.json'; P04=LOT/'p04-manifest.json'; P05=LOT/'p05-manifest.json'
 WRITER=ROOT/'.github/workflows/materialize-preset02-p05-hit-ko.yml'
 EXPECTED_PIXEL_SHA='67abba855b18ea6cc5ef62c4e382041d5ca69eb9902d9b3c6ead9329a163531e'
 SAFE_MARGIN=3
 EXPECTED={'hit':3,'ko':6}
+EXPECTED_REVIEW_RUN=31444693299
+EXPECTED_REVIEW_ARTIFACT=9084067772
+EXPECTED_REVIEW_DIGEST='sha256:50d742cf09ae4968a2fa7fa40c79d1edb11b2d26b41a17c8cb97936bb6fd91b9'
 
 
 def digest(path:Path)->str: return hashlib.sha256(path.read_bytes()).hexdigest()
@@ -26,13 +30,19 @@ def block(reason:str)->int:
 
 
 def main()->int:
-    for path in (SOURCE,P01,P02,P03,P04,P05):
+    for path in (SOURCE,REVIEW,P01,P02,P03,P04,P05):
         if not path.is_file(): return block(f'missing={path.relative_to(ROOT).as_posix()}')
     if WRITER.exists(): return block('disposable_writer_present')
     if pixel_sha(SOURCE)!=EXPECTED_PIXEL_SHA: return block('source_pixel_identity')
+    review=json.loads(REVIEW.read_text(encoding='utf-8'))
+    if review.get('schema')!='tehkne/taijifu-training-rival-p05-review/v1' or review.get('status')!='visually_approved_hit_ko_v1': return block('review_contract')
+    if review.get('source_pixel_sha256')!=EXPECTED_PIXEL_SHA or review.get('runtime_ready') is not False: return block('review_source_or_runtime')
+    if review.get('visual_review',{}).get('approved_for_completion') is not True: return block('review_not_approved')
+    evidence=review.get('evidence',{})
+    if evidence.get('workflow_run_id')!=EXPECTED_REVIEW_RUN or evidence.get('artifact_id')!=EXPECTED_REVIEW_ARTIFACT or evidence.get('artifact_digest')!=EXPECTED_REVIEW_DIGEST: return block('review_evidence')
     p01=json.loads(P01.read_text(encoding='utf-8')); p02=json.loads(P02.read_text(encoding='utf-8')); p03=json.loads(P03.read_text(encoding='utf-8')); p04=json.loads(P04.read_text(encoding='utf-8')); p05=json.loads(P05.read_text(encoding='utf-8'))
     if p05.get('schema')!='tehkne/taijifu-training-rival-p05/v1' or p05.get('signature')!='Tehkné Solutions': return block('manifest_identity')
-    if p05.get('source',{}).get('pixel_sha256')!=EXPECTED_PIXEL_SHA: return block('manifest_source_identity')
+    if p05.get('version')!=review.get('manifest_version') or p05.get('source',{}).get('pixel_sha256')!=EXPECTED_PIXEL_SHA: return block('manifest_or_review_drift')
     contract=p05.get('contract',{})
     if contract.get('whole_sprite_rigid_fall') is not True or contract.get('safe_canvas_margin_px')!=SAFE_MARGIN: return block('rigid_fall_or_margin')
     if contract.get('minimum_scale')!=0.90: return block('scale_contract')
@@ -63,14 +73,16 @@ def main()->int:
     print(f'PRESET02_P05_MIN_SCALE={min_scale:.4f}')
     print('PRESET02_P05_SAFE_CANVAS_MARGIN=PASS')
     print('PRESET02_P05_RIGID_FALL=PASS')
+    print('PRESET02_P05_VISUAL_REVIEW=PASS evidence_frozen=true')
     print('PRESET02_P05_DISPOSABLE_WRITER=ABSENT')
     print('PRESET02_P01_REGRESSION=PASS frames=14/14')
     print('PRESET02_P02_REGRESSION=PASS frames=7/7')
     print('PRESET02_P03_REGRESSION=PASS frames=6/6')
     print('PRESET02_P04_REGRESSION=PASS frames=8/8')
     print('PRESET02_RIVAL_GLOBAL_PROGRESS=44/44')
-    print('PRESET02_P05_CANDIDATE=PASS visual_review=pending')
-    print('PRESET02_RUNTIME_PROMOTION=BLOCKED final_visual_review_required=true')
+    print('PRESET02_CANONICAL_COMPLETION=PASS frames=44/44')
+    print('PRESET02_P05=PASS')
+    print('PRESET02_RUNTIME_PROMOTION=BLOCKED requires_game_c28_import_and_godot_runtime_bench=true')
     print('SIGNATURE=Tehkné Solutions')
     return 0
 
