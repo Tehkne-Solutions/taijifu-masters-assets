@@ -3,7 +3,7 @@
   "signature": "Tehkné Solutions",
   "character_id": "training_rival",
   "milestone": "Taijifu Masters v.2 playable",
-  "status": "production_open_0_of_44",
+  "status": "canonical_complete_44_of_44_runtime_pending",
   "identity_lock": {
     "style": "comic_manga_2_5d_martial_fantasy",
     "role": "martial_training_opponent",
@@ -49,12 +49,30 @@
   "required_total_frames": 44,
   "source_root": "production/first_playable/training_rival/first_playable_lot_01/animations",
   "naming": "char_training_rival__<animation>__f<frame-3-digits>.png",
+  "completion": {
+    "frames_present": 44,
+    "frames_required": 44,
+    "p01": "14/14",
+    "p02": "7/7",
+    "p03": "6/6",
+    "p04": "8/8",
+    "p05": "9/9",
+    "source_pixel_sha256": "67abba855b18ea6cc5ef62c4e382041d5ca69eb9902d9b3c6ead9329a163531e",
+    "final_visual_review": "production/first_playable/training_rival/source/PRESET02_P05_REVIEW.json",
+    "final_review_run_id": 31444693299,
+    "final_review_artifact_id": 9084067772,
+    "final_review_artifact_digest": "sha256:50d742cf09ae4968a2fa7fa40c79d1edb11b2d26b41a17c8cb97936bb6fd91b9"
+  },
   "promotion": {
+    "asset_matrix_complete": true,
     "current_proxy_may_be_removed": false,
     "requires_44_of_44": true,
     "requires_visual_review": true,
     "requires_godot_runtime_bench": true,
-    "requires_game_c28_import_gate": true
+    "requires_game_c28_import_gate": true,
+    "game_c28_import_complete": false,
+    "godot_runtime_bench_complete": false,
+    "runtime_ready": false
   },
-  "next_action": "Materialize real canonical Training Rival animation frames into the production root, run the C29 preflight, then let the game-side C28 bridge import the complete lot atomically."
+  "next_action": "Run the game-side C28 import against this frozen 44/44 matrix, validate SpriteFrames and the active Godot runtime bench, then retire the Training Rival proxy only after both gates pass."
 }
