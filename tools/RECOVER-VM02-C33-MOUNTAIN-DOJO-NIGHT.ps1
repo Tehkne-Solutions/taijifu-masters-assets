@@ -192,23 +192,28 @@ try {
     $evidencePath = Join-Path $CanonicalDir "C33_RECOVERY_EVIDENCE.json"
     $evidence | ConvertTo-Json -Depth 6 | Set-Content -LiteralPath $evidencePath -Encoding UTF8
 
-    Invoke-GitChecked -Args @("add",
+    # PNG delivery paths are intentionally ignored by the repository baseline.
+    # Force-add only the three hash-validated canonical C33 binaries; keep the
+    # evidence JSON on the normal add path so no broader ignore rule is bypassed.
+    Invoke-GitChecked -Args @("add", "-f", "--",
         "packs/stages/mountain_dojo_night/v1/background.png",
         "packs/stages/mountain_dojo_night/v1/midground.png",
-        "packs/stages/mountain_dojo_night/v1/foreground.png",
-        "packs/stages/mountain_dojo_night/v1/C33_RECOVERY_EVIDENCE.json") -Failure "C33_RECOVERY_GIT_ADD=BLOCKED"
+        "packs/stages/mountain_dojo_night/v1/foreground.png") -Failure "C33_RECOVERY_GIT_ADD_PNG=BLOCKED"
+    Invoke-GitChecked -Args @("add", "--",
+        "packs/stages/mountain_dojo_night/v1/C33_RECOVERY_EVIDENCE.json") -Failure "C33_RECOVERY_GIT_ADD_EVIDENCE=BLOCKED"
 
     $staged = (& git -C $AssetsRepo diff --cached --name-only) -join "`n"
     foreach ($required in @(
         "packs/stages/mountain_dojo_night/v1/background.png",
         "packs/stages/mountain_dojo_night/v1/midground.png",
-        "packs/stages/mountain_dojo_night/v1/foreground.png"
+        "packs/stages/mountain_dojo_night/v1/foreground.png",
+        "packs/stages/mountain_dojo_night/v1/C33_RECOVERY_EVIDENCE.json"
     )) {
         if ($staged -notmatch [regex]::Escape($required)) {
             throw "C33_RECOVERY_STAGE=BLOCKED missing=$required"
         }
     }
-    Write-Host "C33_RECOVERY_STAGE=PASS files=3/3"
+    Write-Host "C33_RECOVERY_STAGE=PASS files=3/3 evidence=1/1"
 
     Invoke-GitChecked -Args @("commit", "-m", "C33 recover original Mountain Dojo Night art`n`nTehkné Solutions") -Failure "C33_RECOVERY_COMMIT=BLOCKED"
     Invoke-GitChecked -Args @("push", "origin", $TargetBranch) -Failure "C33_RECOVERY_PUSH=BLOCKED branch=$TargetBranch"
