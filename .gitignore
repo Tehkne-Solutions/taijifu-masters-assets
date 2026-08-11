@@ -13,6 +13,11 @@
 # Exceção: frames canônicos do First Playable são versionados por Git LFS
 !production/first_playable/**/*.png
 
+# Exceção: camadas canônicas do Mountain Dojo Night são versionadas por Git LFS
+!packs/stages/mountain_dojo_night/v1/background.png
+!packs/stages/mountain_dojo_night/v1/midground.png
+!packs/stages/mountain_dojo_night/v1/foreground.png
+
 # Saídas locais do forge
 .build/
 build/
