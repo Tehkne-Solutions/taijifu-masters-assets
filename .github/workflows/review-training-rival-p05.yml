@@ -6,6 +6,7 @@ on:
       - 'production/first_playable/training_rival/first_playable_lot_01/animations/hit/**'
       - 'production/first_playable/training_rival/first_playable_lot_01/animations/ko/**'
       - 'production/first_playable/training_rival/first_playable_lot_01/p05-manifest.json'
+      - 'production/first_playable/training_rival/source/PRESET02_P05_REVIEW.json'
       - 'tools/materialize_training_rival_p05_hit_ko.py'
       - 'tools/validate_training_rival_p05.py'
       - '.github/workflows/review-training-rival-p05.yml'
@@ -28,17 +29,19 @@ jobs:
           python-version: '3.12'
       - run: python -m pip install --disable-pip-version-check Pillow==11.3.0
       - run: git lfs pull
-      - name: Validate P05 candidate and complete 44-frame matrix
+      - name: Validate P05 frozen completion evidence
         shell: bash
         run: |
           set -o pipefail
           python tools/validate_training_rival_p05.py 2>&1 | tee preset02-p05.log
           grep -q 'PRESET02_P05_FRAME_COUNT=9/9' preset02-p05.log
           grep -q 'PRESET02_P05_RIGID_FALL=PASS' preset02-p05.log
+          grep -q 'PRESET02_P05_VISUAL_REVIEW=PASS evidence_frozen=true' preset02-p05.log
           grep -q 'PRESET02_P05_DISPOSABLE_WRITER=ABSENT' preset02-p05.log
           grep -q 'PRESET02_P04_REGRESSION=PASS frames=8/8' preset02-p05.log
           grep -q 'PRESET02_RIVAL_GLOBAL_PROGRESS=44/44' preset02-p05.log
-          grep -q 'PRESET02_P05_CANDIDATE=PASS visual_review=pending' preset02-p05.log
+          grep -q 'PRESET02_CANONICAL_COMPLETION=PASS frames=44/44' preset02-p05.log
+          grep -q 'PRESET02_P05=PASS' preset02-p05.log
       - name: Build Hit3 KO6 review sheet
         shell: bash
         run: |
@@ -66,9 +69,10 @@ jobs:
             preset02-p05.log
             artifacts/PRESET02_P05_HIT_KO_REVIEW.jpg
             production/first_playable/training_rival/first_playable_lot_01/p05-manifest.json
+            production/first_playable/training_rival/source/PRESET02_P05_REVIEW.json
           if-no-files-found: ignore
           retention-days: 30
       - name: Summary
         run: |
-          echo 'PRESET-02 P05 — Hit3 + KO6 review — Tehkné Solutions' >> "$GITHUB_STEP_SUMMARY"
-          echo 'Candidate reaches 44/44 but runtime remains blocked until visual evidence is frozen.' >> "$GITHUB_STEP_SUMMARY"
+          echo 'PRESET-02 P05 — frozen 44/44 completion review — Tehkné Solutions' >> "$GITHUB_STEP_SUMMARY"
+          echo 'Assets complete; game-side import/runtime bench remains the next gate.' >> "$GITHUB_STEP_SUMMARY"
