@@ -1,0 +1,168 @@
+{
+  "schema": "tehkne/taijifu-training-rival-p05/v1",
+  "signature": "Tehkné Solutions",
+  "character_id": "training_rival",
+  "pack": "P05",
+  "version": "1.0.0-hit-ko-rigid-fall-candidate",
+  "source": {
+    "pixel_sha256": "67abba855b18ea6cc5ef62c4e382041d5ca69eb9902d9b3c6ead9329a163531e",
+    "alpha_bounds": [
+      77,
+      48,
+      927,
+      971
+    ]
+  },
+  "contract": {
+    "native_facing": "left",
+    "weapon": "single_wooden_training_saber",
+    "whole_sprite_rigid_fall": true,
+    "safe_canvas_margin_px": 3,
+    "minimum_scale": 0.9,
+    "hit_beats": [
+      "impact",
+      "recoil",
+      "stagger"
+    ],
+    "ko_beats": [
+      "stun",
+      "tip",
+      "collapse",
+      "near_ground",
+      "ground_impact",
+      "final"
+    ]
+  },
+  "frames": {
+    "hit": [
+      {
+        "index": 1,
+        "file": "hit/char_training_rival__hit__f001.png",
+        "sha256": "904a33545aa10e0b93b253e8bb22b899d3b8f7bd6467bbb9d3a8091de043f8ea",
+        "alpha_bounds": [
+          108,
+          41,
+          901,
+          971
+        ],
+        "scale": 0.982049,
+        "angle_deg": -5
+      },
+      {
+        "index": 2,
+        "file": "hit/char_training_rival__hit__f002.png",
+        "sha256": "81c60adee7ba1ef7f1b4a0213198a53baf778d97758160934109e87e8a9b2764",
+        "alpha_bounds": [
+          71,
+          41,
+          969,
+          971
+        ],
+        "scale": 0.983087,
+        "angle_deg": 7
+      },
+      {
+        "index": 3,
+        "file": "hit/char_training_rival__hit__f003.png",
+        "sha256": "86239ef1b696b5efc78b812af804f38649e93399a02620a30f871db327ed9432",
+        "alpha_bounds": [
+          79,
+          41,
+          954,
+          971
+        ],
+        "scale": 0.995717,
+        "angle_deg": 3
+      }
+    ],
+    "ko": [
+      {
+        "index": 1,
+        "file": "ko/char_training_rival__ko__f001.png",
+        "sha256": "36f512b16179a3970b10975d5ac777fd4d6f9aafd77a059bac94618865c703f5",
+        "alpha_bounds": [
+          114,
+          41,
+          901,
+          971
+        ],
+        "scale": 0.976891,
+        "angle_deg": -6
+      },
+      {
+        "index": 2,
+        "file": "ko/char_training_rival__ko__f002.png",
+        "sha256": "b70533e9ec34e391f5f18c69bc1283a4ca5fddc8eb538860141f30dc3d94340e",
+        "alpha_bounds": [
+          124,
+          41,
+          881,
+          970
+        ],
+        "scale": 0.930931,
+        "angle_deg": -18
+      },
+      {
+        "index": 3,
+        "file": "ko/char_training_rival__ko__f003.png",
+        "sha256": "75858c70ae94aa382738a8ef7b46ca93ad6b1057909f1244328c5be70a1dd411",
+        "alpha_bounds": [
+          106,
+          41,
+          898,
+          970
+        ],
+        "scale": 0.909091,
+        "angle_deg": -32
+      },
+      {
+        "index": 4,
+        "file": "ko/char_training_rival__ko__f004.png",
+        "sha256": "5ca2baa5ddff73db4d80173fa6b0dff7139fe674f3983d1efd31713814ac16fb",
+        "alpha_bounds": [
+          83,
+          41,
+          932,
+          970
+        ],
+        "scale": 0.919881,
+        "angle_deg": -48
+      },
+      {
+        "index": 5,
+        "file": "ko/char_training_rival__ko__f005.png",
+        "sha256": "0d4d2f1b671e4698030cfa850505c959e668fafb78039cfb03d5be1ef9d296f3",
+        "alpha_bounds": [
+          64,
+          42,
+          961,
+          969
+        ],
+        "scale": 0.93,
+        "angle_deg": -68
+      },
+      {
+        "index": 6,
+        "file": "ko/char_training_rival__ko__f006.png",
+        "sha256": "5d1b8af500764acc6d238356668fd982220aa72675e79861fde741b226d27402",
+        "alpha_bounds": [
+          47,
+          104,
+          977,
+          971
+        ],
+        "scale": 0.998926,
+        "angle_deg": -88
+      }
+    ]
+  },
+  "gates": {
+    "source_pixel_identity": "pass",
+    "single_weapon_continuity": "pass",
+    "frame_count_9": "pass",
+    "unique_hash_floor": "pass",
+    "safe_canvas_margin": "pass",
+    "scale_floor": "pass",
+    "visual_review": "pending"
+  }
+}
