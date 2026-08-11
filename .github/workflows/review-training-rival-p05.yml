@@ -1,0 +1,74 @@
+name: PRESET-02 Training Rival P05 Review
+
+on:
+  pull_request:
+    paths:
+      - 'production/first_playable/training_rival/first_playable_lot_01/animations/hit/**'
+      - 'production/first_playable/training_rival/first_playable_lot_01/animations/ko/**'
+      - 'production/first_playable/training_rival/first_playable_lot_01/p05-manifest.json'
+      - 'tools/materialize_training_rival_p05_hit_ko.py'
+      - 'tools/validate_training_rival_p05.py'
+      - '.github/workflows/review-training-rival-p05.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  p05-review:
+    runs-on: ubuntu-22.04
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          lfs: true
+          fetch-depth: 0
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: python -m pip install --disable-pip-version-check Pillow==11.3.0
+      - run: git lfs pull
+      - name: Validate P05 candidate and complete 44-frame matrix
+        shell: bash
+        run: |
+          set -o pipefail
+          python tools/validate_training_rival_p05.py 2>&1 | tee preset02-p05.log
+          grep -q 'PRESET02_P05_FRAME_COUNT=9/9' preset02-p05.log
+          grep -q 'PRESET02_P05_RIGID_FALL=PASS' preset02-p05.log
+          grep -q 'PRESET02_P05_DISPOSABLE_WRITER=ABSENT' preset02-p05.log
+          grep -q 'PRESET02_P04_REGRESSION=PASS frames=8/8' preset02-p05.log
+          grep -q 'PRESET02_RIVAL_GLOBAL_PROGRESS=44/44' preset02-p05.log
+          grep -q 'PRESET02_P05_CANDIDATE=PASS visual_review=pending' preset02-p05.log
+      - name: Build Hit3 KO6 review sheet
+        shell: bash
+        run: |
+          python - <<'PY'
+          from PIL import Image,ImageDraw
+          from pathlib import Path
+          root=Path('production/first_playable/training_rival/first_playable_lot_01/animations')
+          files=[root/'hit'/f'char_training_rival__hit__f{i:03d}.png' for i in range(1,4)]
+          files += [root/'ko'/f'char_training_rival__ko__f{i:03d}.png' for i in range(1,7)]
+          thumb=(260,260); margin=18; cols=5; rows=2
+          sheet=Image.new('RGBA',(cols*(thumb[0]+margin)+margin,rows*(thumb[1]+50)+margin),(26,26,26,255)); draw=ImageDraw.Draw(sheet)
+          for idx,path in enumerate(files):
+              im=Image.open(path).convert('RGBA'); im.thumbnail(thumb,Image.Resampling.LANCZOS)
+              cx=margin+(idx%cols)*(thumb[0]+margin); cy=margin+(idx//cols)*(thumb[1]+50)
+              x=cx+(thumb[0]-im.width)//2; y=cy+(thumb[1]-im.height)//2
+              sheet.alpha_composite(im,(x,y)); draw.text((cx,cy+thumb[1]+6),path.stem.replace('char_training_rival__',''),fill='white')
+          Path('artifacts').mkdir(exist_ok=True)
+          sheet.convert('RGB').save('artifacts/PRESET02_P05_HIT_KO_REVIEW.jpg',quality=94)
+          PY
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: PRESET02-P05-HIT-KO-REVIEW
+          path: |
+            preset02-p05.log
+            artifacts/PRESET02_P05_HIT_KO_REVIEW.jpg
+            production/first_playable/training_rival/first_playable_lot_01/p05-manifest.json
+          if-no-files-found: ignore
+          retention-days: 30
+      - name: Summary
+        run: |
+          echo 'PRESET-02 P05 — Hit3 + KO6 review — Tehkné Solutions' >> "$GITHUB_STEP_SUMMARY"
+          echo 'Candidate reaches 44/44 but runtime remains blocked until visual evidence is frozen.' >> "$GITHUB_STEP_SUMMARY"
