@@ -1,0 +1,28 @@
+{
+  "schema": "tehkne/taijifu-training-rival-p05-review/v1",
+  "signature": "Tehkné Solutions",
+  "character_id": "training_rival",
+  "pack": "P05",
+  "status": "visually_approved_hit_ko_v1",
+  "manifest_version": "1.0.0-hit-ko-rigid-fall-candidate",
+  "source_pixel_sha256": "67abba855b18ea6cc5ef62c4e382041d5ca69eb9902d9b3c6ead9329a163531e",
+  "frames": {"hit": 3, "ko": 6, "total": 9},
+  "visual_review": {
+    "hit_readability": "pass",
+    "ko_progression": "pass",
+    "single_weapon_continuity": "pass",
+    "whole_body_integrity": "pass",
+    "safe_canvas_margin": "pass",
+    "identity_continuity": "pass",
+    "approved_for_completion": true
+  },
+  "evidence": {
+    "workflow_run_id": 31444693299,
+    "artifact_id": 9084067772,
+    "artifact_digest": "sha256:50d742cf09ae4968a2fa7fa40c79d1edb11b2d26b41a17c8cb97936bb6fd91b9",
+    "artifact_name": "PRESET02-P05-HIT-KO-REVIEW"
+  },
+  "runtime_ready": false,
+  "global_progress_after_pack": "44/44",
+  "next_action": "Validate frozen P05 evidence read-only, promote canonical Training Rival 44/44 contract, then run game-side C28 import and Godot runtime bench."
+}
