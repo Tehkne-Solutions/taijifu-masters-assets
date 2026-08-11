@@ -3,7 +3,7 @@
   "signature": "Tehkné Solutions",
   "character_id": "training_rival",
   "milestone": "Taijifu Masters v.2 playable",
-  "status": "canonical_complete_44_of_44_runtime_pending",
+  "status": "canonical_complete_44_of_44_runtime_active",
   "identity_lock": {
     "style": "comic_manga_2_5d_martial_fantasy",
     "role": "martial_training_opponent",
@@ -63,6 +63,23 @@
     "final_review_artifact_id": 9084067772,
     "final_review_artifact_digest": "sha256:50d742cf09ae4968a2fa7fa40c79d1edb11b2d26b41a17c8cb97936bb6fd91b9"
   },
+  "game_runtime_evidence": {
+    "game_repository": "Tehkne-Solutions/taijifu-masters",
+    "c28_merge_commit": "200e607ba6cab23a7a79cfd8daf825b4e839c808",
+    "validated_head_sha": "7bc6261ab0148a8bdea1a63ec985d05ab69a97bf",
+    "runtime_evidence_contract": "config/c28-training-rival-runtime-evidence.json",
+    "static_import_run_id": 31446407367,
+    "static_import_artifact_id": 9084682798,
+    "static_import_artifact_digest": "sha256:6db837ac786cbbd74cbbeb2b21de3144d2e15aff1261d00c8ca28df61843cff8",
+    "godot_runtime_run_id": 31446407240,
+    "godot_runtime_artifact_id": 9084703609,
+    "godot_runtime_artifact_digest": "sha256:325f7d5edcb41b7c8db18f830fe54eeebfffdd49c4a5382fcd75555b50da551b",
+    "presenter_using_real_assets": true,
+    "first_playable_release_gate": "pass",
+    "sprint_0": "pass",
+    "windows_build": "pass",
+    "web_chromium": "pass"
+  },
   "promotion": {
     "asset_matrix_complete": true,
     "current_proxy_may_be_removed": false,
@@ -70,9 +87,11 @@
     "requires_visual_review": true,
     "requires_godot_runtime_bench": true,
     "requires_game_c28_import_gate": true,
-    "game_c28_import_complete": false,
-    "godot_runtime_bench_complete": false,
-    "runtime_ready": false
+    "game_c28_import_complete": true,
+    "godot_runtime_bench_complete": true,
+    "runtime_ready": true,
+    "real_assets_active": true,
+    "procedural_fallback_preserved": true
   },
-  "next_action": "Run the game-side C28 import against this frozen 44/44 matrix, validate SpriteFrames and the active Godot runtime bench, then retire the Training Rival proxy only after both gates pass."
+  "next_action": "Keep the procedural fallback as resilience, treat PRESET-02 Training Rival as production runtime-active, and move the First Playable roadmap to the next gameplay/visual validation stage rather than regenerating the rival."
 }
