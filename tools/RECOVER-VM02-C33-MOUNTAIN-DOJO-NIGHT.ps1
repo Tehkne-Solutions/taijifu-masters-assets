@@ -24,6 +24,7 @@ $CanonicalGitPaths = @(
     "packs/stages/mountain_dojo_night/v1/foreground.png"
 )
 $EvidenceGitPath = "packs/stages/mountain_dojo_night/v1/C33_RECOVERY_EVIDENCE.json"
+$AllRecoveryGitPaths = @($CanonicalGitPaths + @($EvidenceGitPath))
 
 function Invoke-GitChecked {
     param(
@@ -47,6 +48,28 @@ function Invoke-GitChecked {
     if ($exit -ne 0) {
         throw "$Failure exit=$exit"
     }
+}
+
+function Invoke-GitCapture {
+    param(
+        [Parameter(Mandatory=$true)][string[]]$Args,
+        [Parameter(Mandatory=$true)][string]$Failure
+    )
+
+    $previous = $ErrorActionPreference
+    $ErrorActionPreference = "Continue"
+    try {
+        $output = (& git -C $AssetsRepo @Args 2>&1) -join "`n"
+        $exit = $LASTEXITCODE
+    }
+    finally {
+        $ErrorActionPreference = $previous
+    }
+
+    if ($exit -ne 0) {
+        throw "$Failure exit=$exit output=$output"
+    }
+    return $output
 }
 
 function Get-PngInfo {
@@ -117,6 +140,40 @@ function Test-CandidateSet {
     }
 }
 
+function Get-ExistingRecoveryTimestamp {
+    param(
+        [Parameter(Mandatory=$true)][string]$EvidencePath,
+        [Parameter(Mandatory=$true)]$Source
+    )
+
+    if (-not (Test-Path -LiteralPath $EvidencePath -PathType Leaf)) {
+        return $null
+    }
+
+    try {
+        $existing = Get-Content -LiteralPath $EvidencePath -Raw | ConvertFrom-Json
+        if ($existing.schema -ne "tehkne/taijifu-c33-source-recovery/v1") { return $null }
+        if ($existing.signature -ne "Tehkné Solutions") { return $null }
+        if ($existing.arena_id -ne "mountain_dojo_night") { return $null }
+        if ($existing.recovery_policy -ne "original_candidate_only_no_regeneration") { return $null }
+        if ($existing.source -ne $Source.label) { return $null }
+
+        foreach ($record in $Source.records) {
+            $existingRecord = @($existing.files | Where-Object { $_.file -eq $record.file }) | Select-Object -First 1
+            if ($null -eq $existingRecord) { return $null }
+            if ([string]$existingRecord.sha256 -ne [string]$record.sha256) { return $null }
+            if ([int]$existingRecord.bytes -ne [int]$record.bytes) { return $null }
+            if ([string]$existingRecord.dimensions -ne "$($record.width)x$($record.height)") { return $null }
+        }
+
+        if ([string]::IsNullOrWhiteSpace([string]$existing.recovered_at_utc)) { return $null }
+        return [string]$existing.recovered_at_utc
+    }
+    catch {
+        return $null
+    }
+}
+
 if (-not (Test-Path -LiteralPath (Join-Path $AssetsRepo ".git"))) {
     throw "C33_RECOVERY_ASSETS_REPO=BLOCKED path=$AssetsRepo"
 }
@@ -179,13 +236,17 @@ try {
         Write-Host "C33_RECOVERY_COPY=PASS file=$name sha256=$($destInfo.Sha256)"
     }
 
+    $evidencePath = Join-Path $CanonicalDir "C33_RECOVERY_EVIDENCE.json"
+    $existingRecoveredAt = Get-ExistingRecoveryTimestamp -EvidencePath $evidencePath -Source $source
+    $recoveredAt = if ($existingRecoveredAt) { $existingRecoveredAt } else { [DateTime]::UtcNow.ToString("o") }
+
     $evidence = [ordered]@{
         schema = "tehkne/taijifu-c33-source-recovery/v1"
         signature = "Tehkné Solutions"
         arena_id = "mountain_dojo_night"
         recovery_policy = "original_candidate_only_no_regeneration"
         source = $source.label
-        recovered_at_utc = [DateTime]::UtcNow.ToString("o")
+        recovered_at_utc = $recoveredAt
         visual_promotion = "pending_runtime_and_manual_review"
         files = @($source.records | ForEach-Object {
             [ordered]@{
@@ -196,24 +257,13 @@ try {
             }
         })
     }
-    $evidencePath = Join-Path $CanonicalDir "C33_RECOVERY_EVIDENCE.json"
     $evidence | ConvertTo-Json -Depth 6 | Set-Content -LiteralPath $evidencePath -Encoding UTF8
 
     # Repository policy: canonical binary art is versioned through Git LFS.
-    # Validate the attribute contract before staging so recovery can never
-    # silently bypass the binary policy with a forced normal-Git add.
     Invoke-GitChecked -Args @("lfs", "version") -Failure "C33_RECOVERY_GIT_LFS=BLOCKED"
     foreach ($gitPath in $CanonicalGitPaths) {
-        $previous = $ErrorActionPreference
-        $ErrorActionPreference = "Continue"
-        try {
-            $attrOutput = (& git -C $AssetsRepo check-attr filter -- $gitPath 2>&1) -join "`n"
-            $attrExit = $LASTEXITCODE
-        }
-        finally {
-            $ErrorActionPreference = $previous
-        }
-        if ($attrExit -ne 0 -or $attrOutput -notmatch 'filter:\s+lfs') {
+        $attrOutput = Invoke-GitCapture -Args @("check-attr", "filter", "--", $gitPath) -Failure "C33_RECOVERY_LFS_POLICY=BLOCKED file=$gitPath"
+        if ($attrOutput -notmatch 'filter:\s+lfs') {
             throw "C33_RECOVERY_LFS_POLICY=BLOCKED file=$gitPath attr=$attrOutput"
         }
         Write-Host "C33_RECOVERY_LFS_FILE=PASS file=$gitPath"
@@ -226,15 +276,64 @@ try {
         $CanonicalGitPaths[2],
         $EvidenceGitPath) -Failure "C33_RECOVERY_GIT_ADD=BLOCKED"
 
-    $staged = (& git -C $AssetsRepo diff --cached --name-only) -join "`n"
-    foreach ($required in @($CanonicalGitPaths + $EvidenceGitPath)) {
-        if ($staged -notmatch [regex]::Escape($required)) {
-            throw "C33_RECOVERY_STAGE=BLOCKED missing=$required"
+    # Verify the Git index directly. `git diff --cached --name-only` is not a
+    # reliable presence test for this recovery because clean/smudge filters can
+    # make the worktree/index presentation differ. The index entry is canonical.
+    foreach ($required in $AllRecoveryGitPaths) {
+        $indexEntry = Invoke-GitCapture -Args @("ls-files", "--stage", "--", $required) -Failure "C33_RECOVERY_INDEX=BLOCKED file=$required"
+        if ([string]::IsNullOrWhiteSpace($indexEntry)) {
+            throw "C33_RECOVERY_INDEX=BLOCKED file=$required reason=missing_index_entry"
         }
+        Write-Host "C33_RECOVERY_INDEX=PASS file=$required"
     }
+
+    # The staged representation of every PNG must be a Git LFS pointer whose
+    # oid is exactly the SHA-256 of the original recovered binary.
+    foreach ($gitPath in $CanonicalGitPaths) {
+        $fileName = [System.IO.Path]::GetFileName($gitPath)
+        $sourceRecord = $source.records | Where-Object { $_.file -eq $fileName } | Select-Object -First 1
+        if ($null -eq $sourceRecord) {
+            throw "C33_RECOVERY_LFS_INDEX=BLOCKED file=$gitPath reason=missing_source_record"
+        }
+
+        $pointer = Invoke-GitCapture -Args @("show", ":$gitPath") -Failure "C33_RECOVERY_LFS_INDEX=BLOCKED file=$gitPath"
+        $expectedOid = "oid sha256:$($sourceRecord.sha256)"
+        $expectedSize = "size $($sourceRecord.bytes)"
+        if ($pointer -notmatch '(?m)^version https://git-lfs\.github\.com/spec/v1$') {
+            throw "C33_RECOVERY_LFS_INDEX=BLOCKED file=$gitPath reason=not_lfs_pointer"
+        }
+        if ($pointer -notmatch "(?m)^$([regex]::Escape($expectedOid))$") {
+            throw "C33_RECOVERY_LFS_INDEX=BLOCKED file=$gitPath reason=oid_mismatch expected=$expectedOid"
+        }
+        if ($pointer -notmatch "(?m)^$([regex]::Escape($expectedSize))$") {
+            throw "C33_RECOVERY_LFS_INDEX=BLOCKED file=$gitPath reason=size_mismatch expected=$expectedSize"
+        }
+        Write-Host "C33_RECOVERY_LFS_INDEX=PASS file=$gitPath oid=sha256:$($sourceRecord.sha256)"
+    }
+
     Write-Host "C33_RECOVERY_STAGE=PASS files=3/3 evidence=1/1"
 
-    Invoke-GitChecked -Args @("commit", "-m", "C33 recover original Mountain Dojo Night art`n`nTehkné Solutions") -Failure "C33_RECOVERY_COMMIT=BLOCKED"
+    $previous = $ErrorActionPreference
+    $ErrorActionPreference = "Continue"
+    try {
+        & git -C $AssetsRepo diff --cached --quiet --exit-code
+        $diffExit = $LASTEXITCODE
+    }
+    finally {
+        $ErrorActionPreference = $previous
+    }
+
+    if ($diffExit -eq 1) {
+        Invoke-GitChecked -Args @("commit", "-m", "C33 recover original Mountain Dojo Night art`n`nTehkné Solutions") -Failure "C33_RECOVERY_COMMIT=BLOCKED"
+        Write-Host "C33_RECOVERY_COMMIT=PASS state=new_commit"
+    }
+    elseif ($diffExit -eq 0) {
+        Write-Host "C33_RECOVERY_COMMIT=PASS state=already_committed"
+    }
+    else {
+        throw "C33_RECOVERY_COMMIT=BLOCKED reason=staged_diff_check exit=$diffExit"
+    }
+
     Invoke-GitChecked -Args @("push", "origin", $TargetBranch) -Failure "C33_RECOVERY_PUSH=BLOCKED branch=$TargetBranch"
 
     $head = (& git -C $AssetsRepo rev-parse HEAD).Trim()
