@@ -18,6 +18,13 @@ $Expected = [ordered]@{
     "foreground.png" = 6715
 }
 
+$CanonicalGitPaths = @(
+    "packs/stages/mountain_dojo_night/v1/background.png",
+    "packs/stages/mountain_dojo_night/v1/midground.png",
+    "packs/stages/mountain_dojo_night/v1/foreground.png"
+)
+$EvidenceGitPath = "packs/stages/mountain_dojo_night/v1/C33_RECOVERY_EVIDENCE.json"
+
 function Invoke-GitChecked {
     param(
         [Parameter(Mandatory=$true)][string[]]$Args,
@@ -192,23 +199,40 @@ try {
     $evidencePath = Join-Path $CanonicalDir "C33_RECOVERY_EVIDENCE.json"
     $evidence | ConvertTo-Json -Depth 6 | Set-Content -LiteralPath $evidencePath -Encoding UTF8
 
-    Invoke-GitChecked -Args @("add",
-        "packs/stages/mountain_dojo_night/v1/background.png",
-        "packs/stages/mountain_dojo_night/v1/midground.png",
-        "packs/stages/mountain_dojo_night/v1/foreground.png",
-        "packs/stages/mountain_dojo_night/v1/C33_RECOVERY_EVIDENCE.json") -Failure "C33_RECOVERY_GIT_ADD=BLOCKED"
+    # Repository policy: canonical binary art is versioned through Git LFS.
+    # Validate the attribute contract before staging so recovery can never
+    # silently bypass the binary policy with a forced normal-Git add.
+    Invoke-GitChecked -Args @("lfs", "version") -Failure "C33_RECOVERY_GIT_LFS=BLOCKED"
+    foreach ($gitPath in $CanonicalGitPaths) {
+        $previous = $ErrorActionPreference
+        $ErrorActionPreference = "Continue"
+        try {
+            $attrOutput = (& git -C $AssetsRepo check-attr filter -- $gitPath 2>&1) -join "`n"
+            $attrExit = $LASTEXITCODE
+        }
+        finally {
+            $ErrorActionPreference = $previous
+        }
+        if ($attrExit -ne 0 -or $attrOutput -notmatch 'filter:\s+lfs') {
+            throw "C33_RECOVERY_LFS_POLICY=BLOCKED file=$gitPath attr=$attrOutput"
+        }
+        Write-Host "C33_RECOVERY_LFS_FILE=PASS file=$gitPath"
+    }
+    Write-Host "C33_RECOVERY_LFS_POLICY=PASS files=3/3"
+
+    Invoke-GitChecked -Args @("add", "--",
+        $CanonicalGitPaths[0],
+        $CanonicalGitPaths[1],
+        $CanonicalGitPaths[2],
+        $EvidenceGitPath) -Failure "C33_RECOVERY_GIT_ADD=BLOCKED"
 
     $staged = (& git -C $AssetsRepo diff --cached --name-only) -join "`n"
-    foreach ($required in @(
-        "packs/stages/mountain_dojo_night/v1/background.png",
-        "packs/stages/mountain_dojo_night/v1/midground.png",
-        "packs/stages/mountain_dojo_night/v1/foreground.png"
-    )) {
+    foreach ($required in @($CanonicalGitPaths + $EvidenceGitPath)) {
         if ($staged -notmatch [regex]::Escape($required)) {
             throw "C33_RECOVERY_STAGE=BLOCKED missing=$required"
         }
     }
-    Write-Host "C33_RECOVERY_STAGE=PASS files=3/3"
+    Write-Host "C33_RECOVERY_STAGE=PASS files=3/3 evidence=1/1"
 
     Invoke-GitChecked -Args @("commit", "-m", "C33 recover original Mountain Dojo Night art`n`nTehkné Solutions") -Failure "C33_RECOVERY_COMMIT=BLOCKED"
     Invoke-GitChecked -Args @("push", "origin", $TargetBranch) -Failure "C33_RECOVERY_PUSH=BLOCKED branch=$TargetBranch"

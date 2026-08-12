@@ -1,0 +1,140 @@
+name: Validate C33 Mountain Dojo Night Recovery
+
+on:
+  pull_request:
+    paths:
+      - 'packs/stages/mountain_dojo_night/v1/**'
+      - 'tools/RECOVER-VM02-C33-MOUNTAIN-DOJO-NIGHT.ps1'
+      - '.gitattributes'
+      - '.gitignore'
+      - '.github/workflows/validate-c33-mountain-dojo-night-recovery.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  validate-c33-recovery:
+    runs-on: ubuntu-22.04
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          lfs: true
+
+      - name: Materialize Git LFS
+        run: |
+          set -euo pipefail
+          git lfs pull
+          git lfs ls-files
+
+      - name: Validate canonical recovery contract
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 - <<'PY'
+          import hashlib
+          import json
+          import struct
+          import subprocess
+          from pathlib import Path
+
+          root = Path('packs/stages/mountain_dojo_night/v1')
+          expected = {
+              'background.png': {
+                  'bytes': 11053,
+                  'sha256': '804d69f141b322bf0ba743ebca89e4566c5d7c5ffcddbadda574befd3f6d03af',
+              },
+              'midground.png': {
+                  'bytes': 9978,
+                  'sha256': '0f07c9c3324db55839c558a4448b37ce351dca7346c98f48160863f7dd1a351a',
+              },
+              'foreground.png': {
+                  'bytes': 6715,
+                  'sha256': '077de249b57b6fcc1a1bc53b165cb5b06b29fa129f40c00328934d50e1678a13',
+              },
+          }
+          required = [
+              'background.png',
+              'midground.png',
+              'foreground.png',
+              'collision.json',
+              'lighting.json',
+              'manifest.json',
+          ]
+
+          missing = [name for name in required if not (root / name).is_file()]
+          print(f'C33_REMOTE_FILE_COUNT={len(required) - len(missing)}/{len(required)}')
+          for name in missing:
+              print(f'C33_REMOTE_MISSING={name}')
+          if missing:
+              raise SystemExit('C33_REMOTE_RECOVERY=BLOCKED reason=incomplete_6_file_contract')
+
+          manifest = json.loads((root / 'manifest.json').read_text(encoding='utf-8'))
+          collision = json.loads((root / 'collision.json').read_text(encoding='utf-8'))
+          if manifest.get('signature') != 'Tehkné Solutions':
+              raise SystemExit('C33_REMOTE_MANIFEST=BLOCKED reason=signature')
+          if manifest.get('arena_id') != 'mountain_dojo_night':
+              raise SystemExit('C33_REMOTE_MANIFEST=BLOCKED reason=arena_id')
+          if int(manifest.get('runtime_contract', {}).get('ground_y', -1)) != 820:
+              raise SystemExit('C33_REMOTE_MANIFEST=BLOCKED reason=ground_y')
+          if int(collision.get('ground_y', -1)) != 820:
+              raise SystemExit('C33_REMOTE_COLLISION=BLOCKED reason=ground_y')
+          print('C33_REMOTE_MANIFEST=PASS')
+          print('C33_REMOTE_COLLISION=PASS')
+
+          png_signature = b'\x89PNG\r\n\x1a\n'
+          for name, contract in expected.items():
+              path = root / name
+              data = path.read_bytes()
+              if len(data) != contract['bytes']:
+                  raise SystemExit(
+                      f'C33_REMOTE_PNG=BLOCKED file={name} reason=bytes '
+                      f'expected={contract["bytes"]} actual={len(data)}'
+                  )
+              if data[:8] != png_signature:
+                  raise SystemExit(f'C33_REMOTE_PNG=BLOCKED file={name} reason=signature')
+              width, height = struct.unpack('>II', data[16:24])
+              if (width, height) != (1920, 1080):
+                  raise SystemExit(
+                      f'C33_REMOTE_PNG=BLOCKED file={name} reason=dimensions '
+                      f'actual={width}x{height}'
+                  )
+              digest = hashlib.sha256(data).hexdigest()
+              if digest != contract['sha256']:
+                  raise SystemExit(
+                      f'C33_REMOTE_PNG=BLOCKED file={name} reason=sha256 actual={digest}'
+                  )
+
+              attr = subprocess.check_output(
+                  ['git', 'check-attr', 'filter', '--', path.as_posix()],
+                  text=True,
+              ).strip()
+              if not attr.endswith('filter: lfs'):
+                  raise SystemExit(
+                      f'C33_REMOTE_LFS=BLOCKED file={name} attr={attr}'
+                  )
+
+              print(
+                  f'C33_REMOTE_PNG=PASS file={name} bytes={len(data)} '
+                  f'dimensions={width}x{height} sha256={digest}'
+              )
+              print(f'C33_REMOTE_LFS=PASS file={name}')
+
+          evidence = root / 'C33_RECOVERY_EVIDENCE.json'
+          if not evidence.is_file():
+              raise SystemExit('C33_REMOTE_EVIDENCE=BLOCKED reason=missing')
+          evidence_data = json.loads(evidence.read_text(encoding='utf-8-sig'))
+          if evidence_data.get('signature') != 'Tehkné Solutions':
+              raise SystemExit('C33_REMOTE_EVIDENCE=BLOCKED reason=signature')
+          if evidence_data.get('arena_id') != 'mountain_dojo_night':
+              raise SystemExit('C33_REMOTE_EVIDENCE=BLOCKED reason=arena_id')
+          print('C33_REMOTE_EVIDENCE=PASS')
+          print('C33_REMOTE_FILE_CONTRACT=PASS files=6/6')
+          print('C33_REMOTE_RECOVERY=PASS')
+          print('SIGNATURE=Tehkné Solutions')
+          PY
+
+      - name: Summary
+        if: always()
+        run: echo 'C33 Mountain Dojo Night recovery gate — Tehkné Solutions' >> "$GITHUB_STEP_SUMMARY"
