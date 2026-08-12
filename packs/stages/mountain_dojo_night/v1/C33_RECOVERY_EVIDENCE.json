@@ -1,0 +1,29 @@
+{
+  "schema": "tehkne/taijifu-c33-source-recovery/v1",
+  "signature": "Tehkné Solutions",
+  "arena_id": "mountain_dojo_night",
+  "recovery_policy": "original_candidate_only_no_regeneration",
+  "source": "original_c33_zip",
+  "recovered_at_utc": "2026-08-12T16:58:08.0395328Z",
+  "visual_promotion": "pending_runtime_and_manual_review",
+  "files": [
+    {
+      "file": "background.png",
+      "bytes": 11053,
+      "dimensions": "1920x1080",
+      "sha256": "804d69f141b322bf0ba743ebca89e4566c5d7c5ffcddbadda574befd3f6d03af"
+    },
+    {
+      "file": "midground.png",
+      "bytes": 9978,
+      "dimensions": "1920x1080",
+      "sha256": "0f07c9c3324db55839c558a4448b37ce351dca7346c98f48160863f7dd1a351a"
+    },
+    {
+      "file": "foreground.png",
+      "bytes": 6715,
+      "dimensions": "1920x1080",
+      "sha256": "077de249b57b6fcc1a1bc53b165cb5b06b29fa129f40c00328934d50e1678a13"
+    }
+  ]
+}
