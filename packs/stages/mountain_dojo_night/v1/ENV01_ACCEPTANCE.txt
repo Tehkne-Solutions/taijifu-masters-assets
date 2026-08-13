@@ -1,0 +1,14 @@
+ENV-01 Mountain Dojo Night acceptance
+
+- Source remains 6/6.
+- Runtime ground remains y=820.
+- Fighter safe zone remains [280,1640].
+- Background, midground and foreground preserve 2.5D depth roles.
+- Cool moonlight and warm practicals remain consistent with lighting.json.
+- Fighters remain readable at neutral, hit, posture break and elemental state.
+- No tech glow, neon sci-fi language, visible grid, procedural placeholder geometry or fullscreen bloom.
+- Manual visual review is mandatory.
+- Godot runtime capture at 1920x1080 is mandatory.
+- Promotion to art_final/canonical_ready is blocked until automated checks and explicit manual PASS both succeed.
+
+Tehkné Solutions
