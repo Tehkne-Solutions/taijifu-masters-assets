@@ -1,0 +1,34 @@
+{
+  "schema": "tehkne/taijifu-env01-final-art-contract/v1",
+  "signature": "Tehkné Solutions",
+  "arena_id": "mountain_dojo_night",
+  "stage": "ENV-01",
+  "purpose": "Promote Mountain Dojo Night from runtime-valid candidate to visually final first-playable environment without changing gameplay contracts.",
+  "viewport": "1920x1080",
+  "required_layers": ["background.png", "midground.png", "foreground.png"],
+  "ground_y": 820,
+  "safe_fighter_zone": [280, 1640],
+  "art_direction": {
+    "theme": "mountain dojo at night",
+    "style": "premium martial-fantasy 2.5D layered parallax",
+    "mood": ["calm", "disciplined", "cinematic", "mysterious", "combat-readable"],
+    "forbidden": ["tech glow", "neon sci-fi language", "visible gameplay grid", "procedural placeholder geometry", "fullscreen bloom"]
+  },
+  "lighting": {
+    "ambient": "cool moonlight",
+    "warm_practicals_required": true,
+    "fighter_minimum_contrast": 0.58,
+    "rim_light_required": true,
+    "avoid_face_blackout": true
+  },
+  "acceptance": {
+    "source_files_6_of_6": true,
+    "runtime_contract_unchanged": true,
+    "visual_review_required": true,
+    "godot_runtime_capture_required": true,
+    "capture_resolution": "1920x1080",
+    "required_capture_states": ["neutral_duo", "physical_hit", "critical_posture_break", "elemental_state"],
+    "promotion_rule": "Automated runtime checks and explicit manual visual PASS are both required before art_final promotion."
+  },
+  "scope_exclusions": ["gameplay tuning", "combat balance", "collision changes", "camera changes", "fighter art changes", "VFX redesign", "audio redesign"]
+}
