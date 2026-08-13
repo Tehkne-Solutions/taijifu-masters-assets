@@ -1,0 +1,95 @@
+name: ENV-01 Mountain Dojo Night Final Art
+
+on:
+  pull_request:
+    paths:
+      - 'packs/stages/mountain_dojo_night/v1/**'
+      - '.github/workflows/env01-mountain-dojo-final-art.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  validate-env01:
+    runs-on: ubuntu-22.04
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          lfs: true
+      - name: Materialize LFS
+        run: git lfs pull
+      - name: Validate ENV-01 phase contract
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 - <<'PY'
+          import json
+          import struct
+          from pathlib import Path
+
+          root = Path('packs/stages/mountain_dojo_night/v1')
+          manifest = json.loads((root / 'manifest.json').read_text(encoding='utf-8'))
+          contract = json.loads((root / 'ENV01_FINAL_ART_CONTRACT.json').read_text(encoding='utf-8'))
+
+          assert contract['signature'] == 'Tehkné Solutions'
+          assert contract['arena_id'] == 'mountain_dojo_night'
+          assert contract['stage'] == 'ENV-01'
+          assert contract['viewport'] == '1920x1080'
+          assert contract['ground_y'] == 820
+          assert contract['safe_fighter_zone'] == [280, 1640]
+
+          layers = ['background.png', 'midground.png', 'foreground.png']
+          for name in layers:
+              path = root / name
+              if not path.is_file():
+                  raise SystemExit(f'ENV01_LAYER=BLOCKED file={name} reason=missing')
+              data = path.read_bytes()
+              if data[:8] != b'\x89PNG\r\n\x1a\n':
+                  raise SystemExit(f'ENV01_LAYER=BLOCKED file={name} reason=png_signature')
+              width, height = struct.unpack('>II', data[16:24])
+              if (width, height) != (1920, 1080):
+                  raise SystemExit(f'ENV01_LAYER=BLOCKED file={name} reason=dimensions actual={width}x{height}')
+              print(f'ENV01_LAYER=PASS file={name} dimensions={width}x{height}')
+
+          status = manifest.get('status')
+          canonical_ready = manifest.get('promotion', {}).get('canonical_ready')
+          evidence_path = root / 'ENV01_FINAL_ART_EVIDENCE.json'
+
+          if status == 'art_pending':
+              if canonical_ready is not False:
+                  raise SystemExit('ENV01_PENDING=BLOCKED reason=canonical_ready_must_remain_false')
+              if evidence_path.exists():
+                  evidence = json.loads(evidence_path.read_text(encoding='utf-8-sig'))
+                  if evidence.get('manual_visual_review') == 'PASS':
+                      raise SystemExit('ENV01_PENDING=BLOCKED reason=pass_evidence_cannot_coexist_with_art_pending')
+              print('ENV01_PHASE=PASS state=art_pending promotion_blocked=true')
+          elif status == 'art_final':
+              if canonical_ready is not True:
+                  raise SystemExit('ENV01_FINAL=BLOCKED reason=canonical_ready_false')
+              if not evidence_path.is_file():
+                  raise SystemExit('ENV01_FINAL=BLOCKED reason=evidence_missing')
+              evidence = json.loads(evidence_path.read_text(encoding='utf-8-sig'))
+              if evidence.get('signature') != 'Tehkné Solutions':
+                  raise SystemExit('ENV01_FINAL=BLOCKED reason=evidence_signature')
+              if evidence.get('arena_id') != 'mountain_dojo_night':
+                  raise SystemExit('ENV01_FINAL=BLOCKED reason=evidence_arena_id')
+              if evidence.get('manual_visual_review') != 'PASS':
+                  raise SystemExit('ENV01_FINAL=BLOCKED reason=manual_review')
+              if evidence.get('godot_runtime_capture') != 'PASS':
+                  raise SystemExit('ENV01_FINAL=BLOCKED reason=runtime_capture')
+              states = set(evidence.get('reviewed_states', []))
+              required = {'neutral_duo', 'physical_hit', 'critical_posture_break', 'elemental_state'}
+              if not required.issubset(states):
+                  raise SystemExit('ENV01_FINAL=BLOCKED reason=review_states')
+              print('ENV01_PHASE=PASS state=art_final evidence=PASS')
+          else:
+              raise SystemExit(f'ENV01_PHASE=BLOCKED reason=unsupported_status status={status}')
+
+          print('ENV01_CONTRACT=PASS')
+          print('SIGNATURE=Tehkné Solutions')
+          PY
+      - name: Summary
+        if: always()
+        run: echo 'ENV-01 Mountain Dojo Night final-art gate — Tehkné Solutions' >> "$GITHUB_STEP_SUMMARY"
