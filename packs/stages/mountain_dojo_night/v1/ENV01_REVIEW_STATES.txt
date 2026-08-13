@@ -1,0 +1,16 @@
+Required visual review states at 1920x1080:
+
+1. neutral_duo
+2. physical_hit
+3. critical_posture_break
+4. elemental_state
+
+Review goals:
+- arena identity is immediate;
+- fighter silhouettes remain readable;
+- parallax depth is convincing;
+- practical lights do not overpower combat VFX;
+- no foreground obstruction in the safe fighter zone;
+- stage reads as premium Taijifu Masters environment, not placeholder art.
+
+Tehkné Solutions
