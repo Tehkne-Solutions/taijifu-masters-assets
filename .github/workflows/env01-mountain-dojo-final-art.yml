@@ -1,0 +1,46 @@
+name: ENV-01 Final Art Gate
+on:
+  pull_request:
+    paths:
+      - 'packs/stages/mountain_dojo_night/v1/**'
+      - '.github/workflows/env01-mountain-dojo-final-art.yml'
+permissions:
+  contents: read
+jobs:
+  env01:
+    runs-on: ubuntu-22.04
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          lfs: true
+      - run: git lfs pull
+      - name: Validate promotion state
+        run: |
+          python3 - <<'PY'
+          import json
+          from pathlib import Path
+          root=Path('packs/stages/mountain_dojo_night/v1')
+          m=json.loads((root/'manifest.json').read_text(encoding='utf-8'))
+          c=json.loads((root/'ENV01_FINAL_ART_CONTRACT.json').read_text(encoding='utf-8'))
+          assert c['signature']=='Tehkné Solutions'
+          assert c['stage']=='ENV-01'
+          assert all((root/n).is_file() for n in c['required_layers'])
+          s=m.get('status')
+          ready=m.get('promotion',{}).get('canonical_ready')
+          e=root/'ENV01_FINAL_ART_EVIDENCE.json'
+          if s=='art_pending':
+              assert ready is False
+              print('ENV01_PHASE=PASS state=art_pending')
+          elif s=='art_final':
+              assert ready is True and e.is_file()
+              d=json.loads(e.read_text(encoding='utf-8-sig'))
+              assert d.get('manual_visual_review')=='PASS'
+              assert d.get('godot_runtime_capture')=='PASS'
+              req={'neutral_duo','physical_hit','critical_posture_break','elemental_state'}
+              assert req.issubset(set(d.get('reviewed_states',[])))
+              print('ENV01_PHASE=PASS state=art_final')
+          else:
+              raise SystemExit('ENV01_PHASE=BLOCKED')
+          print('ENV01_CONTRACT=PASS')
+          print('SIGNATURE=Tehkné Solutions')
+          PY
