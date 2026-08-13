@@ -1,0 +1,4 @@
+ENV-01 final art candidate intake is open.
+Status: art_pending.
+Promotion remains blocked until three separate final layers, Godot captures, and manual visual PASS exist.
+Tehkné Solutions
