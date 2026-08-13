@@ -1,0 +1,71 @@
+{
+  "schema": "tehkne/taijifu-env01-layer-production/v1",
+  "signature": "Tehkné Solutions",
+  "arena_id": "mountain_dojo_night",
+  "stage": "ENV-01",
+  "viewport": "1920x1080",
+  "ground_y": 820,
+  "safe_fighter_zone": [280, 1640],
+  "layers": {
+    "background.png": {
+      "role": "distant_environment",
+      "parallax": 0.18,
+      "must_include": [
+        "mountain silhouettes",
+        "night sky and atmospheric depth",
+        "distant dojo complex identity",
+        "cool moonlight hierarchy"
+      ],
+      "must_avoid": [
+        "high-frequency detail behind fighter silhouettes",
+        "bright focal points competing with combat",
+        "sci-fi neon language"
+      ]
+    },
+    "midground.png": {
+      "role": "primary_stage_identity",
+      "parallax": 0.48,
+      "must_include": [
+        "recognizable dojo architecture",
+        "wood and stone material separation",
+        "warm lantern practicals",
+        "stairs, railings or structural depth cues",
+        "authored asymmetry and lived-in martial-school detail"
+      ],
+      "must_avoid": [
+        "flat wallpaper treatment",
+        "symmetry that reads as procedural",
+        "large high-contrast elements inside fighter safe zone"
+      ]
+    },
+    "foreground.png": {
+      "role": "depth_frame",
+      "parallax": 1.0,
+      "transparent": true,
+      "must_include": [
+        "sparse authored framing elements",
+        "subtle vegetation, roof edge, stone, rope or training-detail silhouettes",
+        "clear depth separation from fighters"
+      ],
+      "must_avoid": [
+        "opaque obstruction over fighter faces or torsos",
+        "continuous bottom bar",
+        "UI-like framing",
+        "dense visual noise across the combat lane"
+      ]
+    }
+  },
+  "composition": {
+    "primary_read": "fighters first, dojo second, mountains third",
+    "fighter_contrast_floor": 0.58,
+    "cool_warm_balance": "cool moon environment with restrained warm practical pools",
+    "camera_readability": "must remain readable through neutral, hit, posture break and elemental VFX states"
+  },
+  "promotion": {
+    "art_generation_is_not_approval": true,
+    "runtime_capture_required": true,
+    "manual_visual_pass_required": true,
+    "manifest_status_before_pass": "art_pending",
+    "manifest_status_after_pass": "art_final"
+  }
+}
