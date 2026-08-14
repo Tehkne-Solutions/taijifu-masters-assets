@@ -1,0 +1,56 @@
+{
+  "schema": "taijifu/global-pack-release-evidence/v1",
+  "signature": "Tehkné Solutions",
+  "pack_id": "pack_01_lian_wu_first_playable",
+  "version": "2.0.0",
+  "filename": "PACK_01_LIAN_WU_FIRST_PLAYABLE_FINAL_v2.0.0.zip",
+  "runtime_frames": 45,
+  "archive_files": 53,
+  "archive_bytes": 22832533,
+  "sha256": "f000de1d3a0ca452bcae88f628264a16fcb57ca5c31791dc46525e175a0cb34c",
+  "source": {
+    "repository": "Tehkne-Solutions/taijifu-masters",
+    "commit": "7cb383f438b005fe0024870e426f52f95c644950",
+    "stage": "C64",
+    "review_workflow_run_id": 31322947374,
+    "review_artifact_id": 9040703879,
+    "review_artifact_digest": "4ec167789bea576bb2374a0a6607018c8d7f4c32ed61e27d4ddb8ddfbd67188a"
+  },
+  "scope": {
+    "runtime": "first_playable_runtime",
+    "final_authored_animation_claimed": false,
+    "future_authored_animation_replacement_allowed": true
+  },
+  "deterministic_rebuild": true,
+  "builds": [
+    {
+      "workflow_run_id": 31800427112,
+      "artifact_id": 9219028172,
+      "artifact_digest": "sha256:52cd90be066b1510b96ee1feba5f118bd7aad9df07d130e5d8d62d65f5fe7ddf",
+      "head_sha": "6c4efd695bcfdf60395f95a072966883b8cbd54d"
+    },
+    {
+      "workflow_run_id": 31800561378,
+      "artifact_id": 9219078563,
+      "artifact_digest": "sha256:e05e87027f5ff7fe51f8234a40b7c2986919d572fe62c2f1ed526810019a9b75",
+      "head_sha": "77c9a7207c0485dc0276a48189481b170a1dd935"
+    }
+  ],
+  "validation": {
+    "pinned_source_commit": "PASS",
+    "canonical_checksums_45_of_45": "PASS",
+    "visual_review": "PASS",
+    "binary_promotion_allowed": true,
+    "godot_import": "PASS",
+    "real_battle_presenter": "PASS",
+    "archive_inspection": "PASS",
+    "asset_vault_catalog": "PASS",
+    "pack_02_regression": "PASS",
+    "art_regenerated": false
+  },
+  "promotion": {
+    "release_candidate_built": true,
+    "checksum_frozen": true,
+    "github_release_published": false
+  }
+}
