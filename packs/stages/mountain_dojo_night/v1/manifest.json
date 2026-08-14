@@ -3,8 +3,8 @@
   "signature": "Tehkné Solutions",
   "arena_id": "mountain_dojo_night",
   "display_name": "Mountain Dojo Night",
-  "version": "1.0.0-candidate",
-  "status": "art_pending",
+  "version": "1.0.0",
+  "status": "art_final",
   "viewport": "1920x1080",
   "layers": [
     {"file": "background.png", "role": "background", "parallax": 0.18, "required": true},
@@ -26,10 +26,11 @@
     "forbidden": ["tech glow", "generic website panels", "visible grid", "procedural placeholder geometry"]
   },
   "promotion": {
-    "canonical_ready": false,
+    "canonical_ready": true,
     "required_image_count": 3,
     "visual_review_required": true,
     "godot_runtime_capture_required": true,
+    "evidence": "ENV01_FINAL_ART_EVIDENCE.json",
     "handoff_gate": "VM02-C30-V2-ARENA-INTAKE-BRIDGE"
   }
 }
