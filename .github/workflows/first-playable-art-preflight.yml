@@ -1,76 +1,23 @@
-name: First Playable Art Preflight
+name: First Playable Art Preflight (Historical 44/44)
 
 on:
-  pull_request:
-    paths:
-      - "production/first_playable/lian_wu/first_playable_lot_01/**"
-      - "production/first_playable/training_rival/first_playable_lot_01/**"
-      - ".gitattributes"
-      - ".gitignore"
-      - "tools/validate_first_playable_art_production.py"
-      - ".github/workflows/first-playable-art-preflight.yml"
   workflow_dispatch:
-    inputs:
-      allow_incomplete:
-        description: "Executar em modo informativo enquanto a produção está incompleta"
-        required: false
-        default: true
-        type: boolean
+
+permissions:
+  contents: read
 
 jobs:
-  validate-art-production:
+  historical-contract-notice:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-        with:
-          lfs: true
-          fetch-depth: 0
-      - uses: actions/setup-python@v5
-        with:
-          python-version: "3.12"
-      - name: Materializar Git LFS
-        run: git lfs pull
-      - name: Resolve validation mode
-        id: mode
+      - name: Historical contract notice
         shell: bash
         run: |
-          count_png() {
-            local root="$1"
-            if [[ -d "$root" ]]; then
-              find "$root" -type f -name '*.png' | wc -l | tr -d ' '
-            else
-              echo 0
-            fi
-          }
-          STRICT=true
-          if [[ "${{ github.event_name }}" == "pull_request" ]]; then
-            LIAN_COUNT=$(count_png production/first_playable/lian_wu/first_playable_lot_01/animations)
-            RIVAL_COUNT=$(count_png production/first_playable/training_rival/first_playable_lot_01/animations)
-            if [[ "$LIAN_COUNT" != "44" || "$RIVAL_COUNT" != "44" ]]; then
-              STRICT=false
-            fi
-            echo "FIRST_PLAYABLE_COUNTS=lian:$LIAN_COUNT rival:$RIVAL_COUNT"
-          elif [[ "${{ github.event_name }}" == "workflow_dispatch" && "${{ inputs.allow_incomplete }}" == "true" ]]; then
-            STRICT=false
-          fi
-          echo "strict=$STRICT" >> "$GITHUB_OUTPUT"
-          echo "FIRST_PLAYABLE_ART_STRICT=$STRICT"
-      - name: Validate production
-        shell: bash
-        run: |
-          EXTRA=""
-          if [[ "${{ steps.mode.outputs.strict }}" != "true" ]]; then
-            EXTRA="--allow-incomplete"
-          fi
-          python tools/validate_first_playable_art_production.py $EXTRA
-      - name: Upload report
-        if: always()
-        uses: actions/upload-artifact@v4
-        with:
-          name: first-playable-art-preflight
-          path: artifacts/first-playable-art-preflight.json
-          retention-days: 14
+          echo 'FIRST_PLAYABLE_HISTORICAL_44_44=RETIRED'
+          echo 'CANONICAL_GATE=.github/workflows/first-playable-art-preflight-v3.yml'
+          echo 'CANONICAL_BASELINE=89/89'
+          echo 'SIGNATURE=Tehkné Solutions'
 
-# Partial packs are allowed to be incomplete only by missing-frame findings.
-# All PNG/name/dimension/alpha/false-approval errors remain blocking; 88/88 restores strict mode.
+# Historical 44/44 gate retained only for audit provenance.
+# It must not validate or block the released 45+44 First Playable baseline.
 # Tehkné Solutions
