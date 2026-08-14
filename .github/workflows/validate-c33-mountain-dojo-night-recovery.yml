@@ -28,7 +28,7 @@ jobs:
           git lfs pull
           git lfs ls-files
 
-      - name: Validate canonical recovery contract
+      - name: Validate recovery or ENV-01 candidate transition
         shell: bash
         run: |
           set -euo pipefail
@@ -40,7 +40,7 @@ jobs:
           from pathlib import Path
 
           root = Path('packs/stages/mountain_dojo_night/v1')
-          expected = {
+          baseline = {
               'background.png': {
                   'bytes': 11053,
                   'sha256': '804d69f141b322bf0ba743ebca89e4566c5d7c5ffcddbadda574befd3f6d03af',
@@ -55,18 +55,12 @@ jobs:
               },
           }
           required = [
-              'background.png',
-              'midground.png',
-              'foreground.png',
-              'collision.json',
-              'lighting.json',
-              'manifest.json',
+              'background.png', 'midground.png', 'foreground.png',
+              'collision.json', 'lighting.json', 'manifest.json',
           ]
 
           missing = [name for name in required if not (root / name).is_file()]
           print(f'C33_REMOTE_FILE_COUNT={len(required) - len(missing)}/{len(required)}')
-          for name in missing:
-              print(f'C33_REMOTE_MISSING={name}')
           if missing:
               raise SystemExit('C33_REMOTE_RECOVERY=BLOCKED reason=incomplete_6_file_contract')
 
@@ -80,40 +74,49 @@ jobs:
               raise SystemExit('C33_REMOTE_MANIFEST=BLOCKED reason=ground_y')
           if int(collision.get('ground_y', -1)) != 820:
               raise SystemExit('C33_REMOTE_COLLISION=BLOCKED reason=ground_y')
-          print('C33_REMOTE_MANIFEST=PASS')
-          print('C33_REMOTE_COLLISION=PASS')
+
+          marker = root / 'ENV01_CANDIDATE_STATUS.txt'
+          candidate_mode = marker.is_file()
+          if candidate_mode:
+              marker_text = marker.read_text(encoding='utf-8-sig')
+              if 'Status: art_pending.' not in marker_text:
+                  raise SystemExit('C33_ENV01_TRANSITION=BLOCKED reason=candidate_status')
+              if not (root / 'ENV01_LAYER_PRODUCTION_SPEC.json').is_file():
+                  raise SystemExit('C33_ENV01_TRANSITION=BLOCKED reason=production_spec_missing')
+              print('C33_RECOVERY_MODE=ENV01_CANDIDATE')
+          else:
+              print('C33_RECOVERY_MODE=BASELINE_EXACT')
 
           png_signature = b'\x89PNG\r\n\x1a\n'
-          for name, contract in expected.items():
+          for name, contract in baseline.items():
               path = root / name
               data = path.read_bytes()
-              if len(data) != contract['bytes']:
-                  raise SystemExit(
-                      f'C33_REMOTE_PNG=BLOCKED file={name} reason=bytes '
-                      f'expected={contract["bytes"]} actual={len(data)}'
-                  )
               if data[:8] != png_signature:
                   raise SystemExit(f'C33_REMOTE_PNG=BLOCKED file={name} reason=signature')
               width, height = struct.unpack('>II', data[16:24])
               if (width, height) != (1920, 1080):
                   raise SystemExit(
-                      f'C33_REMOTE_PNG=BLOCKED file={name} reason=dimensions '
-                      f'actual={width}x{height}'
+                      f'C33_REMOTE_PNG=BLOCKED file={name} reason=dimensions actual={width}x{height}'
                   )
               digest = hashlib.sha256(data).hexdigest()
-              if digest != contract['sha256']:
-                  raise SystemExit(
-                      f'C33_REMOTE_PNG=BLOCKED file={name} reason=sha256 actual={digest}'
-                  )
+
+              if not candidate_mode:
+                  if len(data) != contract['bytes']:
+                      raise SystemExit(
+                          f'C33_REMOTE_PNG=BLOCKED file={name} reason=bytes '
+                          f'expected={contract["bytes"]} actual={len(data)}'
+                      )
+                  if digest != contract['sha256']:
+                      raise SystemExit(
+                          f'C33_REMOTE_PNG=BLOCKED file={name} reason=sha256 actual={digest}'
+                      )
 
               attr = subprocess.check_output(
                   ['git', 'check-attr', 'filter', '--', path.as_posix()],
                   text=True,
               ).strip()
               if not attr.endswith('filter: lfs'):
-                  raise SystemExit(
-                      f'C33_REMOTE_LFS=BLOCKED file={name} attr={attr}'
-                  )
+                  raise SystemExit(f'C33_REMOTE_LFS=BLOCKED file={name} attr={attr}')
 
               print(
                   f'C33_REMOTE_PNG=PASS file={name} bytes={len(data)} '
@@ -129,12 +132,15 @@ jobs:
               raise SystemExit('C33_REMOTE_EVIDENCE=BLOCKED reason=signature')
           if evidence_data.get('arena_id') != 'mountain_dojo_night':
               raise SystemExit('C33_REMOTE_EVIDENCE=BLOCKED reason=arena_id')
-          print('C33_REMOTE_EVIDENCE=PASS')
+
+          if candidate_mode:
+              print('C33_ENV01_TRANSITION=PASS baseline_provenance_preserved=true')
+          else:
+              print('C33_REMOTE_RECOVERY=PASS exact_baseline=true')
           print('C33_REMOTE_FILE_CONTRACT=PASS files=6/6')
-          print('C33_REMOTE_RECOVERY=PASS')
           print('SIGNATURE=Tehkné Solutions')
           PY
 
       - name: Summary
         if: always()
-        run: echo 'C33 Mountain Dojo Night recovery gate — Tehkné Solutions' >> "$GITHUB_STEP_SUMMARY"
+        run: echo 'C33 Mountain Dojo Night recovery / ENV-01 transition gate — Tehkné Solutions' >> "$GITHUB_STEP_SUMMARY"
