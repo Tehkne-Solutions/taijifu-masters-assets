@@ -1,0 +1,58 @@
+name: First Playable Art Preflight v3
+
+on:
+  pull_request:
+    paths:
+      - 'production/first_playable/lian_wu/first_playable_lot_01/**'
+      - 'production/first_playable/training_rival/first_playable_lot_01/**'
+      - 'tools/validate_first_playable_art_production_v3.py'
+      - '.github/workflows/first-playable-art-preflight-v3.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  strict-art-preflight-v3:
+    runs-on: ubuntu-22.04
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          lfs: false
+          fetch-depth: 0
+
+      - name: Materialize only canonical fighter LFS objects
+        shell: bash
+        run: |
+          set -euo pipefail
+          git lfs install --local
+          git lfs pull \
+            --include='production/first_playable/lian_wu/first_playable_lot_01/animations/**,production/first_playable/training_rival/first_playable_lot_01/animations/**' \
+            --exclude=''
+
+      - name: Validate strict canonical 89-frame baseline
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 tools/validate_first_playable_art_production_v3.py \
+            --report artifacts/first-playable-art-preflight-v3.json | tee first-playable-art-v3.log
+          grep -q 'FIRST_PLAYABLE_ART_PRODUCTION_READY=true' first-playable-art-v3.log
+          grep -q 'FIRST_PLAYABLE_ART_PROGRESS=89/89' first-playable-art-v3.log
+          grep -q 'FIRST_PLAYABLE_CHARACTER=lian_wu frames=45/45 animations=10/10 complete=true' first-playable-art-v3.log
+          grep -q 'FIRST_PLAYABLE_CHARACTER=training_rival frames=44/44 animations=10/10 complete=true' first-playable-art-v3.log
+          grep -q 'SIGNATURE=Tehkné Solutions' first-playable-art-v3.log
+
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: FIRST-PLAYABLE-ART-PREFLIGHT-V3
+          path: |
+            first-playable-art-v3.log
+            artifacts/first-playable-art-preflight-v3.json
+          if-no-files-found: ignore
+          retention-days: 30
+
+      - name: Summary
+        if: always()
+        run: echo 'First Playable strict canonical art preflight v3 — Tehkné Solutions' >> "$GITHUB_STEP_SUMMARY"
