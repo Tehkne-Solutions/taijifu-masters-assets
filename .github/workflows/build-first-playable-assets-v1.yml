@@ -1,0 +1,106 @@
+name: Build First Playable Assets v1
+
+on:
+  push:
+    branches:
+      - agent/first-playable-assets-v1-release
+    paths:
+      - 'tools/build_first_playable_assets_v1.py'
+      - '.github/workflows/build-first-playable-assets-v1.yml'
+      - 'releases/first-playable-v1.freeze.json'
+  pull_request:
+    paths:
+      - 'tools/build_first_playable_assets_v1.py'
+      - '.github/workflows/build-first-playable-assets-v1.yml'
+      - 'releases/first-playable-v1.freeze.json'
+      - 'production/first_playable/lian_wu/first_playable_lot_01/**'
+      - 'production/first_playable/training_rival/first_playable_lot_01/**'
+      - 'packs/stages/mountain_dojo_night/v1/**'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  build-snapshot-v1:
+    runs-on: ubuntu-22.04
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          lfs: false
+          fetch-depth: 0
+
+      - name: Materialize only First Playable LFS objects
+        shell: bash
+        run: |
+          set -euo pipefail
+          git lfs install --local
+          git lfs pull \
+            --include='production/first_playable/lian_wu/first_playable_lot_01/animations/**,production/first_playable/training_rival/first_playable_lot_01/animations/**,packs/stages/mountain_dojo_night/v1/*.png' \
+            --exclude=''
+
+      - name: Require strict canonical 89/89 fighters
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 tools/validate_first_playable_art_production_v3.py \
+            --report artifacts/first-playable-art-preflight-v3.json | tee first-playable-art-v3.log
+          grep -q 'FIRST_PLAYABLE_ART_PRODUCTION_READY=true' first-playable-art-v3.log
+          grep -q 'FIRST_PLAYABLE_ART_PROGRESS=89/89' first-playable-art-v3.log
+          grep -q 'SIGNATURE=Tehkné Solutions' first-playable-art-v3.log
+
+      - name: Build deterministic composed snapshot
+        shell: bash
+        run: |
+          set -euo pipefail
+          rm -rf artifacts/first-playable-assets-v1
+          python3 tools/build_first_playable_assets_v1.py \
+            --output-dir artifacts/first-playable-assets-v1 | tee first-playable-snapshot-v1.log
+          grep -q 'FIRST_PLAYABLE_SNAPSHOT_COMPONENTS=PASS lian=45 rival=44 stage_layers=3' first-playable-snapshot-v1.log
+          grep -q 'FIRST_PLAYABLE_SNAPSHOT_ART=PASS frames=89 animations=20' first-playable-snapshot-v1.log
+          grep -q 'FIRST_PLAYABLE_SNAPSHOT_STAGE=PASS arena=mountain_dojo_night art_final=true canonical_ready=true' first-playable-snapshot-v1.log
+          grep -q 'FIRST_PLAYABLE_SNAPSHOT=PASS' first-playable-snapshot-v1.log
+          grep -q 'SIGNATURE=Tehkné Solutions' first-playable-snapshot-v1.log
+
+      - name: Verify frozen checksum when registered
+        shell: bash
+        run: |
+          set -euo pipefail
+          freeze='releases/first-playable-v1.freeze.json'
+          if [[ ! -f "$freeze" ]]; then
+            echo 'FIRST_PLAYABLE_SNAPSHOT_FREEZE=PENDING'
+            exit 0
+          fi
+          python3 - <<'PY'
+          import hashlib, json
+          from pathlib import Path
+          freeze = json.loads(Path('releases/first-playable-v1.freeze.json').read_text(encoding='utf-8'))
+          archive = Path('artifacts/first-playable-assets-v1/TAIJIFU_FIRST_PLAYABLE_ASSETS_v1.0.0.zip')
+          actual = hashlib.sha256(archive.read_bytes()).hexdigest()
+          expected = freeze['sha256']
+          if actual != expected:
+              raise SystemExit(f'FIRST_PLAYABLE_SNAPSHOT_FREEZE=BLOCKED actual={actual} expected={expected}')
+          if freeze.get('signature') != 'Tehkné Solutions':
+              raise SystemExit('FIRST_PLAYABLE_SNAPSHOT_FREEZE=BLOCKED reason=signature')
+          print(f'FIRST_PLAYABLE_SNAPSHOT_FREEZE=PASS sha256={actual}')
+          print('SIGNATURE=Tehkné Solutions')
+          PY
+
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: FIRST-PLAYABLE-ASSETS-V1-CANDIDATE
+          path: |
+            artifacts/first-playable-assets-v1/TAIJIFU_FIRST_PLAYABLE_ASSETS_v1.0.0.zip
+            artifacts/first-playable-assets-v1/TAIJIFU_FIRST_PLAYABLE_ASSETS_v1.0.0.zip.sha256
+            artifacts/first-playable-assets-v1/FIRST_PLAYABLE_RELEASE_MANIFEST.json
+            artifacts/first-playable-art-preflight-v3.json
+            first-playable-art-v3.log
+            first-playable-snapshot-v1.log
+          if-no-files-found: ignore
+          retention-days: 30
+
+      - name: Summary
+        if: always()
+        run: echo 'Taijifu First Playable assets v1 candidate — Tehkné Solutions' >> "$GITHUB_STEP_SUMMARY"
