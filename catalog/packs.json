@@ -1,11 +1,23 @@
 {
-  "schema": "taijifu/asset-vault-catalog/v1",
+  "schema": "taijifu/asset-vault-catalog/v2",
   "project": "taijifu-masters",
-  "updated_at": "2026-07-30T19:46:00Z",
+  "updated_at": "2026-08-14T12:10:00Z",
+  "pack_taxonomy": {
+    "rule": "PACK NN identifies a global product deliverable. P01/P02/etc inside a character are technical subpacks and never replace the global PACK sequence.",
+    "delivery_requires": [
+      "real_assets",
+      "canonical_naming",
+      "manifest",
+      "checksums",
+      "visual_review",
+      "runtime_or_import_validation",
+      "zip_or_github_release"
+    ]
+  },
   "packs": [
     {
       "pack_id": "pack_01_lian_wu_base",
-      "display_name": "Pack 01 — Lian Wu Base",
+      "display_name": "PACK 01 — Lian Wu Base",
       "version": "1.0.0",
       "release_tag": "assets-pack-01-v1.0.0",
       "filename": "PACK_01_LIAN_WU_BASE_FINAL_v1.0.0.zip",
@@ -39,7 +51,68 @@
           "report": "reviews/pack_01_lian_wu_base/visual-review-v1.0.0.md"
         },
         "workflow_run_id": 30573852545
-      }
+      },
+      "next_action": "Finish and publish PACK_01_LIAN_WU_BASE_FINAL_v1.0.1.zip; v1.0.0 remains preserved but is not approved for game import."
+    },
+    {
+      "pack_id": "pack_02_training_rival_first_playable",
+      "display_name": "PACK 02 — Training Rival First Playable",
+      "version": "1.0.0",
+      "release_tag": "assets-pack-02-v1.0.0",
+      "filename": "PACK_02_TRAINING_RIVAL_FIRST_PLAYABLE_FINAL_v1.0.0.zip",
+      "status": "canonical_44_of_44_runtime_active_pending_global_release",
+      "engine": "godot",
+      "character_id": "training_rival",
+      "source_root": "production/first_playable/training_rival/first_playable_lot_01",
+      "frame_count": 44,
+      "technical_subpacks": {
+        "P01": "idle6+run8=14",
+        "P02": "jump_start3+airborne2+fall2=7",
+        "P03": "attack_light6=6",
+        "P04": "guard3+dodge5=8",
+        "P05": "hit3+ko6=9"
+      },
+      "validation": {
+        "canonical_complete": true,
+        "runtime_active": true,
+        "real_assets_active": true,
+        "visual_review_complete": true,
+        "game_c28_import_complete": true,
+        "godot_runtime_bench_complete": true,
+        "source_pixel_sha256": "67abba855b18ea6cc5ef62c4e382041d5ca69eb9902d9b3c6ead9329a163531e",
+        "game_merge_commit": "200e607ba6cab23a7a79cfd8daf825b4e839c808"
+      },
+      "release": {
+        "zip_built": false,
+        "checksum_recorded": false,
+        "github_release_published": false
+      },
+      "next_action": "Build the global PACK 02 ZIP directly from the frozen 44/44 canonical source, record checksum, validate contents, then publish the GitHub Release without regenerating any art."
+    },
+    {
+      "pack_id": "pack_03_mountain_dojo_night",
+      "display_name": "PACK 03 — Mountain Dojo Night",
+      "version": "1.0.0",
+      "release_tag": "assets-pack-03-v1.0.0",
+      "filename": "PACK_03_MOUNTAIN_DOJO_NIGHT_FINAL_v1.0.0.zip",
+      "status": "final_art_pending",
+      "engine": "godot",
+      "arena_id": "mountain_dojo_night",
+      "source_root": "packs/stages/mountain_dojo_night/v1",
+      "required_runtime_layers": [
+        "background.png",
+        "midground.png",
+        "foreground.png"
+      ],
+      "validation": {
+        "baseline_source_6_of_6": true,
+        "candidate_mode": true,
+        "final_art": false,
+        "manual_visual_review": false,
+        "canonical_ready": false
+      },
+      "next_action": "Produce the three independent final layers, run Godot capture and manual visual review, then build and publish PACK 03."
     }
-  ]
+  ],
+  "signature": "Tehkné Solutions"
 }
