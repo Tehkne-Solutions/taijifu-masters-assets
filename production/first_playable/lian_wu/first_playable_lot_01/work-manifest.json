@@ -1,29 +1,38 @@
 {
   "lot_id": "first_playable_lot_01",
-  "pack_id": "pack_01_lian_wu",
-  "version": "1.0.0",
-  "status": "art_required",
+  "pack_id": "pack_01_lian_wu_first_playable",
+  "version": "2.0.0",
+  "status": "approved_first_playable_runtime",
   "character_id": "lian_wu",
   "native_facing": "right",
   "pivot": "bottom_center",
-  "canvas": {"min": 128, "max": 1024},
-  "required_frames": 44,
+  "canvas": {
+    "min": 128,
+    "max": 1024
+  },
+  "required_frames": 45,
   "animations": {
     "idle": 6,
     "run": 8,
-    "jump_start": 3,
-    "airborne": 2,
-    "fall": 2,
+    "jump_start": 4,
+    "airborne": 3,
+    "fall": 3,
     "attack_light": 6,
-    "guard": 3,
+    "guard": 1,
     "dodge": 5,
-    "hit": 3,
-    "ko": 6
+    "hit": 4,
+    "ko": 5
   },
   "approval": {
-    "art": false,
-    "runtime": false,
-    "godot_review": false
+    "art": true,
+    "runtime": true,
+    "godot_review": true
   },
+  "release_tag": "assets-pack-01-v2.0.0",
+  "release_sha256": "f000de1d3a0ca452bcae88f628264a16fcb57ca5c31791dc46525e175a0cb34c",
+  "source_commit": "7cb383f438b005fe0024870e426f52f95c644950",
+  "runtime_scope": "first_playable_runtime",
+  "visual_method": "whole_sprite_continuous_affine_v1",
+  "final_authored_animation_claimed": false,
   "signature": "Tehkné Solutions"
 }

@@ -1,0 +1,182 @@
+name: Materialize First Playable 89 v1
+
+on:
+  push:
+    branches:
+      - agent/first-playable-89-final-snapshot
+    paths:
+      - '.github/workflows/materialize-first-playable-89-v1.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  materialize-canonical-89:
+    runs-on: ubuntu-22.04
+    timeout-minutes: 20
+    env:
+      LIAN_RELEASE_TAG: assets-pack-01-v2.0.0
+      LIAN_RELEASE_ASSET: PACK_01_LIAN_WU_FIRST_PLAYABLE_FINAL_v2.0.0.zip
+      LIAN_RELEASE_SHA256: f000de1d3a0ca452bcae88f628264a16fcb57ca5c31791dc46525e175a0cb34c
+      LIAN_SOURCE_COMMIT: 7cb383f438b005fe0024870e426f52f95c644950
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          lfs: false
+          fetch-depth: 0
+
+      - name: Materialize only existing Training Rival LFS objects
+        shell: bash
+        run: |
+          set -euo pipefail
+          git lfs install --local
+          git lfs pull \
+            --include='production/first_playable/training_rival/first_playable_lot_01/animations/**' \
+            --exclude=''
+          test "$(find production/first_playable/training_rival/first_playable_lot_01/animations -type f -name '*.png' | wc -l | tr -d ' ')" = '44'
+          echo 'FIRST_PLAYABLE_RIVAL_SOURCE=PASS frames=44'
+
+      - name: Download official released Lian Wu v2 archive
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          rm -rf artifacts/first-playable-89-source
+          mkdir -p artifacts/first-playable-89-source
+          gh release download "$LIAN_RELEASE_TAG" \
+            --repo Tehkne-Solutions/taijifu-masters-assets \
+            --pattern "$LIAN_RELEASE_ASSET" \
+            --dir artifacts/first-playable-89-source
+          test -f "artifacts/first-playable-89-source/$LIAN_RELEASE_ASSET"
+          actual=$(sha256sum "artifacts/first-playable-89-source/$LIAN_RELEASE_ASSET" | awk '{print $1}')
+          test "$actual" = "$LIAN_RELEASE_SHA256"
+          echo "FIRST_PLAYABLE_LIAN_RELEASE_SHA256=PASS sha256=$actual"
+
+      - name: Materialize released Lian frames at canonical path
+        shell: bash
+        run: |
+          set -euo pipefail
+          rm -rf artifacts/first-playable-89-source/extracted
+          mkdir -p artifacts/first-playable-89-source/extracted
+          unzip -q "artifacts/first-playable-89-source/$LIAN_RELEASE_ASSET" \
+            -d artifacts/first-playable-89-source/extracted
+
+          source='artifacts/first-playable-89-source/extracted/first_playable_lot_01/animations'
+          target='production/first_playable/lian_wu/first_playable_lot_01'
+          test -d "$source"
+          rm -rf "$target/animations"
+          mkdir -p "$target"
+          cp -a "$source" "$target/animations"
+
+          python3 - <<'PY'
+          import json
+          from pathlib import Path
+
+          root = Path('production/first_playable/lian_wu/first_playable_lot_01')
+          expected = {
+              'idle': 6,
+              'run': 8,
+              'jump_start': 4,
+              'airborne': 3,
+              'fall': 3,
+              'attack_light': 6,
+              'guard': 1,
+              'dodge': 5,
+              'hit': 4,
+              'ko': 5,
+          }
+          total = 0
+          for animation, count in expected.items():
+              folder = root / 'animations' / animation
+              files = sorted(folder.glob('*.png'))
+              if len(files) != count:
+                  raise SystemExit(f'LIAN_CANONICAL_MATERIALIZATION=BLOCKED animation={animation} count={len(files)} expected={count}')
+              for index, path in enumerate(files, 1):
+                  expected_name = f'char_lian_wu__{animation}__f{index:02d}.png'
+                  if path.name != expected_name:
+                      raise SystemExit(f'LIAN_CANONICAL_MATERIALIZATION=BLOCKED filename={path.name} expected={expected_name}')
+              total += len(files)
+          if total != 45:
+              raise SystemExit(f'LIAN_CANONICAL_MATERIALIZATION=BLOCKED frames={total}')
+
+          manifest = {
+              'lot_id': 'first_playable_lot_01',
+              'pack_id': 'pack_01_lian_wu_first_playable',
+              'version': '2.0.0',
+              'status': 'approved_first_playable_runtime',
+              'character_id': 'lian_wu',
+              'native_facing': 'right',
+              'pivot': 'bottom_center',
+              'canvas': {'min': 128, 'max': 1024},
+              'required_frames': 45,
+              'animations': expected,
+              'approval': {
+                  'art': True,
+                  'runtime': True,
+                  'godot_review': True,
+              },
+              'release_tag': 'assets-pack-01-v2.0.0',
+              'release_sha256': 'f000de1d3a0ca452bcae88f628264a16fcb57ca5c31791dc46525e175a0cb34c',
+              'source_commit': '7cb383f438b005fe0024870e426f52f95c644950',
+              'runtime_scope': 'first_playable_runtime',
+              'visual_method': 'whole_sprite_continuous_affine_v1',
+              'final_authored_animation_claimed': False,
+              'signature': 'Tehkné Solutions',
+          }
+          (root / 'work-manifest.json').write_text(
+              json.dumps(manifest, ensure_ascii=False, indent=2) + '\n',
+              encoding='utf-8',
+          )
+          print('FIRST_PLAYABLE_LIAN_MATERIALIZATION=PASS frames=45 animations=10')
+          print('SIGNATURE=Tehkné Solutions')
+          PY
+
+      - name: Verify canonical LFS routing
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(find production/first_playable/lian_wu/first_playable_lot_01/animations -type f -name '*.png' | wc -l | tr -d ' ')" = '45'
+          while IFS= read -r frame; do
+            git check-attr filter -- "$frame" | grep -q 'filter: lfs'
+          done < <(find production/first_playable/lian_wu/first_playable_lot_01/animations -type f -name '*.png' | sort)
+          echo 'FIRST_PLAYABLE_LIAN_LFS_ROUTING=PASS frames=45'
+
+      - name: Validate strict canonical 89-frame baseline
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 tools/validate_first_playable_art_production_v3.py \
+            --report artifacts/first-playable-art-preflight-v3.json | tee first-playable-art-v3.log
+          grep -q 'FIRST_PLAYABLE_ART_PRODUCTION_READY=true' first-playable-art-v3.log
+          grep -q 'FIRST_PLAYABLE_ART_PROGRESS=89/89' first-playable-art-v3.log
+          grep -q 'FIRST_PLAYABLE_CHARACTER=lian_wu frames=45/45 animations=10/10 complete=true' first-playable-art-v3.log
+          grep -q 'FIRST_PLAYABLE_CHARACTER=training_rival frames=44/44 animations=10/10 complete=true' first-playable-art-v3.log
+          grep -q 'SIGNATURE=Tehkné Solutions' first-playable-art-v3.log
+
+      - name: Commit canonical Lian production set
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add production/first_playable/lian_wu/first_playable_lot_01
+          git diff --cached --quiet && { echo 'FIRST_PLAYABLE_LIAN_COMMIT=BLOCKED reason=no_changes'; exit 1; }
+          git commit -m 'First Playable materialize official Lian Wu v2 canonical 45 frames'
+          git push origin HEAD:agent/first-playable-89-final-snapshot
+          echo 'FIRST_PLAYABLE_LIAN_COMMIT=PASS'
+
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: FIRST-PLAYABLE-89-MATERIALIZATION
+          path: |
+            first-playable-art-v3.log
+            artifacts/first-playable-art-preflight-v3.json
+          if-no-files-found: ignore
+          retention-days: 30
+
+      - name: Summary
+        if: always()
+        run: echo 'First Playable 89-frame canonical materialization — Tehkné Solutions' >> "$GITHUB_STEP_SUMMARY"
