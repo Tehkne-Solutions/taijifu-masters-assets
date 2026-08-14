@@ -1,0 +1,97 @@
+name: Build PACK 01 Lian Wu v2
+
+on:
+  pull_request:
+    paths:
+      - 'catalog/packs.json'
+      - 'tools/build_pack_01_lian_wu_v2.py'
+      - '.github/workflows/build-pack-01-lian-wu-v2.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  build-pack-01-v2:
+    runs-on: ubuntu-22.04
+    timeout-minutes: 15
+    steps:
+      - name: Checkout Asset Vault
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Checkout pinned C64 game source
+        uses: actions/checkout@v4
+        with:
+          repository: Tehkne-Solutions/taijifu-masters
+          ref: 7cb383f438b005fe0024870e426f52f95c644950
+          path: _game
+          fetch-depth: 1
+
+      - name: Prove pinned source commit
+        shell: bash
+        run: |
+          set -euo pipefail
+          ACTUAL="$(git -C _game rev-parse HEAD)"
+          EXPECTED='7cb383f438b005fe0024870e426f52f95c644950'
+          test "$ACTUAL" = "$EXPECTED"
+          echo "PACK01_V2_PIN=PASS sha=$ACTUAL"
+
+      - name: Build deterministic PACK 01 v2
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 tools/build_pack_01_lian_wu_v2.py \
+            --game-root _game \
+            --game-commit 7cb383f438b005fe0024870e426f52f95c644950 \
+            --output-dir artifacts/pack01-v2 | tee pack01-v2-build.log
+          grep -q 'PACK01_V2_SOURCE=PASS stage=C64 pinned=true' pack01-v2-build.log
+          grep -q 'PACK01_V2_APPROVAL=PASS visual_review=pass binary_promotion_allowed=true' pack01-v2-build.log
+          grep -q 'PACK01_V2_MATRIX=PASS animations=10 frames=45' pack01-v2-build.log
+          grep -q 'PACK01_V2_AUTHORED_CLAIM=false' pack01-v2-build.log
+          grep -q 'PACK01_V2=PASS' pack01-v2-build.log
+
+      - name: Inspect archive contract
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 - <<'PY'
+          import json
+          from pathlib import Path
+          from zipfile import ZipFile
+          z=Path('artifacts/pack01-v2/PACK_01_LIAN_WU_FIRST_PLAYABLE_FINAL_v2.0.0.zip')
+          assert z.is_file()
+          with ZipFile(z) as f:
+              names=f.namelist()
+              frames=[n for n in names if n.startswith('first_playable_lot_01/animations/') and n.endswith('.png')]
+              assert len(frames)==45, len(frames)
+              manifest=json.loads(f.read('PACK_MANIFEST.json').decode('utf-8'))
+              assert manifest['signature']=='Tehkné Solutions'
+              assert manifest['pack_id']=='pack_01_lian_wu_first_playable'
+              assert manifest['version']=='2.0.0'
+              assert manifest['frame_count']==45
+              assert manifest['source_commit']=='7cb383f438b005fe0024870e426f52f95c644950'
+              assert manifest['runtime_scope']=='first_playable_runtime'
+              assert manifest['final_authored_animation_claimed'] is False
+          print('PACK01_V2_ARCHIVE_INSPECTION=PASS frames=45 authored_claim=false')
+          print('SIGNATURE=Tehkné Solutions')
+          PY
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: PACK-01-LIAN-WU-FIRST-PLAYABLE-v2.0.0
+          path: |
+            artifacts/pack01-v2/PACK_01_LIAN_WU_FIRST_PLAYABLE_FINAL_v2.0.0.zip
+            artifacts/pack01-v2/PACK_01_LIAN_WU_FIRST_PLAYABLE_FINAL_v2.0.0.zip.sha256
+            artifacts/pack01-v2/PACK_01_V2_RELEASE_MANIFEST.json
+            pack01-v2-build.log
+          if-no-files-found: error
+          retention-days: 30
+
+      - name: Summary
+        run: |
+          echo 'PACK 01 — Lian Wu First Playable v2.0.0 — release candidate' >> "$GITHUB_STEP_SUMMARY"
+          echo 'Built from pinned C64 approved runtime assets; no redraw or regeneration.' >> "$GITHUB_STEP_SUMMARY"
+          echo 'This pack intentionally does not claim final authored animation.' >> "$GITHUB_STEP_SUMMARY"
+          echo 'Tehkné Solutions' >> "$GITHUB_STEP_SUMMARY"

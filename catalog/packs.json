@@ -1,7 +1,7 @@
 {
   "schema": "taijifu/asset-vault-catalog/v1",
   "project": "taijifu-masters",
-  "updated_at": "2026-08-14T12:15:00Z",
+  "updated_at": "2026-08-14T12:29:00Z",
   "pack_taxonomy": {
     "rule": "PACK NN identifies a global product deliverable. P01/P02/etc inside a character are technical subpacks and never replace the global PACK sequence.",
     "delivery_requires": [
@@ -16,43 +16,82 @@
   },
   "packs": [
     {
-      "pack_id": "pack_01_lian_wu_base",
-      "display_name": "PACK 01 — Lian Wu Base",
-      "version": "1.0.0",
-      "release_tag": "assets-pack-01-v1.0.0",
-      "filename": "PACK_01_LIAN_WU_BASE_FINAL_v1.0.0.zip",
-      "sha256": "0aea374365b8736ae2134312e94d8128260a9c7650cc840aa2e588a4ab70872a",
-      "file_count": 27,
-      "status": "visual_review_failed_revision_required",
+      "pack_id": "pack_01_lian_wu_first_playable",
+      "display_name": "PACK 01 — Lian Wu First Playable",
+      "version": "2.0.0",
+      "release_tag": "assets-pack-01-v2.0.0",
+      "filename": "PACK_01_LIAN_WU_FIRST_PLAYABLE_FINAL_v2.0.0.zip",
+      "sha256": "f000de1d3a0ca452bcae88f628264a16fcb57ca5c31791dc46525e175a0cb34c",
+      "file_count": 53,
+      "status": "release_candidate_built_validated_pending_github_release",
       "engine": "godot",
       "character_id": "lian_wu",
-      "superseded_by_planned_version": "1.0.1",
-      "budget": {
-        "max_files": 64,
-        "max_disk_bytes": 268435456
+      "scope": "first_playable_runtime",
+      "frame_count": 45,
+      "animation_matrix": {
+        "idle": 6,
+        "run": 8,
+        "jump_start": 4,
+        "airborne": 3,
+        "fall": 3,
+        "attack_light": 6,
+        "guard": 1,
+        "dodge": 5,
+        "hit": 4,
+        "ko": 5
+      },
+      "source": {
+        "repository": "Tehkne-Solutions/taijifu-masters",
+        "commit": "7cb383f438b005fe0024870e426f52f95c644950",
+        "stage": "C64",
+        "visual_method": "whole_sprite_continuous_affine_v1",
+        "source_character_lock_sha256": "0e435757b5c8a114f3ba91653f79bc86db51ee9cf3bfb74c529efed5d4ff7ab5",
+        "source_character_lock_rgba_sha256": "0bedec17308acd2c7b392f2c989cf97238908aa4f18b73371aa67c741eb6030b"
       },
       "validation": {
-        "forge": "passed",
-        "intake_safe": true,
-        "checksum_verified": true,
-        "budget": {
-          "passed": true,
-          "files": 27,
-          "disk_bytes": 7086126,
-          "violations": [],
-          "workflow_run_id": 30575006819
-        },
-        "visual_review": {
-          "passed": false,
-          "reviewed_at": "2026-07-30T19:46:00Z",
-          "evidence_workflow_run_id": 30575810174,
-          "evidence_artifact_id": 8772631486,
-          "blocking_findings": 3,
-          "report": "reviews/pack_01_lian_wu_base/visual-review-v1.0.0.md"
-        },
-        "workflow_run_id": 30573852545
+        "visual_review": "pass",
+        "binary_promotion_allowed": true,
+        "godot_import": "pass",
+        "real_battle_presenter": "pass",
+        "first_playable_smoke": "pass",
+        "deterministic_pack_builder": true,
+        "final_authored_animation_claimed": false,
+        "future_authored_animation_replacement_allowed": true,
+        "c64_review_workflow_run_id": 31322947374,
+        "c64_review_artifact_id": 9040703879,
+        "c64_review_artifact_digest": "4ec167789bea576bb2374a0a6607018c8d7f4c32ed61e27d4ddb8ddfbd67188a"
       },
-      "next_action": "Finish and publish PACK_01_LIAN_WU_BASE_FINAL_v1.0.1.zip; v1.0.0 remains preserved but is not approved for game import."
+      "release": {
+        "zip_built": true,
+        "checksum_recorded": true,
+        "archive_bytes": 22832533,
+        "build_workflow_run_id": 31800427112,
+        "artifact_id": 9219028172,
+        "artifact_digest": "sha256:52cd90be066b1510b96ee1feba5f118bd7aad9df07d130e5d8d62d65f5fe7ddf",
+        "github_release_published": false
+      },
+      "historical_versions": [
+        {
+          "version": "1.0.0",
+          "release_tag": "assets-pack-01-v1.0.0",
+          "filename": "PACK_01_LIAN_WU_BASE_FINAL_v1.0.0.zip",
+          "sha256": "0aea374365b8736ae2134312e94d8128260a9c7650cc840aa2e588a4ab70872a",
+          "file_count": 27,
+          "status": "visual_review_failed_revision_required",
+          "preserved": true
+        },
+        {
+          "version": "1.0.1-candidate",
+          "sha256": "01d456a68932a4775039df7c936ee3c0ef2bbeb8a4d2f3843dfe25a1a67ca42c",
+          "status": "abandoned_visual_blockers_not_promoted",
+          "blocking_findings": [
+            "side_right_weapon_continuity",
+            "portrait_neutral_embedded_text_fragment"
+          ],
+          "preserved_as_evidence": true
+        }
+      ],
+      "next_action": "Repeat the deterministic v2 build on the catalog-updated head; if SHA-256 remains identical, freeze release evidence and publish assets-pack-01-v2.0.0."
     },
     {
       "pack_id": "pack_02_training_rival_first_playable",
@@ -103,7 +142,7 @@
           "manifest_asset_id": 514381070
         }
       },
-      "next_action": "Treat PACK 02 as released and immutable; use the release as the global Training Rival source and move production to PACK 01 v1.0.1 and PACK 03 final art."
+      "next_action": "Treat PACK 02 as released and immutable; use the release as the global Training Rival source."
     },
     {
       "pack_id": "pack_03_mountain_dojo_night",
