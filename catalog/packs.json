@@ -1,7 +1,7 @@
 {
   "schema": "taijifu/asset-vault-catalog/v1",
   "project": "taijifu-masters",
-  "updated_at": "2026-08-14T12:29:00Z",
+  "updated_at": "2026-08-14T12:34:00Z",
   "pack_taxonomy": {
     "rule": "PACK NN identifies a global product deliverable. P01/P02/etc inside a character are technical subpacks and never replace the global PACK sequence.",
     "delivery_requires": [
@@ -23,7 +23,7 @@
       "filename": "PACK_01_LIAN_WU_FIRST_PLAYABLE_FINAL_v2.0.0.zip",
       "sha256": "f000de1d3a0ca452bcae88f628264a16fcb57ca5c31791dc46525e175a0cb34c",
       "file_count": 53,
-      "status": "release_candidate_built_validated_pending_github_release",
+      "status": "released_runtime_active",
       "engine": "godot",
       "character_id": "lian_wu",
       "scope": "first_playable_runtime",
@@ -59,16 +59,25 @@
         "future_authored_animation_replacement_allowed": true,
         "c64_review_workflow_run_id": 31322947374,
         "c64_review_artifact_id": 9040703879,
-        "c64_review_artifact_digest": "4ec167789bea576bb2374a0a6607018c8d7f4c32ed61e27d4ddb8ddfbd67188a"
+        "c64_review_artifact_digest": "4ec167789bea576bb2374a0a6607018c8d7f4c32ed61e27d4ddb8ddfbd67188a",
+        "release_evidence": "reviews/pack_01_lian_wu_first_playable/release-candidate-v2.0.0.json"
       },
       "release": {
         "zip_built": true,
         "checksum_recorded": true,
         "archive_bytes": 22832533,
-        "build_workflow_run_id": 31800427112,
-        "artifact_id": 9219028172,
-        "artifact_digest": "sha256:52cd90be066b1510b96ee1feba5f118bd7aad9df07d130e5d8d62d65f5fe7ddf",
-        "github_release_published": false
+        "build_workflow_run_id": 31800561378,
+        "artifact_id": 9219078563,
+        "artifact_digest": "sha256:e05e87027f5ff7fe51f8234a40b7c2986919d572fe62c2f1ed526810019a9b75",
+        "github_release_published": true,
+        "github_release_id": 370562028,
+        "publisher_workflow_run_id": 31800813708,
+        "published_at": "2026-08-14T12:33:20Z",
+        "release_assets": {
+          "zip_asset_id": 514397986,
+          "checksum_asset_id": 514397987,
+          "manifest_asset_id": 514397985
+        }
       },
       "historical_versions": [
         {
@@ -91,7 +100,7 @@
           "preserved_as_evidence": true
         }
       ],
-      "next_action": "Repeat the deterministic v2 build on the catalog-updated head; if SHA-256 remains identical, freeze release evidence and publish assets-pack-01-v2.0.0."
+      "next_action": "Treat PACK 01 v2 as released and immutable for the First Playable scope; future authored frame-by-frame animation may supersede it in a later major/minor pack without rewriting this release."
     },
     {
       "pack_id": "pack_02_training_rival_first_playable",
