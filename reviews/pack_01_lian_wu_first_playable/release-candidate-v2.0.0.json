@@ -51,6 +51,14 @@
   "promotion": {
     "release_candidate_built": true,
     "checksum_frozen": true,
-    "github_release_published": false
+    "github_release_published": true,
+    "github_release_id": 370562028,
+    "publisher_workflow_run_id": 31800813708,
+    "published_at": "2026-08-14T12:33:20Z",
+    "release_assets": {
+      "zip_asset_id": 514397986,
+      "checksum_asset_id": 514397987,
+      "manifest_asset_id": 514397985
+    }
   }
 }
