@@ -1,7 +1,7 @@
 {
   "schema": "taijifu/asset-vault-catalog/v1",
   "project": "taijifu-masters",
-  "updated_at": "2026-08-14T12:10:00Z",
+  "updated_at": "2026-08-14T12:14:00Z",
   "pack_taxonomy": {
     "rule": "PACK NN identifies a global product deliverable. P01/P02/etc inside a character are technical subpacks and never replace the global PACK sequence.",
     "delivery_requires": [
@@ -60,7 +60,9 @@
       "version": "1.0.0",
       "release_tag": "assets-pack-02-v1.0.0",
       "filename": "PACK_02_TRAINING_RIVAL_FIRST_PLAYABLE_FINAL_v1.0.0.zip",
-      "status": "canonical_44_of_44_runtime_active_pending_global_release",
+      "sha256": "41d1bef57f6b514c931b7c397bc219fa2349601e230113376d8a883849552020",
+      "file_count": 57,
+      "status": "release_candidate_built_validated_pending_github_release",
       "engine": "godot",
       "character_id": "training_rival",
       "source_root": "production/first_playable/training_rival/first_playable_lot_01",
@@ -80,14 +82,20 @@
         "game_c28_import_complete": true,
         "godot_runtime_bench_complete": true,
         "source_pixel_sha256": "67abba855b18ea6cc5ef62c4e382041d5ca69eb9902d9b3c6ead9329a163531e",
-        "game_merge_commit": "200e607ba6cab23a7a79cfd8daf825b4e839c808"
+        "game_merge_commit": "200e607ba6cab23a7a79cfd8daf825b4e839c808",
+        "deterministic_pack_build": true,
+        "release_evidence": "reviews/pack_02_training_rival_first_playable/release-candidate-v1.0.0.json"
       },
       "release": {
-        "zip_built": false,
-        "checksum_recorded": false,
+        "zip_built": true,
+        "checksum_recorded": true,
+        "archive_bytes": 32912528,
+        "artifact_workflow_run_id": 31799047870,
+        "artifact_id": 9218499539,
+        "artifact_digest": "sha256:a49fe67cf5c308ecb45a3d69be5f2abc3d61d0ad2e483fa5164ddb3cc13c7559",
         "github_release_published": false
       },
-      "next_action": "Build the global PACK 02 ZIP directly from the frozen 44/44 canonical source, record checksum, validate contents, then publish the GitHub Release without regenerating any art."
+      "next_action": "Publish the already-validated deterministic ZIP as GitHub Release assets-pack-02-v1.0.0; no art regeneration is permitted."
     },
     {
       "pack_id": "pack_03_mountain_dojo_night",
