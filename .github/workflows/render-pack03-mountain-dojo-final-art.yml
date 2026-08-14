@@ -1,0 +1,73 @@
+name: Render PACK 03 Mountain Dojo Final Art
+
+on:
+  push:
+    branches:
+      - agent/pack03-mountain-dojo-final-art-v2
+    paths:
+      - 'packs/stages/mountain_dojo_night/v1/source/*.svg'
+      - 'tools/render_pack03_mountain_dojo.py'
+      - '.github/workflows/render-pack03-mountain-dojo-final-art.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  render-pack03:
+    runs-on: ubuntu-22.04
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          lfs: true
+          fetch-depth: 0
+
+      - name: Install renderer
+        run: |
+          set -euo pipefail
+          python3 -m pip install --disable-pip-version-check cairosvg pillow
+          git lfs install
+
+      - name: Render canonical PNG layers
+        run: |
+          set -euo pipefail
+          python3 tools/render_pack03_mountain_dojo.py | tee pack03-render.log
+          grep -q 'PACK03_RENDER_SET=PASS layers=3 dimensions=1920x1080' pack03-render.log
+          grep -q 'PACK03_FOREGROUND_ALPHA=PASS' pack03-render.log
+          grep -q 'PACK03_FOREGROUND_SAFE_ZONE=PASS' pack03-render.log
+          grep -q 'PACK03=PASS' pack03-render.log
+
+      - name: Verify Git LFS routing
+        run: |
+          set -euo pipefail
+          for f in background.png midground.png foreground.png; do
+            path="packs/stages/mountain_dojo_night/v1/$f"
+            attr=$(git check-attr filter -- "$path")
+            echo "$attr"
+            echo "$attr" | grep -q 'filter: lfs'
+          done
+          echo 'PACK03_LFS_POLICY=PASS files=3/3'
+
+      - name: Commit generated canonical PNGs
+        env:
+          BRANCH: ${{ github.ref_name }}
+        run: |
+          set -euo pipefail
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add packs/stages/mountain_dojo_night/v1/background.png \
+                  packs/stages/mountain_dojo_night/v1/midground.png \
+                  packs/stages/mountain_dojo_night/v1/foreground.png
+          if git diff --cached --quiet; then
+            echo 'PACK03_GENERATED_COMMIT=SKIP reason=no_changes'
+            exit 0
+          fi
+          git commit -m 'PACK 03 materialize authored Mountain Dojo Night layers'
+          git push origin "HEAD:${BRANCH}"
+          echo 'PACK03_GENERATED_COMMIT=PASS'
+
+      - name: Summary
+        if: always()
+        run: |
+          echo 'PACK 03 Mountain Dojo Night — real layer materialization — Tehkné Solutions' >> "$GITHUB_STEP_SUMMARY"

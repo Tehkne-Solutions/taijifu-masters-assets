@@ -1,0 +1,60 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1920" height="1080" viewBox="0 0 1920 1080">
+<title>Mountain Dojo Night — Foreground Layer v2.1</title>
+<desc>Sparse transparent near-depth frame, confined outside combat safe-zone. Tehkné Solutions.</desc>
+<defs>
+ <pattern id="rockgrain" width="42" height="38" patternUnits="userSpaceOnUse">
+   <rect width="42" height="38" fill="#1b2429"/>
+   <path d="M3 31L15 8L37 12M12 35L34 20" stroke="#55636a" stroke-width="2" opacity=".16" fill="none"/>
+ </pattern>
+</defs>
+<g id="left-near">
+ <path d="M0 790L62 760L105 776L145 742L194 770L232 824L268 905L250 1080H0Z" fill="url(#rockgrain)"/>
+ <path d="M0 902L88 862L157 884L226 956L252 1080H0Z" fill="#10181c"/>
+ <g stroke="#34493c" stroke-width="16" stroke-linecap="round" fill="none">
+  <path d="M38 836C58 682 56 536 90 350"/><path d="M100 862C126 705 132 580 170 421"/><path d="M165 900C184 735 205 635 230 503"/>
+ </g>
+ <g stroke="#627263" stroke-width="3" opacity=".3">
+  <path d="M51 728L75 728M63 635L88 635M78 530L101 530"/><path d="M117 750L142 750M132 658L156 658M150 564L178 564"/><path d="M184 770L210 770M198 682L220 682M216 590L237 590"/>
+ </g>
+ <g fill="#385241">
+  <path d="M83 482L18 458L78 438L112 456Z"/><path d="M98 576L28 551L96 529L127 548Z"/><path d="M145 510L91 472L154 479L177 505Z"/>
+  <path d="M176 620L112 580L184 588L210 618Z"/><path d="M219 548L166 509L231 516L255 545Z"/><path d="M226 684L168 650L236 651L265 680Z"/>
+ </g>
+ <g transform="translate(194 670)">
+  <path d="M0-185V-70" stroke="#201812" stroke-width="10"/><path d="M-48-70H48L58 18L38 40H-38L-58 18Z" fill="#6e3d21" stroke="#17110d" stroke-width="7"/>
+  <path d="M-31-52H31L38 8H-38Z" fill="#d09a55" opacity=".75"/><path d="M-14-46H14L19 2H-19Z" fill="#f0c781" opacity=".35"/><path d="M-68 46H68" stroke="#17110d" stroke-width="10"/>
+ </g>
+ <ellipse cx="194" cy="812" rx="72" ry="19" fill="#cc9348" opacity=".09"/>
+</g>
+<g id="right-near">
+ <path d="M1920 786L1856 756L1813 777L1772 744L1724 773L1684 826L1650 905L1668 1080H1920Z" fill="url(#rockgrain)"/>
+ <path d="M1920 902L1834 860L1762 884L1694 958L1666 1080H1920Z" fill="#10181c"/>
+ <g stroke="#34493c" stroke-width="16" stroke-linecap="round" fill="none">
+  <path d="M1882 838C1861 683 1864 536 1830 350"/><path d="M1820 862C1794 705 1788 580 1750 421"/><path d="M1755 900C1736 735 1715 635 1690 503"/>
+ </g>
+ <g stroke="#627263" stroke-width="3" opacity=".3">
+  <path d="M1869 728L1845 728M1857 635L1832 635M1842 530L1819 530"/><path d="M1803 750L1778 750M1788 658L1764 658M1770 564L1742 564"/><path d="M1736 770L1710 770M1722 682L1700 682M1704 590L1683 590"/>
+ </g>
+ <g fill="#385241">
+  <path d="M1837 482L1902 458L1842 438L1808 456Z"/><path d="M1822 576L1892 551L1824 529L1793 548Z"/><path d="M1775 510L1829 472L1766 479L1743 505Z"/>
+  <path d="M1744 620L1808 580L1736 588L1710 618Z"/><path d="M1701 548L1754 509L1689 516L1665 545Z"/><path d="M1694 684L1752 650L1684 651L1655 680Z"/>
+ </g>
+ <g transform="translate(1726 670)">
+  <path d="M0-185V-70" stroke="#201812" stroke-width="10"/><path d="M-48-70H48L58 18L38 40H-38L-58 18Z" fill="#6e3d21" stroke="#17110d" stroke-width="7"/>
+  <path d="M-31-52H31L38 8H-38Z" fill="#d09a55" opacity=".75"/><path d="M-14-46H14L19 2H-19Z" fill="#f0c781" opacity=".35"/><path d="M-68 46H68" stroke="#17110d" stroke-width="10"/>
+ </g>
+ <ellipse cx="1726" cy="812" rx="72" ry="19" fill="#cc9348" opacity=".09"/>
+</g>
+<g fill="#22352b">
+ <path d="M0 1012L32 906L49 994L79 887L92 1000L132 914L143 1008L188 930L201 1080H0Z"/>
+ <path d="M1920 1012L1888 906L1871 994L1841 887L1828 1000L1788 914L1777 1008L1732 930L1719 1080H1920Z"/>
+</g>
+<g opacity=".9">
+ <path d="M242 930L335 982" stroke="#171d20" stroke-width="14" stroke-linecap="round"/><path d="M1678 930L1585 982" stroke="#171d20" stroke-width="14" stroke-linecap="round"/>
+ <rect x="276" y="955" width="74" height="28" rx="8" fill="#303a3f" transform="rotate(27 313 969)"/><rect x="1570" y="955" width="74" height="28" rx="8" fill="#303a3f" transform="rotate(-27 1607 969)"/>
+</g>
+<g fill="#53604a" opacity=".58">
+ <ellipse cx="52" cy="610" rx="16" ry="5" transform="rotate(-24 52 610)"/><ellipse cx="116" cy="703" rx="13" ry="4" transform="rotate(17 116 703)"/><ellipse cx="238" cy="760" rx="14" ry="5" transform="rotate(-12 238 760)"/>
+ <ellipse cx="1868" cy="615" rx="16" ry="5" transform="rotate(24 1868 615)"/><ellipse cx="1802" cy="706" rx="13" ry="4" transform="rotate(-17 1802 706)"/><ellipse cx="1684" cy="764" rx="14" ry="5" transform="rotate(12 1684 764)"/>
+</g>
+</svg>

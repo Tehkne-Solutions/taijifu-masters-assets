@@ -1,0 +1,77 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1920" height="1080" viewBox="0 0 1920 1080">
+<title>Mountain Dojo Night — Midground Layer v2.1</title>
+<desc>Premium dojo compound with authored asymmetry, material separation and restrained warm practicals. Tehkné Solutions.</desc>
+<defs>
+ <pattern id="stone" width="82" height="46" patternUnits="userSpaceOnUse">
+  <rect width="82" height="46" fill="#273038"/><path d="M0 22H82M40 0V22M18 22V46M67 22V46" stroke="#1b232a" stroke-width="3"/>
+  <path d="M4 5H34M45 29H78" stroke="#58636b" stroke-width="2" opacity=".15"/>
+ </pattern>
+ <pattern id="wood" width="90" height="18" patternUnits="userSpaceOnUse">
+  <rect width="90" height="18" fill="#3a2c22"/>
+  <path d="M0 5C18 1 31 10 48 5C64 0 78 9 90 4M0 13C20 9 33 17 52 12C68 8 80 14 90 11" stroke="#5d4533" stroke-width="2" fill="none" opacity=".24"/>
+ </pattern>
+ <symbol id="shojiDark" viewBox="0 0 150 120">
+  <rect x="0" y="0" width="150" height="120" rx="2" fill="#182127" stroke="#11171b" stroke-width="8"/>
+  <rect x="8" y="8" width="134" height="104" fill="#4b5c66" opacity=".3"/>
+  <path d="M35 8V112M62 8V112M89 8V112M116 8V112M8 35H142M8 62H142M8 89H142" stroke="#34261b" stroke-width="4"/>
+ </symbol>
+ <symbol id="shojiLit" viewBox="0 0 150 120">
+  <rect x="0" y="0" width="150" height="120" rx="2" fill="#7b592f" stroke="#11171b" stroke-width="8"/>
+  <rect x="8" y="8" width="134" height="104" fill="#d0a258" opacity=".72"/>
+  <path d="M35 8V112M62 8V112M89 8V112M116 8V112M8 35H142M8 62H142M8 89H142" stroke="#3b2a1b" stroke-width="4"/>
+ </symbol>
+ <symbol id="lantern" viewBox="-40 -80 80 130">
+  <path d="M0-75V-32" stroke="#271d14" stroke-width="7"/>
+  <path d="M-22-30H22L27 22L18 34H-18L-27 22Z" fill="#8c4d24" stroke="#25170f" stroke-width="5"/>
+  <path d="M-13-20H13L17 17H-17Z" fill="#d7a45d" opacity=".82"/><path d="M-31 36H31" stroke="#25170f" stroke-width="6"/>
+ </symbol>
+</defs>
+<path d="M0 794C164 770 312 783 470 770C635 758 784 770 958 760C1148 749 1314 766 1490 758C1660 750 1800 760 1920 748V1080H0Z" fill="#20282f"/>
+<path d="M0 690L1920 672V818C1610 810 1340 820 1060 810C742 800 420 823 0 814Z" fill="#1b232a"/>
+<path d="M0 705L1920 688V738L0 754Z" fill="url(#stone)" opacity=".78"/>
+<g>
+ <rect x="92" y="548" width="520" height="226" fill="url(#wood)"/><rect x="112" y="580" width="480" height="194" fill="#253037"/>
+ <path d="M42 566C148 533 255 501 348 459C430 493 520 525 660 566L624 600C502 575 415 549 346 521C274 548 185 577 80 603Z" fill="#0f151a"/>
+ <path d="M66 548C172 516 267 489 348 445C439 492 540 518 638 548" fill="none" stroke="#34414a" stroke-width="23"/>
+ <path d="M90 556C175 535 268 505 348 468C438 508 526 536 620 557" fill="none" stroke="#7b8891" stroke-width="3" opacity=".28"/>
+ <g fill="#4b3525"><rect x="116" y="566" width="30" height="208"/><rect x="558" y="566" width="30" height="208"/></g>
+ <use href="#shojiLit" x="205" y="627" width="128" height="116"/><use href="#shojiDark" x="355" y="627" width="128" height="116"/>
+ <path d="M111 758H588" stroke="#826142" stroke-width="14"/>
+</g>
+<g>
+ <rect x="1320" y="575" width="512" height="205" fill="url(#wood)"/><rect x="1344" y="603" width="462" height="177" fill="#232e35"/>
+ <path d="M1272 590C1378 557 1480 524 1564 484C1664 526 1756 554 1874 590L1842 620C1730 596 1651 573 1564 545C1484 573 1402 600 1306 622Z" fill="#10161a"/>
+ <path d="M1300 570C1390 542 1484 514 1564 474C1648 516 1750 545 1850 570" fill="none" stroke="#354149" stroke-width="20"/>
+ <g fill="#493427"><rect x="1354" y="590" width="28" height="190"/><rect x="1768" y="590" width="28" height="190"/></g>
+ <use href="#shojiDark" x="1405" y="636" width="145" height="110"/><use href="#shojiLit" x="1587" y="636" width="145" height="110"/>
+ <path d="M1345 764H1800" stroke="#73573e" stroke-width="12"/>
+</g>
+<g>
+ <rect x="585" y="502" width="760" height="292" fill="#2a211a"/><rect x="614" y="536" width="702" height="258" fill="url(#wood)"/>
+ <rect x="646" y="568" width="638" height="226" fill="#202a30"/>
+ <g fill="#513725"><rect x="620" y="536" width="34" height="258"/><rect x="728" y="552" width="30" height="242"/><rect x="1162" y="552" width="30" height="242"/><rect x="1278" y="536" width="34" height="258"/></g>
+ <use href="#shojiLit" x="773" y="596" width="150" height="134"/><use href="#shojiDark" x="1003" y="596" width="150" height="134"/>
+ <rect x="929" y="575" width="69" height="219" fill="#11171b"/><path d="M939 585H988V785H939Z" fill="#3e2b1f"/>
+ <circle cx="963.5" cy="683" r="27" fill="#151c21" stroke="#9f7b4e" stroke-width="5"/><path d="M948 683H979M963 667V699" stroke="#9f7b4e" stroke-width="4" opacity=".85"/>
+ <path d="M515 528C644 494 782 445 958 381C1120 444 1267 492 1418 528L1368 570C1242 541 1100 508 958 458C808 512 672 544 560 570Z" fill="#0b1115"/>
+ <path d="M560 506C700 468 824 428 958 374C1098 429 1223 470 1372 506" fill="none" stroke="#35424b" stroke-width="28"/>
+ <path d="M576 506C705 474 826 436 958 385C1090 437 1218 474 1352 506" fill="none" stroke="#7c8a93" stroke-width="3" opacity=".3"/>
+ <rect x="785" y="362" width="346" height="108" fill="#263037"/><g fill="#4b3626"><rect x="806" y="372" width="24" height="98"/><rect x="1086" y="372" width="24" height="98"/></g>
+ <path d="M694 382C792 350 876 314 958 273C1047 318 1135 350 1224 382L1180 416C1092 394 1014 366 958 340C894 371 816 397 740 416Z" fill="#0a1014"/>
+ <path d="M738 362C812 338 886 306 958 266C1034 308 1100 336 1184 362" fill="none" stroke="#3b4851" stroke-width="20"/>
+ <circle cx="958" cy="423" r="38" fill="#11181d" stroke="#b08b59" stroke-width="6"/><path d="M937 423C947 400 970 400 980 423C971 446 947 446 937 423Z" fill="none" stroke="#b08b59" stroke-width="4"/>
+</g>
+<path d="M758 794L1160 794L1268 1080H640Z" fill="url(#stone)"/>
+<path d="M735 820H1182M710 868H1207M687 920H1230M662 978H1255M642 1042H1275" stroke="#141b20" stroke-width="7"/>
+<path d="M806 794L745 1080M1114 794L1176 1080" stroke="#667079" stroke-width="3" opacity=".18"/>
+<path d="M0 815C300 805 505 815 758 800L640 1080H0Z" fill="#29333a"/><path d="M1160 800C1436 812 1670 800 1920 784V1080H1268Z" fill="#29333a"/>
+<g stroke="#171f25" stroke-width="4" opacity=".7"><path d="M0 860H716M0 935H682M0 1015H652M1204 860H1920M1237 935H1920M1267 1015H1920"/><path d="M120 818L80 1080M330 810L310 1080M540 805L515 1080M1385 810L1407 1080M1602 802L1640 1080M1815 792L1870 1080"/></g>
+<g fill="#0e181d" opacity=".94"><path d="M0 710C44 622 62 540 110 485C92 584 135 622 154 702C121 675 83 665 0 710Z"/><path d="M1920 698C1881 619 1862 548 1818 500C1834 586 1798 629 1781 704C1813 678 1857 665 1920 698Z"/></g>
+<g transform="translate(276 720)"><path d="M0 0V122M120 0V122M-14 0H136" stroke="#533a27" stroke-width="12"/><path d="M18 15L35 102M54 10L64 104M92 20L78 103" stroke="#85745d" stroke-width="6"/></g>
+<g transform="translate(1510 720)"><path d="M0-30V95M105-30V95M0-30H105" stroke="#4b3526" stroke-width="12"/><path d="M52-18V20" stroke="#7d6b50" stroke-width="5"/><path d="M25 22Q52-4 79 22L70 55H34Z" fill="#6d5a3e" stroke="#28221a" stroke-width="4"/><circle cx="52" cy="42" r="7" fill="#b4925f"/></g>
+<use href="#lantern" x="132" y="568" width="80" height="130"/><use href="#lantern" x="492" y="610" width="68" height="112"/>
+<use href="#lantern" x="1354" y="614" width="68" height="112"/><use href="#lantern" x="1702" y="568" width="80" height="130"/>
+<g fill="#c99146" opacity=".11"><ellipse cx="172" cy="810" rx="100" ry="24"/><ellipse cx="526" cy="820" rx="82" ry="19"/><ellipse cx="1388" cy="824" rx="82" ry="19"/><ellipse cx="1742" cy="810" rx="100" ry="24"/><ellipse cx="810" cy="800" rx="92" ry="18"/></g>
+<g><path d="M470 505V666" stroke="#171e23" stroke-width="7"/><path d="M478 520H560V623L519 600L478 623Z" fill="#1e3440"/><path d="M1450 528V675" stroke="#171e23" stroke-width="7"/><path d="M1365 541H1443V637L1404 615L1365 637Z" fill="#283a42"/><g fill="none" stroke="#8fa9b7" stroke-width="4" opacity=".55"><circle cx="519" cy="561" r="19"/><circle cx="1404" cy="577" r="18"/></g></g>
+<g fill="#745b35" opacity=".28"><ellipse cx="392" cy="853" rx="10" ry="3" transform="rotate(-18 392 853)"/><ellipse cx="452" cy="900" rx="8" ry="2.5" transform="rotate(25 452 900)"/><ellipse cx="1470" cy="874" rx="9" ry="3" transform="rotate(12 1470 874)"/><ellipse cx="1568" cy="934" rx="11" ry="3" transform="rotate(-28 1568 934)"/></g>
+</svg>

@@ -1,0 +1,54 @@
+{
+  "schema": "tehkne/taijifu-env01-candidate-evidence/v1",
+  "signature": "Tehkné Solutions",
+  "stage": "ENV-01",
+  "arena_id": "mountain_dojo_night",
+  "candidate_head": "5fd4cc8",
+  "materializer_run_id": 31838440961,
+  "status": "rendered_candidate_v2_1_pending_godot_and_manual_review",
+  "layers": {
+    "background.png": {
+      "dimensions": "1920x1080",
+      "sha256": "dea8326025e65dcfd12bfa7073f0c666b37f267580b946649a6e6010b71269d9",
+      "bytes": 102916,
+      "parallax": 0.18
+    },
+    "midground.png": {
+      "dimensions": "1920x1080",
+      "sha256": "000b550881f334ac6cf60d8f567ca051c85ccb61f4fd1e788bf3fcccef6ba907",
+      "bytes": 129112,
+      "parallax": 0.48
+    },
+    "foreground.png": {
+      "dimensions": "1920x1080",
+      "sha256": "d7741b66dc15a16ad5c58d5f6b3fb9344b502f05bdac97d871dbde495de9430d",
+      "bytes": 88894,
+      "parallax": 1.0,
+      "transparent_pixels": 1832851,
+      "fighter_safe_zone_clear": true
+    }
+  },
+  "runtime_contract": {
+    "ground_y": 820,
+    "safe_fighter_zone": [280, 1640]
+  },
+  "art_pass": {
+    "version": "v2.1",
+    "previous_candidate_manual_review": "FAIL",
+    "previous_failure_reason": "flat_geometric_stage_read",
+    "changes": [
+      "layered mountain depth and moon atmosphere",
+      "recognizable authored dojo compound",
+      "wood and stone material separation",
+      "restrained warm practicals",
+      "asymmetric training details",
+      "sparse transparent foreground frame"
+    ]
+  },
+  "promotion": {
+    "manifest_status": "art_pending",
+    "canonical_ready": false,
+    "godot_runtime_capture": "PENDING",
+    "manual_visual_review": "PENDING"
+  }
+}
