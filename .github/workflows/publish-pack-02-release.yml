@@ -1,0 +1,82 @@
+name: Publish PACK 02 Release
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/publish-pack-02-release.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  publish-pack-02:
+    runs-on: ubuntu-22.04
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          lfs: true
+          fetch-depth: 0
+
+      - name: Materialize canonical assets
+        run: |
+          set -euo pipefail
+          git lfs pull
+
+      - name: Rebuild frozen PACK 02
+        run: |
+          set -euo pipefail
+          python3 tools/build_pack_02_training_rival.py --output-dir artifacts/pack02 | tee pack02-publish.log
+          grep -q 'PACK02=PASS' pack02-publish.log
+
+      - name: Verify frozen checksum evidence
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 - <<'PY'
+          import hashlib, json
+          from pathlib import Path
+          evidence=json.loads(Path('reviews/pack_02_training_rival_first_playable/release-candidate-v1.0.0.json').read_text(encoding='utf-8'))
+          z=Path('artifacts/pack02/PACK_02_TRAINING_RIVAL_FIRST_PLAYABLE_FINAL_v1.0.0.zip')
+          actual=hashlib.sha256(z.read_bytes()).hexdigest()
+          expected=evidence['sha256']
+          assert evidence['signature']=='Tehkné Solutions'
+          assert evidence['pack_id']=='pack_02_training_rival_first_playable'
+          assert evidence['promotion']['checksum_frozen'] is True
+          assert actual==expected, (actual, expected)
+          print(f'PACK02_RELEASE_CHECKSUM=PASS sha256={actual}')
+          print('SIGNATURE=Tehkné Solutions')
+          PY
+
+      - name: Ensure release does not already exist
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          if gh release view assets-pack-02-v1.0.0 >/dev/null 2>&1; then
+            echo 'PACK02_RELEASE=BLOCKED reason=release_already_exists'
+            exit 2
+          fi
+          echo 'PACK02_RELEASE_PRECHECK=PASS tag_available=true'
+
+      - name: Publish GitHub Release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          gh release create assets-pack-02-v1.0.0 \
+            artifacts/pack02/PACK_02_TRAINING_RIVAL_FIRST_PLAYABLE_FINAL_v1.0.0.zip \
+            artifacts/pack02/PACK_02_TRAINING_RIVAL_FIRST_PLAYABLE_FINAL_v1.0.0.zip.sha256 \
+            artifacts/pack02/PACK_02_RELEASE_MANIFEST.json \
+            --target main \
+            --title 'PACK 02 — Training Rival First Playable v1.0.0' \
+            --notes 'Global product pack built deterministically from the frozen 44/44 canonical Training Rival assets. Runtime-active source, visual evidence, C28 import and Godot runtime bench are already validated. No artwork was regenerated.\n\nTehkné Solutions'
+          gh release view assets-pack-02-v1.0.0 --json tagName,name,isDraft,isPrerelease
+          echo 'PACK02_RELEASE=PASS tag=assets-pack-02-v1.0.0'
+
+      - name: Summary
+        run: |
+          echo 'PACK 02 — GitHub Release publisher — Tehkné Solutions' >> "$GITHUB_STEP_SUMMARY"
+          echo 'Publication is fail-closed against the frozen deterministic SHA-256.' >> "$GITHUB_STEP_SUMMARY"
