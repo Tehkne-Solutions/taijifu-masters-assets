@@ -1,0 +1,38 @@
+{
+  "schema": "taijifu/global-pack-release-evidence/v1",
+  "signature": "Tehkné Solutions",
+  "pack_id": "pack_02_training_rival_first_playable",
+  "version": "1.0.0",
+  "filename": "PACK_02_TRAINING_RIVAL_FIRST_PLAYABLE_FINAL_v1.0.0.zip",
+  "runtime_frames": 44,
+  "archive_files": 57,
+  "archive_bytes": 32912528,
+  "sha256": "41d1bef57f6b514c931b7c397bc219fa2349601e230113376d8a883849552020",
+  "deterministic_rebuild": true,
+  "builds": [
+    {
+      "workflow_run_id": 31798928435,
+      "artifact_id": 9218450483,
+      "artifact_digest": "sha256:76bc91daf3a89940405380da4a108e6d2cacb9919bf8930e49fd931e64c7223d",
+      "head_sha": "8322c27a181cbf2576a7ece10b8c854a209830fe"
+    },
+    {
+      "workflow_run_id": 31799047870,
+      "artifact_id": 9218499539,
+      "artifact_digest": "sha256:a49fe67cf5c308ecb45a3d69be5f2abc3d61d0ad2e483fa5164ddb3cc13c7559",
+      "head_sha": "0a99d6c951ebc2f09fac4786b8848bd728506ca7"
+    }
+  ],
+  "validation": {
+    "canonical_44_of_44": "PASS",
+    "runtime_active": "PASS",
+    "archive_inspection": "PASS",
+    "forge_catalog_compatibility": "PASS",
+    "art_regenerated": false
+  },
+  "promotion": {
+    "release_candidate_built": true,
+    "checksum_frozen": true,
+    "github_release_published": false
+  }
+}
