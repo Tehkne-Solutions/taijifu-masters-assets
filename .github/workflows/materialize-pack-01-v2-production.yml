@@ -21,14 +21,28 @@ jobs:
           lfs: true
           fetch-depth: 0
 
-      - name: Checkout exact released game source
+      - name: Checkout only the released C64 game-source subtree
         uses: actions/checkout@v4
         with:
           repository: Tehkne-Solutions/taijifu-masters
           ref: 7cb550161885c167664eb3e3ddd4597fafdc605c
           path: .release-game-source
-          lfs: true
+          lfs: false
           fetch-depth: 1
+          sparse-checkout: |
+            artifacts/sprints/c64_lian_first_playable_lot01
+          sparse-checkout-cone-mode: true
+
+      - name: Pull only C64 LFS objects
+        shell: bash
+        run: |
+          set -euo pipefail
+          git -C .release-game-source lfs install --local
+          git -C .release-game-source lfs pull \
+            --include='artifacts/sprints/c64_lian_first_playable_lot01/**' \
+            --exclude=''
+          test -f .release-game-source/artifacts/sprints/c64_lian_first_playable_lot01/lian_wu_c64_first_playable_lot01_16f_master_v1.png
+          echo 'PACK01_V2_C64_SPARSE_LFS=PASS'
 
       - name: Install builder dependency
         run: python3 -m pip install --disable-pip-version-check pillow
@@ -38,7 +52,6 @@ jobs:
         run: |
           set -euo pipefail
           git lfs pull
-          git -C .release-game-source lfs pull
           rm -rf artifacts/pack01-v2-rematerialized
           python3 tools/build_pack_01_lian_wu_v2.py \
             --game-source .release-game-source \
