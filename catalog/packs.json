@@ -1,5 +1,5 @@
 {
-  "schema": "taijifu/asset-vault-catalog/v2",
+  "schema": "taijifu/asset-vault-catalog/v1",
   "project": "taijifu-masters",
   "updated_at": "2026-08-14T12:10:00Z",
   "pack_taxonomy": {
