@@ -1,0 +1,111 @@
+name: Release First Playable Assets v1
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - 'tools/build_first_playable_assets_v1.py'
+      - 'releases/first-playable-v1.freeze.json'
+      - '.github/workflows/release-first-playable-assets-v1.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  publish-frozen-snapshot:
+    runs-on: ubuntu-22.04
+    timeout-minutes: 20
+    env:
+      RELEASE_TAG: assets-first-playable-v1.0.0
+      RELEASE_ZIP: TAIJIFU_FIRST_PLAYABLE_ASSETS_v1.0.0.zip
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          lfs: false
+          fetch-depth: 0
+
+      - name: Materialize only First Playable LFS objects
+        shell: bash
+        run: |
+          set -euo pipefail
+          git lfs install --local
+          git lfs pull \
+            --include='production/first_playable/lian_wu/first_playable_lot_01/animations/**,production/first_playable/training_rival/first_playable_lot_01/animations/**,packs/stages/mountain_dojo_night/v1/*.png' \
+            --exclude=''
+
+      - name: Validate canonical fighters and build snapshot
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 tools/validate_first_playable_art_production_v3.py \
+            --report artifacts/first-playable-art-preflight-v3.json | tee first-playable-art-v3.log
+          grep -q 'FIRST_PLAYABLE_ART_PRODUCTION_READY=true' first-playable-art-v3.log
+          grep -q 'FIRST_PLAYABLE_ART_PROGRESS=89/89' first-playable-art-v3.log
+          python3 tools/build_first_playable_assets_v1.py \
+            --output-dir artifacts/first-playable-assets-v1 | tee first-playable-snapshot-v1.log
+          grep -q 'FIRST_PLAYABLE_SNAPSHOT=PASS' first-playable-snapshot-v1.log
+
+      - name: Require frozen checksum and content root
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 - <<'PY'
+          import hashlib, json
+          from pathlib import Path
+          freeze = json.loads(Path('releases/first-playable-v1.freeze.json').read_text(encoding='utf-8'))
+          archive = Path('artifacts/first-playable-assets-v1/TAIJIFU_FIRST_PLAYABLE_ASSETS_v1.0.0.zip')
+          release_manifest = json.loads(Path('artifacts/first-playable-assets-v1/FIRST_PLAYABLE_RELEASE_MANIFEST.json').read_text(encoding='utf-8'))
+          actual = hashlib.sha256(archive.read_bytes()).hexdigest()
+          if freeze.get('signature') != 'Tehkné Solutions':
+              raise SystemExit('FIRST_PLAYABLE_RELEASE=BLOCKED reason=freeze_signature')
+          if actual != freeze['sha256']:
+              raise SystemExit(f"FIRST_PLAYABLE_RELEASE=BLOCKED reason=zip_sha actual={actual} expected={freeze['sha256']}")
+          if release_manifest.get('content_sha256') != freeze['content_sha256']:
+              raise SystemExit('FIRST_PLAYABLE_RELEASE=BLOCKED reason=content_sha')
+          if release_manifest.get('fighter_frames') != 89 or release_manifest.get('stage_layers') != 3:
+              raise SystemExit('FIRST_PLAYABLE_RELEASE=BLOCKED reason=component_counts')
+          print(f'FIRST_PLAYABLE_RELEASE_FREEZE=PASS sha256={actual}')
+          print(f"FIRST_PLAYABLE_RELEASE_CONTENT=PASS sha256={freeze['content_sha256']}")
+          print('SIGNATURE=Tehkné Solutions')
+          PY
+
+      - name: Publish immutable GitHub Release
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          out='artifacts/first-playable-assets-v1'
+          if gh release view "$RELEASE_TAG" --repo Tehkne-Solutions/taijifu-masters-assets >/dev/null 2>&1; then
+            echo 'FIRST_PLAYABLE_RELEASE=BLOCKED reason=tag_already_exists'
+            exit 1
+          fi
+          gh release create "$RELEASE_TAG" \
+            "$out/$RELEASE_ZIP" \
+            "$out/$RELEASE_ZIP.sha256" \
+            "$out/FIRST_PLAYABLE_RELEASE_MANIFEST.json" \
+            --repo Tehkne-Solutions/taijifu-masters-assets \
+            --target "$GITHUB_SHA" \
+            --title 'Taijifu First Playable Assets v1.0.0' \
+            --notes $'Immutable composed First Playable snapshot.\n\nComponents:\n- Lian Wu: 45 frames / 10 animations from assets-pack-01-v2.0.0\n- Training Rival: 44 frames / 10 animations from assets-pack-02-v1.0.0\n- Mountain Dojo Night: 3 art_final canonical layers from assets-pack-03-v1.0.0\n\nTotal fighter frames: 89.\n\nTehkné Solutions'
+          gh release view "$RELEASE_TAG" --repo Tehkne-Solutions/taijifu-masters-assets --json tagName,isDraft,isPrerelease,targetCommitish
+          echo 'FIRST_PLAYABLE_RELEASE=PASS'
+          echo 'SIGNATURE=Tehkné Solutions'
+
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: FIRST-PLAYABLE-ASSETS-V1-RELEASE-EVIDENCE
+          path: |
+            artifacts/first-playable-assets-v1/FIRST_PLAYABLE_RELEASE_MANIFEST.json
+            artifacts/first-playable-art-preflight-v3.json
+            first-playable-art-v3.log
+            first-playable-snapshot-v1.log
+          if-no-files-found: ignore
+          retention-days: 30
+
+      - name: Summary
+        if: always()
+        run: echo 'Taijifu First Playable Assets v1 release publisher — Tehkné Solutions' >> "$GITHUB_STEP_SUMMARY"
