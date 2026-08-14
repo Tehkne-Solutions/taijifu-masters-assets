@@ -1,58 +1,23 @@
-name: Build First Playable Lot 01
+name: Build First Playable Lot 01 (Historical v1)
 
 on:
   workflow_dispatch:
-  pull_request:
-    paths:
-      - "production/first_playable/lian_wu/first_playable_lot_01/**"
-      - "tools/validate_first_playable_art_production.py"
 
 permissions:
   contents: read
 
 jobs:
-  validate-and-package:
+  historical-packager-notice:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-        with:
-          lfs: true
-      - uses: actions/setup-python@v5
-        with:
-          python-version: "3.12"
-      - name: Materializar Git LFS
-        run: git lfs pull
-      - name: Validate approved First Playable art
+      - name: Historical packaging notice
+        shell: bash
         run: |
-          python tools/validate_first_playable_art_production.py \
-            --report first-playable-art-validation.json
-      - name: Generate Lian Wu checksums
-        working-directory: production/first_playable/lian_wu/first_playable_lot_01
-        run: |
-          find animations -type f -name '*.png' -print0 | sort -z | xargs -0 sha256sum > checksums.sha256
-      - name: Build canonical Lian Wu ZIP
-        run: |
-          python - <<'PY'
-          from pathlib import Path
-          import zipfile
-          root = Path('production/first_playable/lian_wu/first_playable_lot_01')
-          output = Path('PACK_01_LIAN_WU_FIRST_PLAYABLE_LOT_01_v1.0.0.zip')
-          with zipfile.ZipFile(output, 'w', zipfile.ZIP_DEFLATED) as archive:
-              for path in sorted(root.rglob('*')):
-                  if path.is_file():
-                      archive.write(path, path.relative_to(root))
-          PY
-          sha256sum PACK_01_LIAN_WU_FIRST_PLAYABLE_LOT_01_v1.0.0.zip > PACK_01_LIAN_WU_FIRST_PLAYABLE_LOT_01_v1.0.0.zip.sha256
-      - uses: actions/upload-artifact@v4
-        with:
-          name: pack-01-first-playable-lot01
-          path: |
-            PACK_01_LIAN_WU_FIRST_PLAYABLE_LOT_01_v1.0.0.zip
-            PACK_01_LIAN_WU_FIRST_PLAYABLE_LOT_01_v1.0.0.zip.sha256
-            first-playable-art-validation.json
-          if-no-files-found: error
-          retention-days: 30
+          echo 'FIRST_PLAYABLE_LOT01_V1_PACKAGER=RETIRED'
+          echo 'RELEASED_LIAN=assets-pack-01-v2.0.0'
+          echo 'CANONICAL_BASELINE=45+44=89'
+          echo 'SIGNATURE=Tehkné Solutions'
 
-# This workflow packages Lian Wu only; Training Rival source intake has its own PRESET-02 gate.
-# Workflow maintenance is exercised manually through workflow_dispatch.
+# Historical v1 packager retained only for audit provenance.
+# PACK 01 v2.0.0 is the released Lian source; canonical PR validation is v3.
 # Tehkné Solutions
