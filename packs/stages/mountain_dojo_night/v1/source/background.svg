@@ -1,41 +1,67 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="1920" height="1080" viewBox="0 0 1920 1080">
-  <title>Mountain Dojo Night — Background Layer</title>
-  <desc>Authored far-distance layer for PACK 03. Tehkné Solutions.</desc>
-  <rect width="1920" height="1080" fill="#09101c"/>
-  <rect y="210" width="1920" height="870" fill="#101a2a"/>
-  <circle cx="1460" cy="205" r="104" fill="#e8edf0"/>
-  <circle cx="1425" cy="180" r="103" fill="#c9d2d8" opacity="0.12"/>
-  <g fill="#d8e0e6" opacity="0.13">
-    <ellipse cx="420" cy="205" rx="250" ry="32"/><ellipse cx="735" cy="260" rx="190" ry="26"/><ellipse cx="1210" cy="145" rx="175" ry="22"/><ellipse cx="1610" cy="330" rx="220" ry="30"/>
-  </g>
-  <g fill="#182438">
-    <path d="M0 590 L190 420 L315 535 L470 335 L610 510 L770 300 L930 505 L1080 350 L1220 520 L1370 320 L1500 510 L1670 360 L1920 565 L1920 760 L0 760 Z"/>
-  </g>
-  <g fill="#22324a">
-    <path d="M0 675 L180 535 L305 625 L455 470 L610 625 L740 505 L875 640 L1030 515 L1185 645 L1350 500 L1495 635 L1650 520 L1920 675 L1920 820 L0 820 Z"/>
-  </g>
-  <g fill="#2c3e56">
-    <path d="M0 755 L190 630 L335 720 L495 585 L650 730 L800 610 L960 735 L1110 620 L1265 735 L1410 600 L1570 725 L1730 620 L1920 760 L1920 875 L0 875 Z"/>
-  </g>
-  <g opacity="0.45" fill="#67788a">
-    <path d="M0 732 C260 700 405 760 635 728 C865 695 1010 750 1240 714 C1490 676 1685 720 1920 690 L1920 775 C1710 805 1510 760 1270 790 C1000 825 820 778 600 810 C370 845 170 805 0 830 Z"/>
-    <path d="M0 806 C290 770 480 842 730 810 C1005 775 1180 830 1450 795 C1635 770 1775 800 1920 785 L1920 845 C1720 880 1570 845 1395 870 C1150 905 930 860 700 900 C480 936 220 890 0 925 Z"/>
-  </g>
-  <g fill="#111923">
-    <path d="M0 870 C220 825 420 875 620 842 C855 805 1060 858 1280 828 C1515 795 1710 822 1920 792 L1920 1080 L0 1080 Z"/>
-  </g>
-  <g fill="#0b1118">
-    <path d="M50 790 l40-130 35 112 44-166 42 175 35-97 30 122z"/><path d="M260 805 l38-124 32 94 48-172 42 176 34-102 32 135z"/><path d="M1690 785 l36-115 34 96 44-156 40 162 32-94 35 121z"/><path d="M1555 812 l34-102 30 85 42-142 36 146 28-82 30 108z"/>
-  </g>
-  <g fill="#d39b4a" opacity="0.8">
-    <rect x="287" y="840" width="8" height="8"/><rect x="336" y="856" width="6" height="6"/><rect x="397" y="833" width="7" height="7"/><rect x="510" y="862" width="8" height="8"/><rect x="1140" y="842" width="7" height="7"/><rect x="1200" y="855" width="6" height="6"/><rect x="1290" y="835" width="8" height="8"/><rect x="1362" y="861" width="7" height="7"/>
-  </g>
-  <g fill="#e8edf0">
-    <circle cx="170" cy="155" r="2"/><circle cx="270" cy="95" r="1.5"/><circle cx="365" cy="182" r="2"/><circle cx="560" cy="130" r="1.4"/><circle cx="680" cy="74" r="2"/><circle cx="810" cy="165" r="1.4"/><circle cx="980" cy="105" r="1.7"/><circle cx="1120" cy="190" r="1.5"/><circle cx="1275" cy="82" r="1.8"/><circle cx="1650" cy="122" r="2"/><circle cx="1780" cy="210" r="1.5"/>
-  </g>
-  <g opacity="0.18" stroke="#cfd8df" stroke-width="5" fill="none">
-    <path d="M110 300 C360 260 560 330 800 285 C1060 235 1220 305 1370 265"/>
-    <path d="M650 380 C890 340 1040 390 1260 355 C1470 322 1680 375 1840 350"/>
-  </g>
-  <text x="28" y="1045" font-family="sans-serif" font-size="18" fill="#9aa7b4" opacity="0.32">Tehkné Solutions • PACK 03 source/background • authored far layer</text>
+<title>Mountain Dojo Night — Background Layer v2.1</title>
+<desc>Premium distant environment: moon, layered mountains, mist, forest and remote temple identity. Tehkné Solutions.</desc>
+<defs>
+ <clipPath id="moonClip"><circle cx="1488" cy="174" r="92"/></clipPath>
+ <pattern id="stars" width="240" height="180" patternUnits="userSpaceOnUse">
+  <circle cx="18" cy="28" r="1.2" fill="#dce7ef" opacity=".5"/><circle cx="82" cy="67" r="1.7" fill="#dce7ef" opacity=".8"/>
+  <circle cx="154" cy="34" r="1" fill="#dce7ef" opacity=".6"/><circle cx="218" cy="112" r="1.4" fill="#dce7ef" opacity=".42"/>
+  <circle cx="44" cy="145" r="1" fill="#dce7ef" opacity=".72"/><circle cx="126" cy="121" r="1.5" fill="#dce7ef" opacity=".52"/>
+  <circle cx="196" cy="166" r="1" fill="#dce7ef" opacity=".65"/>
+ </pattern>
+ <pattern id="mistGrain" width="64" height="32" patternUnits="userSpaceOnUse">
+  <circle cx="8" cy="8" r="3" fill="#b8c8d3" opacity=".05"/><circle cx="33" cy="21" r="2" fill="#cdd8df" opacity=".04"/>
+  <circle cx="57" cy="12" r="2.5" fill="#a8bac7" opacity=".035"/>
+ </pattern>
+ <symbol id="pine" viewBox="-32 -116 64 120">
+  <rect x="-2" y="-24" width="4" height="27" fill="#0b171d"/>
+  <path d="M0-112L-23-60-8-63-29-31-5-35-35-6H33L5-35 28-31 7-63 23-60Z" fill="#0b171d"/>
+ </symbol>
+ <pattern id="forest" width="96" height="128" patternUnits="userSpaceOnUse">
+  <use href="#pine" x="0" y="12" width="64" height="120"/><use href="#pine" x="50" y="30" width="48" height="92" opacity=".86"/>
+ </pattern>
+</defs>
+<rect width="1920" height="1080" fill="#071019"/>
+<path d="M0 0H1920V240C1600 220 1360 250 1080 235C760 218 390 242 0 224Z" fill="#0a1521"/>
+<path d="M0 165C340 140 625 188 925 160C1240 130 1570 170 1920 142V430H0Z" fill="#0d1b29"/>
+<path d="M0 330C410 290 780 360 1140 318C1455 281 1700 318 1920 302V560H0Z" fill="#112231"/>
+<rect x="0" y="0" width="1920" height="430" fill="url(#stars)"/>
+<circle cx="1488" cy="174" r="101" fill="#b8c8d5" opacity=".07"/><circle cx="1488" cy="174" r="92" fill="#dce6ec"/>
+<g clip-path="url(#moonClip)" fill="#aebdc8" opacity=".34">
+ <ellipse cx="1450" cy="136" rx="18" ry="11"/><ellipse cx="1518" cy="126" rx="12" ry="9"/><ellipse cx="1536" cy="181" rx="24" ry="15"/>
+ <ellipse cx="1468" cy="205" rx="27" ry="17"/><ellipse cx="1429" cy="174" rx="10" ry="7"/><ellipse cx="1502" cy="221" rx="11" ry="8"/>
+</g>
+<path d="M1538 92C1570 128 1581 190 1556 231" fill="none" stroke="#eef3f6" stroke-width="4" opacity=".32"/>
+<g fill="#c5d3dc">
+ <path d="M92 214C190 176 330 183 408 218C489 252 568 242 646 210C718 181 785 187 842 217C760 229 660 237 568 233C431 227 310 244 178 238C139 236 110 228 92 214Z" opacity=".065"/>
+ <path d="M920 265C1020 229 1114 235 1185 264C1246 289 1320 287 1380 258C1438 230 1515 232 1574 262C1512 275 1450 280 1376 277C1262 272 1135 286 1028 281C981 279 946 273 920 265Z" opacity=".06"/>
+ <path d="M130 335C256 306 377 318 472 350C557 378 659 373 746 341C837 307 950 312 1042 345C960 360 875 367 780 362C636 354 493 371 360 365C259 360 184 350 130 335Z" opacity=".04"/>
+</g>
+<path d="M0 660V568L93 518L156 538L258 446L333 500L432 384L512 452L590 412L668 505L757 352L823 409L891 375L980 495L1058 428L1135 472L1220 362L1303 443L1370 405L1455 492L1542 414L1620 468L1718 382L1815 480L1920 430V760H0Z" fill="#172b3a"/>
+<g stroke="#516777" stroke-width="5" fill="none" opacity=".22">
+ <path d="M404 410L432 384L488 447"/><path d="M724 389L757 352L815 409"/><path d="M1190 397L1220 362L1276 435"/><path d="M1682 418L1718 382L1784 459"/>
+</g>
+<path d="M0 730V648L122 590L208 622L310 540L392 590L488 516L580 602L680 528L764 608L865 510L944 574L1038 530L1134 613L1240 538L1330 595L1430 505L1514 580L1608 522L1700 600L1812 528L1920 604V820H0Z" fill="#203746"/>
+<g stroke="#6f8593" stroke-width="4" fill="none" opacity=".16">
+ <path d="M280 567L310 540L363 580"/><path d="M834 540L865 510L919 564"/><path d="M1396 537L1430 505L1490 565"/>
+</g>
+<path d="M0 795C220 742 390 760 588 728C802 695 960 748 1168 716C1395 681 1607 706 1920 670V880H0Z" fill="#102029"/>
+<path d="M0 700H1920V830H0Z" fill="url(#forest)" opacity=".88"/>
+<g transform="translate(860 635)" opacity=".88">
+ <rect x="0" y="70" width="210" height="82" fill="#172026"/><rect x="18" y="90" width="174" height="62" fill="#1c252b"/>
+ <path d="M-28 82L105 24L238 82L212 96H-2Z" fill="#0b1116"/><path d="M24 48L105 11L186 48L170 58H40Z" fill="#111a20"/>
+ <rect x="94" y="96" width="22" height="56" fill="#6b4b2e"/>
+ <rect x="34" y="105" width="18" height="24" fill="#8d5b2c"/><rect x="157" y="105" width="18" height="24" fill="#8d5b2c"/>
+ <rect x="37" y="109" width="12" height="16" fill="#d0a150" opacity=".65"/><rect x="160" y="109" width="12" height="16" fill="#d0a150" opacity=".65"/>
+</g>
+<g fill="#9fb2bf">
+ <path d="M0 705C210 675 410 715 604 692C820 667 1016 694 1200 666C1430 630 1670 668 1920 640V714C1690 747 1490 716 1282 742C1024 775 814 746 612 770C385 797 190 767 0 788Z" opacity=".12"/>
+ <path d="M0 777C250 750 408 786 638 765C875 744 1037 776 1264 752C1480 729 1676 750 1920 726V805C1692 833 1508 813 1302 840C1075 870 858 845 648 873C405 904 205 880 0 910Z" opacity=".08"/>
+</g>
+<rect x="0" y="620" width="1920" height="290" fill="url(#mistGrain)" opacity=".7"/>
+<path d="M0 846C225 808 432 835 650 805C886 774 1085 820 1314 792C1539 765 1727 782 1920 756V1080H0Z" fill="#0b141a"/>
+<g fill="#d4a35b" opacity=".55">
+ <circle cx="265" cy="807" r="2"/><circle cx="320" cy="818" r="1.5"/><circle cx="410" cy="799" r="1.8"/>
+ <circle cx="1160" cy="806" r="2"/><circle cx="1240" cy="815" r="1.5"/><circle cx="1338" cy="792" r="1.8"/><circle cx="1570" cy="804" r="1.4"/><circle cx="1638" cy="796" r="1.7"/>
+</g>
 </svg>
