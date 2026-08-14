@@ -1,0 +1,109 @@
+name: Publish PACK 01 v2 Release
+
+on:
+  pull_request:
+    paths:
+      - '.github/workflows/publish-pack-01-v2-release.yml'
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/publish-pack-01-v2-release.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  publish-pack-01-v2:
+    runs-on: ubuntu-22.04
+    timeout-minutes: 15
+    steps:
+      - name: Checkout Asset Vault
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Checkout pinned C64 game source
+        uses: actions/checkout@v4
+        with:
+          repository: Tehkne-Solutions/taijifu-masters
+          ref: 7cb383f438b005fe0024870e426f52f95c644950
+          path: _game
+          fetch-depth: 1
+
+      - name: Prove pinned source
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(git -C _game rev-parse HEAD)" = '7cb383f438b005fe0024870e426f52f95c644950'
+          echo 'PACK01_V2_RELEASE_PIN=PASS'
+
+      - name: Rebuild frozen PACK 01 v2
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 tools/build_pack_01_lian_wu_v2.py \
+            --game-root _game \
+            --game-commit 7cb383f438b005fe0024870e426f52f95c644950 \
+            --output-dir artifacts/pack01-v2 | tee pack01-v2-publish.log
+          grep -q 'PACK01_V2=PASS' pack01-v2-publish.log
+
+      - name: Verify frozen checksum evidence
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 - <<'PY'
+          import hashlib, json
+          from pathlib import Path
+          evidence=json.loads(Path('reviews/pack_01_lian_wu_first_playable/release-candidate-v2.0.0.json').read_text(encoding='utf-8'))
+          z=Path('artifacts/pack01-v2/PACK_01_LIAN_WU_FIRST_PLAYABLE_FINAL_v2.0.0.zip')
+          actual=hashlib.sha256(z.read_bytes()).hexdigest()
+          expected=evidence['sha256']
+          assert evidence['signature']=='Tehkné Solutions'
+          assert evidence['pack_id']=='pack_01_lian_wu_first_playable'
+          assert evidence['source']['commit']=='7cb383f438b005fe0024870e426f52f95c644950'
+          assert evidence['scope']['final_authored_animation_claimed'] is False
+          assert evidence['promotion']['checksum_frozen'] is True
+          assert actual==expected, (actual, expected)
+          print(f'PACK01_V2_RELEASE_CHECKSUM=PASS sha256={actual}')
+          print('SIGNATURE=Tehkné Solutions')
+          PY
+
+      - name: Validate publisher contract on pull request
+        if: github.event_name == 'pull_request'
+        run: |
+          echo 'PACK01_V2_RELEASE_PUBLISHER=PASS mode=validation_only'
+          echo 'SIGNATURE=Tehkné Solutions'
+
+      - name: Ensure release does not already exist
+        if: github.event_name != 'pull_request'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          if gh release view assets-pack-01-v2.0.0 >/dev/null 2>&1; then
+            echo 'PACK01_V2_RELEASE=BLOCKED reason=release_already_exists'
+            exit 2
+          fi
+          echo 'PACK01_V2_RELEASE_PRECHECK=PASS tag_available=true'
+
+      - name: Publish GitHub Release
+        if: github.event_name != 'pull_request'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          gh release create assets-pack-01-v2.0.0 \
+            artifacts/pack01-v2/PACK_01_LIAN_WU_FIRST_PLAYABLE_FINAL_v2.0.0.zip \
+            artifacts/pack01-v2/PACK_01_LIAN_WU_FIRST_PLAYABLE_FINAL_v2.0.0.zip.sha256 \
+            artifacts/pack01-v2/PACK_01_V2_RELEASE_MANIFEST.json \
+            --target main \
+            --title 'PACK 01 — Lian Wu First Playable v2.0.0' \
+            --notes 'Global Lian Wu First Playable pack built deterministically from the pinned C64 approved runtime lot. 10 animations / 45 frames, visual review PASS, binary promotion allowed, Godot import and real-battle presenter validated. This release intentionally does not claim final authored frame-by-frame animation; future authored replacement remains allowed. No artwork was regenerated.\n\nTehkné Solutions'
+          gh release view assets-pack-01-v2.0.0 --json tagName,name,isDraft,isPrerelease
+          echo 'PACK01_V2_RELEASE=PASS tag=assets-pack-01-v2.0.0'
+
+      - name: Summary
+        run: |
+          echo 'PACK 01 — Lian Wu First Playable v2.0.0 publisher — Tehkné Solutions' >> "$GITHUB_STEP_SUMMARY"
+          echo 'Publication is fail-closed against the frozen deterministic SHA-256 and pinned C64 source.' >> "$GITHUB_STEP_SUMMARY"
