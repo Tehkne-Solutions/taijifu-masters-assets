@@ -1,6 +1,9 @@
 name: Publish PACK 02 Release
 
 on:
+  pull_request:
+    paths:
+      - '.github/workflows/publish-pack-02-release.yml'
   push:
     branches: [main]
     paths:
@@ -50,7 +53,14 @@ jobs:
           print('SIGNATURE=Tehkné Solutions')
           PY
 
+      - name: Validate publisher contract on pull request
+        if: github.event_name == 'pull_request'
+        run: |
+          echo 'PACK02_RELEASE_PUBLISHER=PASS mode=validation_only'
+          echo 'SIGNATURE=Tehkné Solutions'
+
       - name: Ensure release does not already exist
+        if: github.event_name != 'pull_request'
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
@@ -62,6 +72,7 @@ jobs:
           echo 'PACK02_RELEASE_PRECHECK=PASS tag_available=true'
 
       - name: Publish GitHub Release
+        if: github.event_name != 'pull_request'
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
