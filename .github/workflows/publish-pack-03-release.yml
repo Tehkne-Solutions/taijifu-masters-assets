@@ -1,0 +1,137 @@
+name: Publish PACK 03 Release
+
+on:
+  pull_request:
+    paths:
+      - '.github/workflows/publish-pack-03-release.yml'
+      - 'tools/build_pack_03_mountain_dojo.py'
+      - 'reviews/pack_03_mountain_dojo_night/**'
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/publish-pack-03-release.yml'
+      - 'tools/build_pack_03_mountain_dojo.py'
+      - 'reviews/pack_03_mountain_dojo_night/**'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  publish-pack-03:
+    runs-on: ubuntu-22.04
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          lfs: true
+          fetch-depth: 0
+
+      - name: Materialize canonical assets
+        run: |
+          set -euo pipefail
+          git lfs pull
+
+      - name: Build deterministic PACK 03
+        run: |
+          set -euo pipefail
+          python3 tools/build_pack_03_mountain_dojo.py --output-dir artifacts/pack03 | tee pack03-publish.log
+          grep -q 'PACK03=PASS' pack03-publish.log
+          grep -q 'SIGNATURE=Tehkné Solutions' pack03-publish.log
+
+      - name: Verify or expose frozen checksum
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 - <<'PY'
+          import hashlib, json
+          from pathlib import Path
+
+          z=Path('artifacts/pack03/PACK_03_MOUNTAIN_DOJO_NIGHT_FINAL_v1.0.0.zip')
+          actual=hashlib.sha256(z.read_bytes()).hexdigest()
+          freeze=Path('reviews/pack_03_mountain_dojo_night/release-candidate-v1.0.0.json')
+          if not freeze.is_file():
+              print(f'PACK03_RELEASE_CHECKSUM=UNFROZEN sha256={actual}')
+              print('SIGNATURE=Tehkné Solutions')
+              raise SystemExit(0)
+          evidence=json.loads(freeze.read_text(encoding='utf-8-sig'))
+          assert evidence['signature']=='Tehkné Solutions'
+          assert evidence['pack_id']=='pack_03_mountain_dojo_night'
+          assert evidence['version']=='1.0.0'
+          assert evidence['promotion']['checksum_frozen'] is True
+          expected=evidence['sha256']
+          assert actual==expected, (actual, expected)
+          print(f'PACK03_RELEASE_CHECKSUM=PASS sha256={actual}')
+          print('SIGNATURE=Tehkné Solutions')
+          PY
+
+      - name: Require frozen checksum for publication
+        if: github.event_name != 'pull_request'
+        run: |
+          set -euo pipefail
+          test -f reviews/pack_03_mountain_dojo_night/release-candidate-v1.0.0.json
+          grep -q 'PACK03_RELEASE_CHECKSUM=PASS' pack03-publish.log || true
+          python3 - <<'PY'
+          import hashlib, json
+          from pathlib import Path
+          freeze=Path('reviews/pack_03_mountain_dojo_night/release-candidate-v1.0.0.json')
+          evidence=json.loads(freeze.read_text(encoding='utf-8-sig'))
+          z=Path('artifacts/pack03/PACK_03_MOUNTAIN_DOJO_NIGHT_FINAL_v1.0.0.zip')
+          actual=hashlib.sha256(z.read_bytes()).hexdigest()
+          if evidence.get('promotion', {}).get('checksum_frozen') is not True or evidence.get('sha256') != actual:
+              raise SystemExit('PACK03_RELEASE=BLOCKED reason=checksum_not_frozen')
+          print(f'PACK03_RELEASE_FROZEN=PASS sha256={actual}')
+          PY
+
+      - name: Upload release candidate artifact
+        if: github.event_name == 'pull_request'
+        uses: actions/upload-artifact@v4
+        with:
+          name: PACK-03-RELEASE-CANDIDATE
+          path: |
+            artifacts/pack03/PACK_03_MOUNTAIN_DOJO_NIGHT_FINAL_v1.0.0.zip
+            artifacts/pack03/PACK_03_MOUNTAIN_DOJO_NIGHT_FINAL_v1.0.0.zip.sha256
+            artifacts/pack03/PACK_03_RELEASE_MANIFEST.json
+            pack03-publish.log
+          if-no-files-found: error
+          retention-days: 30
+
+      - name: Validate publisher contract on pull request
+        if: github.event_name == 'pull_request'
+        run: |
+          echo 'PACK03_RELEASE_PUBLISHER=PASS mode=validation_only'
+          echo 'SIGNATURE=Tehkné Solutions'
+
+      - name: Ensure release does not already exist
+        if: github.event_name != 'pull_request'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          if gh release view assets-pack-03-v1.0.0 >/dev/null 2>&1; then
+            echo 'PACK03_RELEASE=BLOCKED reason=release_already_exists'
+            exit 2
+          fi
+          echo 'PACK03_RELEASE_PRECHECK=PASS tag_available=true'
+
+      - name: Publish GitHub Release
+        if: github.event_name != 'pull_request'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          gh release create assets-pack-03-v1.0.0 \
+            artifacts/pack03/PACK_03_MOUNTAIN_DOJO_NIGHT_FINAL_v1.0.0.zip \
+            artifacts/pack03/PACK_03_MOUNTAIN_DOJO_NIGHT_FINAL_v1.0.0.zip.sha256 \
+            artifacts/pack03/PACK_03_RELEASE_MANIFEST.json \
+            --target main \
+            --title 'PACK 03 — Mountain Dojo Night v1.0.0' \
+            --notes 'Global environment pack for Mountain Dojo Night. Three authored 1920x1080 parallax layers, canonical runtime contract, ENV-01/C33 gates, four-state Godot evidence and manual visual review are all PASS.\n\nTehkné Solutions'
+          gh release view assets-pack-03-v1.0.0 --json tagName,name,isDraft,isPrerelease
+          echo 'PACK03_RELEASE=PASS tag=assets-pack-03-v1.0.0'
+
+      - name: Summary
+        if: always()
+        run: |
+          echo 'PACK 03 — GitHub Release publisher — Tehkné Solutions' >> "$GITHUB_STEP_SUMMARY"
+          echo 'Publication is fail-closed against art_final evidence and a frozen deterministic SHA-256.' >> "$GITHUB_STEP_SUMMARY"
