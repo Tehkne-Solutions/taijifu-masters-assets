@@ -1,0 +1,20 @@
+{
+  "schema": "tehkne/taijifu-pack-release-candidate/v1",
+  "signature": "Tehkné Solutions",
+  "pack_id": "pack_03_mountain_dojo_night",
+  "arena_id": "mountain_dojo_night",
+  "version": "1.0.0",
+  "tag": "assets-pack-03-v1.0.0",
+  "artifact": "PACK_03_MOUNTAIN_DOJO_NIGHT_FINAL_v1.0.0.zip",
+  "sha256": "ffbea3b98ccde4bcb9f54d1aca932c9e91dd559529d7c01c38c9ba13a1dff39d",
+  "file_count": 14,
+  "source_main_commit": "701faf79eac47729bd56a7684236b94b2592ee7d",
+  "builder_commit": "0beba4bd4227ec5c6c887040c8a0de69e4bfed7c",
+  "candidate_run_id": 31840517938,
+  "candidate_artifact_id": 9234060516,
+  "promotion": {
+    "checksum_frozen": true,
+    "publication_allowed_only_after_pr_validation": true,
+    "release_must_not_preexist": true
+  }
+}
