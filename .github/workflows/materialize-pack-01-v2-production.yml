@@ -1,0 +1,173 @@
+name: Materialize PACK 01 v2 Production Frames
+
+on:
+  push:
+    branches:
+      - agent/materialize-lian-pack01-v2-production
+    paths:
+      - '.github/workflows/materialize-pack-01-v2-production.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  materialize-lian-v2:
+    runs-on: ubuntu-22.04
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          lfs: true
+          fetch-depth: 0
+
+      - name: Fetch only the released C64 game-source subtree
+        shell: bash
+        run: |
+          set -euo pipefail
+          rm -rf .release-game-source
+          git init -q .release-game-source
+          git -C .release-game-source remote add origin https://github.com/Tehkne-Solutions/taijifu-masters.git
+          git -C .release-game-source fetch --quiet --depth=1 --filter=blob:none origin 7cb550161885c167664eb3e3ddd4597fafdc605c
+          git -C .release-game-source sparse-checkout init --cone
+          git -C .release-game-source sparse-checkout set artifacts/sprints/c64_lian_first_playable_lot01
+          git -C .release-game-source checkout --quiet --detach FETCH_HEAD
+          test "$(git -C .release-game-source rev-parse HEAD)" = '7cb550161885c167664eb3e3ddd4597fafdc605c'
+          echo 'PACK01_V2_C64_BLOBLESS_FETCH=PASS'
+
+      - name: Pull only C64 LFS objects
+        shell: bash
+        run: |
+          set -euo pipefail
+          git -C .release-game-source lfs install --local
+          git -C .release-game-source lfs pull \
+            --include='artifacts/sprints/c64_lian_first_playable_lot01/**' \
+            --exclude=''
+          test -f .release-game-source/artifacts/sprints/c64_lian_first_playable_lot01/lian_wu_c64_first_playable_lot01_16f_master_v1.png
+          python3 - <<'PY'
+          from pathlib import Path
+          p=Path('.release-game-source/artifacts/sprints/c64_lian_first_playable_lot01/lian_wu_c64_first_playable_lot01_16f_master_v1.png')
+          if p.read_bytes()[:8] != b'\x89PNG\r\n\x1a\n':
+              raise SystemExit('PACK01_V2_C64_LFS=BLOCKED reason=pointer_not_materialized')
+          print('PACK01_V2_C64_SPARSE_LFS=PASS')
+          PY
+
+      - name: Install builder dependency
+        run: python3 -m pip install --disable-pip-version-check pillow
+
+      - name: Rebuild exact PACK 01 v2 release
+        shell: bash
+        run: |
+          set -euo pipefail
+          git lfs pull
+          rm -rf artifacts/pack01-v2-rematerialized
+          python3 tools/build_pack_01_lian_wu_v2.py \
+            --game-source .release-game-source \
+            --output-dir artifacts/pack01-v2-rematerialized | tee pack01-v2-materialize.log
+          grep -q 'PACK01_V2_BUILD=PASS' pack01-v2-materialize.log
+          grep -q 'PACK01_V2_FRAME_COUNT=PASS total=45' pack01-v2-materialize.log
+
+      - name: Require exact published release checksum
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 - <<'PY'
+          import hashlib, json
+          from pathlib import Path
+          freeze=json.loads(Path('reviews/pack_01_lian_wu/release-candidate-v2.0.0.json').read_text(encoding='utf-8-sig'))
+          z=Path('artifacts/pack01-v2-rematerialized/PACK_01_LIAN_WU_FIRST_PLAYABLE_v2.0.0.zip')
+          actual=hashlib.sha256(z.read_bytes()).hexdigest()
+          expected=freeze['sha256']
+          if actual != expected:
+              raise SystemExit(f'PACK01_V2_REMATERIALIZE=BLOCKED actual={actual} expected={expected}')
+          if actual != 'c664a44d8124a398be534781c31792133172bdb2ab4dcbfe94d7cb6408c78e43':
+              raise SystemExit('PACK01_V2_REMATERIALIZE=BLOCKED reason=unexpected_frozen_sha')
+          print(f'PACK01_V2_REMATERIALIZE_SHA256=PASS sha256={actual}')
+          print('SIGNATURE=Tehkné Solutions')
+          PY
+
+      - name: Materialize 45 canonical frames into production tree
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 - <<'PY'
+          import json, shutil, zipfile
+          from pathlib import Path
+
+          zip_path=Path('artifacts/pack01-v2-rematerialized/PACK_01_LIAN_WU_FIRST_PLAYABLE_v2.0.0.zip')
+          temp=Path('artifacts/pack01-v2-rematerialized/extracted')
+          if temp.exists(): shutil.rmtree(temp)
+          temp.mkdir(parents=True)
+          with zipfile.ZipFile(zip_path) as zf:
+              zf.extractall(temp)
+
+          source=temp/'first_playable_lot_01'/'animations'
+          destination=Path('production/first_playable/characters/lian_wu')
+          frames_root=destination/'frames'
+          if destination.exists(): shutil.rmtree(destination)
+          frames_root.mkdir(parents=True)
+
+          matrix=[]
+          total=0
+          for animation_dir in sorted(p for p in source.iterdir() if p.is_dir()):
+              target=frames_root/animation_dir.name
+              shutil.copytree(animation_dir,target)
+              files=sorted(p.name for p in target.iterdir() if p.suffix.lower()=='.png')
+              total += len(files)
+              matrix.append({'animation_id':animation_dir.name,'files':files,'count':len(files)})
+
+          if total != 45 or len(matrix) != 10:
+              raise SystemExit(f'PACK01_V2_PRODUCTION=BLOCKED frames={total} animations={len(matrix)}')
+
+          manifest={
+              'schema':'tehkne/taijifu-first-playable-art-production/v1',
+              'signature':'Tehkné Solutions',
+              'character_id':'lian_wu',
+              'character_name':'Lian Wu',
+              'status':'canonical_release_v2_materialized',
+              'release_tag':'assets-pack-01-v2.0.0',
+              'release_sha256':'c664a44d8124a398be534781c31792133172bdb2ab4dcbfe94d7cb6408c78e43',
+              'game_source_commit':'7cb550161885c167664eb3e3ddd4597fafdc605c',
+              'required_frames':45,
+              'required_animations':10,
+              'matrix':matrix,
+              'reviews':{
+                  'identity':'pass',
+                  'silhouette':'pass',
+                  'gameplay':'pass',
+                  'technical':'pass'
+              }
+          }
+          (destination/'manifest.json').write_text(json.dumps(manifest,indent=2,ensure_ascii=False)+'\n',encoding='utf-8')
+          print(f'PACK01_V2_PRODUCTION=PASS frames={total} animations={len(matrix)}')
+          print('SIGNATURE=Tehkné Solutions')
+          PY
+
+      - name: Verify LFS routing and commit canonical production frames
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(find production/first_playable/characters/lian_wu/frames -type f -name '*.png' | wc -l)" -eq 45
+          sample=$(find production/first_playable/characters/lian_wu/frames -type f -name '*.png' | sort | head -n 1)
+          git check-attr filter -- "$sample" | grep -q 'filter: lfs'
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add production/first_playable/characters/lian_wu
+          git commit -m 'PACK 01 v2 materialize released Lian Wu production frames'
+          git push origin HEAD:agent/materialize-lian-pack01-v2-production
+          echo 'PACK01_V2_PRODUCTION_COMMIT=PASS'
+
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: PACK-01-V2-PRODUCTION-REMATERIALIZATION
+          path: |
+            pack01-v2-materialize.log
+            artifacts/pack01-v2-rematerialized/PACK_01_RELEASE_MANIFEST.json
+            production/first_playable/characters/lian_wu/manifest.json
+          if-no-files-found: ignore
+          retention-days: 30
+
+      - name: Summary
+        if: always()
+        run: echo 'PACK 01 v2 released-frame rematerialization — Tehkné Solutions' >> "$GITHUB_STEP_SUMMARY"
