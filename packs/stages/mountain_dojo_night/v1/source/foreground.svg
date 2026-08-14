@@ -13,29 +13,29 @@
     <path d="M1920 960 L1795 920 L1675 985 L1650 1080 L1920 1080 Z" fill="#151c22"/>
   </g>
   <g id="left-bamboo" stroke="#2b3a31" stroke-width="18" stroke-linecap="round" fill="none">
-    <path d="M86 860 C115 700 105 540 145 365"/><path d="M150 895 C200 720 205 590 250 435"/><path d="M214 930 C240 760 305 625 330 500"/>
+    <path d="M70 860 C95 700 92 540 122 365"/><path d="M128 895 C165 720 168 590 208 435"/><path d="M180 930 C198 760 220 625 238 500"/>
   </g>
   <g id="right-bamboo" stroke="#2b3a31" stroke-width="18" stroke-linecap="round" fill="none">
-    <path d="M1834 860 C1805 700 1815 540 1775 365"/><path d="M1770 895 C1720 720 1715 590 1670 435"/><path d="M1706 930 C1680 760 1615 625 1590 500"/>
+    <path d="M1850 860 C1825 700 1828 540 1798 365"/><path d="M1792 895 C1755 720 1752 590 1712 435"/><path d="M1740 930 C1722 760 1700 625 1682 500"/>
   </g>
   <g fill="#405847">
-    <path d="M118 520 l-62-28 70-14z"/><path d="M142 610 l-78-18 76-29z"/><path d="M198 655 l-62-41 82 3z"/><path d="M240 555 l-70-22 74-20z"/><path d="M294 640 l-60-42 78 2z"/>
-    <path d="M1802 520 l62-28-70-14z"/><path d="M1778 610 l78-18-76-29z"/><path d="M1722 655 l62-41-82 3z"/><path d="M1680 555 l70-22-74-20z"/><path d="M1626 640 l60-42-78 2z"/>
+    <path d="M100 520 l-58-28 66-14z"/><path d="M128 610 l-70-18 68-29z"/><path d="M178 655 l-58-41 74 3z"/><path d="M212 555 l-62-22 66-20z"/><path d="M240 640 l-52-42 66 2z"/>
+    <path d="M1820 520 l58-28-66-14z"/><path d="M1792 610 l70-18-68-29z"/><path d="M1742 655 l58-41-74 3z"/><path d="M1708 555 l62-22-66-20z"/><path d="M1680 640 l52-42-66 2z"/>
   </g>
-  <g id="near-lantern-left" transform="translate(170 690)">
+  <g id="near-lantern-left" transform="translate(155 690)">
     <rect x="-16" y="-120" width="32" height="210" fill="#17130f"/>
     <rect x="-42" y="-88" width="84" height="108" rx="12" fill="#9c5421"/>
     <rect x="-30" y="-75" width="60" height="82" rx="9" fill="#e2a854"/>
     <rect x="-56" y="20" width="112" height="18" fill="#17130f"/>
   </g>
-  <g id="near-lantern-right" transform="translate(1750 690)">
+  <g id="near-lantern-right" transform="translate(1765 690)">
     <rect x="-16" y="-120" width="32" height="210" fill="#17130f"/>
     <rect x="-42" y="-88" width="84" height="108" rx="12" fill="#9c5421"/>
     <rect x="-30" y="-75" width="60" height="82" rx="9" fill="#e2a854"/>
     <rect x="-56" y="20" width="112" height="18" fill="#17130f"/>
   </g>
   <g opacity="0.18" fill="#e4aa57">
-    <ellipse cx="170" cy="795" rx="145" ry="34"/><ellipse cx="1750" cy="795" rx="145" ry="34"/>
+    <ellipse cx="155" cy="795" rx="95" ry="30"/><ellipse cx="1765" cy="795" rx="95" ry="30"/>
   </g>
   <g id="near-grass" fill="#26352d">
     <path d="M0 1010 l42-98 15 89 50-120 18 126 48-102 18 105 52-76 14 146H0Z"/>
