@@ -1,7 +1,7 @@
 {
   "schema": "taijifu/asset-vault-catalog/v1",
   "project": "taijifu-masters",
-  "updated_at": "2026-08-14T12:14:00Z",
+  "updated_at": "2026-08-14T12:15:00Z",
   "pack_taxonomy": {
     "rule": "PACK NN identifies a global product deliverable. P01/P02/etc inside a character are technical subpacks and never replace the global PACK sequence.",
     "delivery_requires": [
@@ -62,7 +62,7 @@
       "filename": "PACK_02_TRAINING_RIVAL_FIRST_PLAYABLE_FINAL_v1.0.0.zip",
       "sha256": "41d1bef57f6b514c931b7c397bc219fa2349601e230113376d8a883849552020",
       "file_count": 57,
-      "status": "release_candidate_built_validated_pending_github_release",
+      "status": "released_runtime_active",
       "engine": "godot",
       "character_id": "training_rival",
       "source_root": "production/first_playable/training_rival/first_playable_lot_01",
@@ -93,9 +93,17 @@
         "artifact_workflow_run_id": 31799047870,
         "artifact_id": 9218499539,
         "artifact_digest": "sha256:a49fe67cf5c308ecb45a3d69be5f2abc3d61d0ad2e483fa5164ddb3cc13c7559",
-        "github_release_published": false
+        "github_release_published": true,
+        "github_release_id": 370552281,
+        "publisher_workflow_run_id": 31799466439,
+        "published_at": "2026-08-14T12:14:25Z",
+        "release_assets": {
+          "zip_asset_id": 514381068,
+          "checksum_asset_id": 514381069,
+          "manifest_asset_id": 514381070
+        }
       },
-      "next_action": "Publish the already-validated deterministic ZIP as GitHub Release assets-pack-02-v1.0.0; no art regeneration is permitted."
+      "next_action": "Treat PACK 02 as released and immutable; use the release as the global Training Rival source and move production to PACK 01 v1.0.1 and PACK 03 final art."
     },
     {
       "pack_id": "pack_03_mountain_dojo_night",
