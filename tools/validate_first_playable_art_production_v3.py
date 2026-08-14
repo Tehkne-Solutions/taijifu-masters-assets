@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Strict canonical First Playable art validator: Lian Wu 45 + Training Rival 44.
+"""Strict canonical First Playable art validator: released Lian Wu 45 + Training Rival 44.
 
 This validator intentionally does not inherit the historical 44/44 contract.
 Signature: Tehkné Solutions
@@ -21,33 +21,36 @@ SIGNATURE = "Tehkné Solutions"
 EXPECTED = {
     "lian_wu": {
         "prefix": "char_lian_wu",
+        "digits": 2,
         "frames": 45,
         "animations": {
-            "idle": 4,
-            "walk": 6,
-            "jump_start": 2,
-            "jump_loop": 4,
-            "land": 3,
-            "light_attack": 6,
-            "heavy_attack": 6,
+            "idle": 6,
+            "run": 8,
+            "jump_start": 4,
+            "airborne": 3,
+            "fall": 3,
+            "attack_light": 6,
             "guard": 1,
+            "dodge": 5,
             "hit": 4,
-            "ko": 9,
+            "ko": 5,
         },
     },
     "training_rival": {
         "prefix": "char_training_rival",
+        "digits": 3,
         "frames": 44,
         "animations": {
-            "idle": 4,
-            "walk": 6,
-            "jump_start": 2,
-            "jump_loop": 4,
-            "land": 3,
-            "light_attack": 6,
-            "heavy_attack": 6,
-            "hit": 4,
-            "ko": 9,
+            "idle": 6,
+            "run": 8,
+            "jump_start": 3,
+            "airborne": 2,
+            "fall": 2,
+            "attack_light": 6,
+            "guard": 3,
+            "dodge": 5,
+            "hit": 3,
+            "ko": 6,
         },
     },
 }
@@ -102,12 +105,12 @@ def validate_character(character: str, spec: dict) -> dict:
     animation_complete = 0
 
     if not manifest_path.exists():
-        return {"character": character, "frames": 0, "animations": 0, "errors": ["manifest_missing"], "complete": False}
+        return {"character": character, "frames": 0, "expected_frames": spec["frames"], "animations": 0, "expected_animations": len(spec["animations"]), "errors": ["manifest_missing"], "complete": False}
 
     try:
         manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
     except Exception as exc:
-        return {"character": character, "frames": 0, "animations": 0, "errors": [f"manifest_invalid:{exc}"], "complete": False}
+        return {"character": character, "frames": 0, "expected_frames": spec["frames"], "animations": 0, "expected_animations": len(spec["animations"]), "errors": [f"manifest_invalid:{exc}"], "complete": False}
 
     if manifest.get("signature") != SIGNATURE:
         errors.append("signature_invalid")
@@ -121,11 +124,12 @@ def validate_character(character: str, spec: dict) -> dict:
     maximum = int(canvas.get("max", 1024))
     dimensions: set[tuple[int, int]] = set()
     animation_root = lot_root / "animations"
+    digits = int(spec["digits"])
 
     for animation, expected_count in spec["animations"].items():
         folder = animation_root / animation
         expected_names = {
-            f"{spec['prefix']}__{animation}__f{index:03d}.png"
+            f"{spec['prefix']}__{animation}__f{index:0{digits}d}.png"
             for index in range(1, expected_count + 1)
         }
         actual_files = sorted(folder.glob("*.png")) if folder.exists() else []
@@ -140,7 +144,7 @@ def validate_character(character: str, spec: dict) -> dict:
         if not missing and not unexpected and len(actual_files) == expected_count:
             animation_complete += 1
 
-        pattern = re.compile(rf"^{re.escape(spec['prefix'])}__{re.escape(animation)}__f\d{{3}}\.png$")
+        pattern = re.compile(rf"^{re.escape(spec['prefix'])}__{re.escape(animation)}__f\d{{{digits}}}\.png$")
         for frame in actual_files:
             if not pattern.match(frame.name):
                 errors.append(f"filename_invalid:{frame.name}")
