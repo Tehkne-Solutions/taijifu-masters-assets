@@ -1,4 +1,6 @@
 ENV-01 final art candidate intake is open.
 Status: art_pending.
+Phase: final_layer_materialization.
+C33 transition: candidate-aware gate is active in main.
 Promotion remains blocked until three separate final layers, Godot captures, and manual visual PASS exist.
 Tehkné Solutions
