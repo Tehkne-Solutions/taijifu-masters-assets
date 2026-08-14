@@ -1,54 +1,60 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="1920" height="1080" viewBox="0 0 1920 1080">
-  <title>Mountain Dojo Night — Foreground Layer</title>
-  <desc>Authored transparent near-depth framing layer for PACK 03. Tehkné Solutions.</desc>
-  <rect width="1920" height="1080" fill="#000" fill-opacity="0"/>
-  <g id="left-rocks" fill="#202931">
-    <path d="M0 845 L92 790 L168 820 L226 902 L195 1080 L0 1080 Z"/>
-    <path d="M72 900 L142 850 L230 905 L258 1080 L94 1080 Z" fill="#2d3942"/>
-    <path d="M0 960 L125 920 L245 985 L270 1080 L0 1080 Z" fill="#151c22"/>
-  </g>
-  <g id="right-rocks" fill="#202931">
-    <path d="M1920 845 L1828 790 L1752 820 L1694 902 L1725 1080 L1920 1080 Z"/>
-    <path d="M1848 900 L1778 850 L1690 905 L1662 1080 L1826 1080 Z" fill="#2d3942"/>
-    <path d="M1920 960 L1795 920 L1675 985 L1650 1080 L1920 1080 Z" fill="#151c22"/>
-  </g>
-  <g id="left-bamboo" stroke="#2b3a31" stroke-width="18" stroke-linecap="round" fill="none">
-    <path d="M70 860 C95 700 92 540 122 365"/><path d="M128 895 C165 720 168 590 208 435"/><path d="M180 930 C198 760 220 625 238 500"/>
-  </g>
-  <g id="right-bamboo" stroke="#2b3a31" stroke-width="18" stroke-linecap="round" fill="none">
-    <path d="M1850 860 C1825 700 1828 540 1798 365"/><path d="M1792 895 C1755 720 1752 590 1712 435"/><path d="M1740 930 C1722 760 1700 625 1682 500"/>
-  </g>
-  <g fill="#405847">
-    <path d="M100 520 l-58-28 66-14z"/><path d="M128 610 l-70-18 68-29z"/><path d="M178 655 l-58-41 74 3z"/><path d="M212 555 l-62-22 66-20z"/><path d="M240 640 l-52-42 66 2z"/>
-    <path d="M1820 520 l58-28-66-14z"/><path d="M1792 610 l70-18-68-29z"/><path d="M1742 655 l58-41-74 3z"/><path d="M1708 555 l62-22-66-20z"/><path d="M1680 640 l52-42-66 2z"/>
-  </g>
-  <g id="near-lantern-left" transform="translate(155 690)">
-    <rect x="-16" y="-120" width="32" height="210" fill="#17130f"/>
-    <rect x="-42" y="-88" width="84" height="108" rx="12" fill="#9c5421"/>
-    <rect x="-30" y="-75" width="60" height="82" rx="9" fill="#e2a854"/>
-    <rect x="-56" y="20" width="112" height="18" fill="#17130f"/>
-  </g>
-  <g id="near-lantern-right" transform="translate(1765 690)">
-    <rect x="-16" y="-120" width="32" height="210" fill="#17130f"/>
-    <rect x="-42" y="-88" width="84" height="108" rx="12" fill="#9c5421"/>
-    <rect x="-30" y="-75" width="60" height="82" rx="9" fill="#e2a854"/>
-    <rect x="-56" y="20" width="112" height="18" fill="#17130f"/>
-  </g>
-  <g opacity="0.18" fill="#e4aa57">
-    <ellipse cx="155" cy="795" rx="95" ry="30"/><ellipse cx="1765" cy="795" rx="95" ry="30"/>
-  </g>
-  <g id="near-grass" fill="#26352d">
-    <path d="M0 1010 l42-98 15 89 50-120 18 126 48-102 18 105 52-76 14 146H0Z"/>
-    <path d="M1920 1010 l-42-98-15 89-50-120-18 126-48-102-18 105-52-76-14 146h257Z"/>
-  </g>
-  <g id="edge-rails" stroke="#151b20" stroke-width="16" fill="none">
-    <path d="M255 865 L420 1005"/><path d="M1665 865 L1500 1005"/>
-  </g>
-  <g id="edge-caps" fill="#2b333a">
-    <rect x="300" y="900" width="82" height="34" rx="9" transform="rotate(40 341 917)"/>
-    <rect x="1538" y="900" width="82" height="34" rx="9" transform="rotate(-40 1579 917)"/>
-  </g>
-  <g opacity="0.55" fill="#61717b">
-    <circle cx="88" cy="910" r="5"/><circle cx="220" cy="960" r="4"/><circle cx="1810" cy="920" r="5"/><circle cx="1698" cy="965" r="4"/>
-  </g>
+<title>Mountain Dojo Night — Foreground Layer v2.1</title>
+<desc>Sparse transparent near-depth frame, confined outside combat safe-zone. Tehkné Solutions.</desc>
+<defs>
+ <pattern id="rockgrain" width="42" height="38" patternUnits="userSpaceOnUse">
+   <rect width="42" height="38" fill="#1b2429"/>
+   <path d="M3 31L15 8L37 12M12 35L34 20" stroke="#55636a" stroke-width="2" opacity=".16" fill="none"/>
+ </pattern>
+</defs>
+<g id="left-near">
+ <path d="M0 790L62 760L105 776L145 742L194 770L232 824L268 905L250 1080H0Z" fill="url(#rockgrain)"/>
+ <path d="M0 902L88 862L157 884L226 956L252 1080H0Z" fill="#10181c"/>
+ <g stroke="#34493c" stroke-width="16" stroke-linecap="round" fill="none">
+  <path d="M38 836C58 682 56 536 90 350"/><path d="M100 862C126 705 132 580 170 421"/><path d="M165 900C184 735 205 635 230 503"/>
+ </g>
+ <g stroke="#627263" stroke-width="3" opacity=".3">
+  <path d="M51 728L75 728M63 635L88 635M78 530L101 530"/><path d="M117 750L142 750M132 658L156 658M150 564L178 564"/><path d="M184 770L210 770M198 682L220 682M216 590L237 590"/>
+ </g>
+ <g fill="#385241">
+  <path d="M83 482L18 458L78 438L112 456Z"/><path d="M98 576L28 551L96 529L127 548Z"/><path d="M145 510L91 472L154 479L177 505Z"/>
+  <path d="M176 620L112 580L184 588L210 618Z"/><path d="M219 548L166 509L231 516L255 545Z"/><path d="M226 684L168 650L236 651L265 680Z"/>
+ </g>
+ <g transform="translate(194 670)">
+  <path d="M0-185V-70" stroke="#201812" stroke-width="10"/><path d="M-48-70H48L58 18L38 40H-38L-58 18Z" fill="#6e3d21" stroke="#17110d" stroke-width="7"/>
+  <path d="M-31-52H31L38 8H-38Z" fill="#d09a55" opacity=".75"/><path d="M-14-46H14L19 2H-19Z" fill="#f0c781" opacity=".35"/><path d="M-68 46H68" stroke="#17110d" stroke-width="10"/>
+ </g>
+ <ellipse cx="194" cy="812" rx="72" ry="19" fill="#cc9348" opacity=".09"/>
+</g>
+<g id="right-near">
+ <path d="M1920 786L1856 756L1813 777L1772 744L1724 773L1684 826L1650 905L1668 1080H1920Z" fill="url(#rockgrain)"/>
+ <path d="M1920 902L1834 860L1762 884L1694 958L1666 1080H1920Z" fill="#10181c"/>
+ <g stroke="#34493c" stroke-width="16" stroke-linecap="round" fill="none">
+  <path d="M1882 838C1861 683 1864 536 1830 350"/><path d="M1820 862C1794 705 1788 580 1750 421"/><path d="M1755 900C1736 735 1715 635 1690 503"/>
+ </g>
+ <g stroke="#627263" stroke-width="3" opacity=".3">
+  <path d="M1869 728L1845 728M1857 635L1832 635M1842 530L1819 530"/><path d="M1803 750L1778 750M1788 658L1764 658M1770 564L1742 564"/><path d="M1736 770L1710 770M1722 682L1700 682M1704 590L1683 590"/>
+ </g>
+ <g fill="#385241">
+  <path d="M1837 482L1902 458L1842 438L1808 456Z"/><path d="M1822 576L1892 551L1824 529L1793 548Z"/><path d="M1775 510L1829 472L1766 479L1743 505Z"/>
+  <path d="M1744 620L1808 580L1736 588L1710 618Z"/><path d="M1701 548L1754 509L1689 516L1665 545Z"/><path d="M1694 684L1752 650L1684 651L1655 680Z"/>
+ </g>
+ <g transform="translate(1726 670)">
+  <path d="M0-185V-70" stroke="#201812" stroke-width="10"/><path d="M-48-70H48L58 18L38 40H-38L-58 18Z" fill="#6e3d21" stroke="#17110d" stroke-width="7"/>
+  <path d="M-31-52H31L38 8H-38Z" fill="#d09a55" opacity=".75"/><path d="M-14-46H14L19 2H-19Z" fill="#f0c781" opacity=".35"/><path d="M-68 46H68" stroke="#17110d" stroke-width="10"/>
+ </g>
+ <ellipse cx="1726" cy="812" rx="72" ry="19" fill="#cc9348" opacity=".09"/>
+</g>
+<g fill="#22352b">
+ <path d="M0 1012L32 906L49 994L79 887L92 1000L132 914L143 1008L188 930L201 1080H0Z"/>
+ <path d="M1920 1012L1888 906L1871 994L1841 887L1828 1000L1788 914L1777 1008L1732 930L1719 1080H1920Z"/>
+</g>
+<g opacity=".9">
+ <path d="M242 930L335 982" stroke="#171d20" stroke-width="14" stroke-linecap="round"/><path d="M1678 930L1585 982" stroke="#171d20" stroke-width="14" stroke-linecap="round"/>
+ <rect x="276" y="955" width="74" height="28" rx="8" fill="#303a3f" transform="rotate(27 313 969)"/><rect x="1570" y="955" width="74" height="28" rx="8" fill="#303a3f" transform="rotate(-27 1607 969)"/>
+</g>
+<g fill="#53604a" opacity=".58">
+ <ellipse cx="52" cy="610" rx="16" ry="5" transform="rotate(-24 52 610)"/><ellipse cx="116" cy="703" rx="13" ry="4" transform="rotate(17 116 703)"/><ellipse cx="238" cy="760" rx="14" ry="5" transform="rotate(-12 238 760)"/>
+ <ellipse cx="1868" cy="615" rx="16" ry="5" transform="rotate(24 1868 615)"/><ellipse cx="1802" cy="706" rx="13" ry="4" transform="rotate(-17 1802 706)"/><ellipse cx="1684" cy="764" rx="14" ry="5" transform="rotate(12 1684 764)"/>
+</g>
 </svg>
