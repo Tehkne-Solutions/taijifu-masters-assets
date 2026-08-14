@@ -1,0 +1,57 @@
+{
+  "schema": "tehkne/taijifu-env01-final-art-evidence/v1",
+  "signature": "Tehkné Solutions",
+  "stage": "ENV-01",
+  "arena_id": "mountain_dojo_night",
+  "art_pass": "v2.1",
+  "asset_candidate_commit": "059e0515e0a013b49202242a80c69425d4776f84",
+  "asset_materializer_run_id": 31838440961,
+  "game_runtime_integration_commit": "4d48d2bffc4780f1984269d1de95f9a024bfdba4",
+  "game_runtime_review_run_id": 31839833809,
+  "runtime_review_artifact_id": 9233860630,
+  "runtime_review_artifact_digest": "sha256:304d5ad82c70380dc5b46c0fe99fb5f439f9abc60c4f81172387938471e49d51",
+  "godot_runtime_capture": "PASS",
+  "manual_visual_review": "PASS",
+  "reviewed_states": [
+    "neutral_duo",
+    "physical_hit",
+    "critical_posture_break",
+    "elemental_state"
+  ],
+  "capture_evidence": {
+    "neutral_duo": {
+      "file": "ENV01_NEUTRAL_DUO.review-1920x1080.png",
+      "bytes": 531766,
+      "sha256": "bc26cecac02960ecace2752e3ec09f0b8f898c8478d1b45a110c512b6ae3cb49"
+    },
+    "physical_hit": {
+      "file": "ENV01_PHYSICAL_HIT.review-1920x1080.png",
+      "bytes": 539526,
+      "sha256": "d7c7e549d6f407945d9ee932c15b842a1eda78f92c8e0159523762ff97a6a69e"
+    },
+    "critical_posture_break": {
+      "file": "ENV01_CRITICAL_POSTURE_BREAK.review-1920x1080.png",
+      "bytes": 543160,
+      "sha256": "465223d4c362499fcabfcf6b5d26f3bb26c97f2146cf49d461e506def19d656d"
+    },
+    "elemental_state": {
+      "file": "ENV01_ELEMENTAL_STATE.review-1920x1080.png",
+      "bytes": 553016,
+      "sha256": "6665a7640540f2b0b61df338b37777899417f21bb76a9d35511a862223108fc0"
+    }
+  },
+  "review": {
+    "canonical_stage_visible": true,
+    "legacy_blockout_visuals_retired": true,
+    "canonical_stage_name_visible": "MOUNTAIN DOJO NIGHT",
+    "fighter_first_read": "PASS",
+    "dojo_identity": "PASS",
+    "cool_warm_hierarchy": "PASS",
+    "foreground_safe_zone": "PASS",
+    "physical_vfx_readability": "PASS",
+    "critical_vfx_readability": "PASS",
+    "elemental_vfx_readability": "PASS",
+    "notes": "Candidate v1 was rejected for flat geometric runtime read. Art pass v2.1 plus runtime ownership/origin fixes were reviewed in-engine at 1920x1080 and passed the ENV-01 visual contract."
+  },
+  "promotion_decision": "PASS"
+}
