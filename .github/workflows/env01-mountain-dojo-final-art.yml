@@ -14,33 +14,160 @@ jobs:
         with:
           lfs: true
       - run: git lfs pull
-      - name: Validate promotion state
+      - name: Validate layer structure and promotion state
+        shell: bash
         run: |
+          set -euo pipefail
           python3 - <<'PY'
+          import hashlib
           import json
+          import struct
+          import subprocess
+          import zlib
           from pathlib import Path
-          root=Path('packs/stages/mountain_dojo_night/v1')
-          m=json.loads((root/'manifest.json').read_text(encoding='utf-8'))
-          c=json.loads((root/'ENV01_FINAL_ART_CONTRACT.json').read_text(encoding='utf-8'))
-          assert c['signature']=='Tehkné Solutions'
-          assert c['stage']=='ENV-01'
-          assert all((root/n).is_file() for n in c['required_layers'])
-          s=m.get('status')
-          ready=m.get('promotion',{}).get('canonical_ready')
-          e=root/'ENV01_FINAL_ART_EVIDENCE.json'
-          if s=='art_pending':
-              assert ready is False
-              print('ENV01_PHASE=PASS state=art_pending')
-          elif s=='art_final':
-              assert ready is True and e.is_file()
-              d=json.loads(e.read_text(encoding='utf-8-sig'))
-              assert d.get('manual_visual_review')=='PASS'
-              assert d.get('godot_runtime_capture')=='PASS'
-              req={'neutral_duo','physical_hit','critical_posture_break','elemental_state'}
-              assert req.issubset(set(d.get('reviewed_states',[])))
-              print('ENV01_PHASE=PASS state=art_final')
+
+          root = Path('packs/stages/mountain_dojo_night/v1')
+          manifest = json.loads((root / 'manifest.json').read_text(encoding='utf-8'))
+          contract = json.loads((root / 'ENV01_FINAL_ART_CONTRACT.json').read_text(encoding='utf-8'))
+          production = json.loads((root / 'ENV01_LAYER_PRODUCTION_SPEC.json').read_text(encoding='utf-8'))
+
+          if contract.get('signature') != 'Tehkné Solutions' or contract.get('stage') != 'ENV-01':
+              raise SystemExit('ENV01_CONTRACT=BLOCKED reason=identity')
+          if production.get('signature') != 'Tehkné Solutions' or production.get('stage') != 'ENV-01':
+              raise SystemExit('ENV01_PRODUCTION_SPEC=BLOCKED reason=identity')
+          if production.get('ground_y') != 820 or production.get('safe_fighter_zone') != [280, 1640]:
+              raise SystemExit('ENV01_PRODUCTION_SPEC=BLOCKED reason=runtime_contract')
+
+          expected_parallax = {
+              'background.png': 0.18,
+              'midground.png': 0.48,
+              'foreground.png': 1.0,
+          }
+          manifest_layers = {entry['file']: entry for entry in manifest.get('layers', [])}
+          for name, expected in expected_parallax.items():
+              entry = manifest_layers.get(name)
+              if entry is None or float(entry.get('parallax', -1)) != expected:
+                  raise SystemExit(f'ENV01_LAYER=BLOCKED file={name} reason=parallax')
+
+          foreground_baseline = '077de249b57b6fcc1a1bc53b165cb5b06b29fa129f40c00328934d50e1678a13'
+          png_signature = b'\x89PNG\r\n\x1a\n'
+
+          def png_info(path):
+              data = path.read_bytes()
+              if data[:8] != png_signature or len(data) < 33:
+                  raise SystemExit(f'ENV01_LAYER=BLOCKED file={path.name} reason=png_signature')
+              width, height = struct.unpack('>II', data[16:24])
+              bit_depth = data[24]
+              color_type = data[25]
+              interlace = data[28]
+              return data, width, height, bit_depth, color_type, interlace
+
+          def transparent_pixel_count_rgba8(data, width, height):
+              pos = 8
+              idat = bytearray()
+              while pos + 12 <= len(data):
+                  length = struct.unpack('>I', data[pos:pos+4])[0]
+                  kind = data[pos+4:pos+8]
+                  payload = data[pos+8:pos+8+length]
+                  if kind == b'IDAT':
+                      idat.extend(payload)
+                  pos += 12 + length
+                  if kind == b'IEND':
+                      break
+              raw = zlib.decompress(bytes(idat))
+              stride = width * 4
+              expected = height * (stride + 1)
+              if len(raw) != expected:
+                  raise SystemExit('ENV01_FOREGROUND_ALPHA=BLOCKED reason=unexpected_scanline_size')
+
+              def paeth(a, b, c):
+                  p = a + b - c
+                  pa, pb, pc = abs(p-a), abs(p-b), abs(p-c)
+                  if pa <= pb and pa <= pc:
+                      return a
+                  if pb <= pc:
+                      return b
+                  return c
+
+              previous = bytearray(stride)
+              offset = 0
+              transparent = 0
+              for _ in range(height):
+                  filter_type = raw[offset]
+                  scan = bytearray(raw[offset+1:offset+1+stride])
+                  offset += stride + 1
+                  for i in range(stride):
+                      left = scan[i-4] if i >= 4 else 0
+                      up = previous[i]
+                      up_left = previous[i-4] if i >= 4 else 0
+                      if filter_type == 0:
+                          value = scan[i]
+                      elif filter_type == 1:
+                          value = (scan[i] + left) & 255
+                      elif filter_type == 2:
+                          value = (scan[i] + up) & 255
+                      elif filter_type == 3:
+                          value = (scan[i] + ((left + up) // 2)) & 255
+                      elif filter_type == 4:
+                          value = (scan[i] + paeth(left, up, up_left)) & 255
+                      else:
+                          raise SystemExit('ENV01_FOREGROUND_ALPHA=BLOCKED reason=unsupported_filter')
+                      scan[i] = value
+                  transparent += sum(1 for i in range(3, stride, 4) if scan[i] < 255)
+                  previous = scan
+              return transparent
+
+          for name in contract.get('required_layers', []):
+              path = root / name
+              if not path.is_file():
+                  raise SystemExit(f'ENV01_LAYER=BLOCKED file={name} reason=missing')
+              data, width, height, bit_depth, color_type, interlace = png_info(path)
+              if (width, height) != (1920, 1080):
+                  raise SystemExit(f'ENV01_LAYER=BLOCKED file={name} reason=dimensions actual={width}x{height}')
+              attr = subprocess.check_output(
+                  ['git', 'check-attr', 'filter', '--', path.as_posix()], text=True
+              ).strip()
+              if not attr.endswith('filter: lfs'):
+                  raise SystemExit(f'ENV01_LAYER=BLOCKED file={name} reason=lfs')
+              digest = hashlib.sha256(data).hexdigest()
+              print(f'ENV01_LAYER=PASS file={name} dimensions=1920x1080 sha256={digest}')
+
+              if name == 'foreground.png' and digest != foreground_baseline:
+                  if bit_depth != 8 or color_type != 6 or interlace != 0:
+                      raise SystemExit(
+                          'ENV01_FOREGROUND_ALPHA=BLOCKED reason=requires_rgba8_noninterlaced'
+                      )
+                  transparent = transparent_pixel_count_rgba8(data, width, height)
+                  if transparent <= 0:
+                      raise SystemExit('ENV01_FOREGROUND_ALPHA=BLOCKED reason=no_transparent_pixels')
+                  print(f'ENV01_FOREGROUND_ALPHA=PASS transparent_pixels={transparent}')
+              elif name == 'foreground.png':
+                  print('ENV01_FOREGROUND_ALPHA=BASELINE_DEFERRED')
+
+          status = manifest.get('status')
+          ready = manifest.get('promotion', {}).get('canonical_ready')
+          evidence_path = root / 'ENV01_FINAL_ART_EVIDENCE.json'
+          if status == 'art_pending':
+              if ready is not False:
+                  raise SystemExit('ENV01_PHASE=BLOCKED reason=pending_but_ready')
+              print('ENV01_PHASE=PASS state=art_pending promotion_blocked=true')
+          elif status == 'art_final':
+              if ready is not True or not evidence_path.is_file():
+                  raise SystemExit('ENV01_PHASE=BLOCKED reason=final_without_evidence')
+              evidence = json.loads(evidence_path.read_text(encoding='utf-8-sig'))
+              if evidence.get('signature') != 'Tehkné Solutions':
+                  raise SystemExit('ENV01_EVIDENCE=BLOCKED reason=signature')
+              if evidence.get('manual_visual_review') != 'PASS':
+                  raise SystemExit('ENV01_EVIDENCE=BLOCKED reason=manual_review')
+              if evidence.get('godot_runtime_capture') != 'PASS':
+                  raise SystemExit('ENV01_EVIDENCE=BLOCKED reason=runtime_capture')
+              required_states = {'neutral_duo','physical_hit','critical_posture_break','elemental_state'}
+              if not required_states.issubset(set(evidence.get('reviewed_states', []))):
+                  raise SystemExit('ENV01_EVIDENCE=BLOCKED reason=review_states')
+              print('ENV01_PHASE=PASS state=art_final evidence=PASS')
           else:
-              raise SystemExit('ENV01_PHASE=BLOCKED')
+              raise SystemExit(f'ENV01_PHASE=BLOCKED reason=unsupported_status status={status}')
+
           print('ENV01_CONTRACT=PASS')
           print('SIGNATURE=Tehkné Solutions')
           PY
