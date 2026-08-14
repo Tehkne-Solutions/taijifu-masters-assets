@@ -1,0 +1,14 @@
+{
+  "schema": "tehkne/taijifu-first-playable-snapshot-freeze/v1",
+  "signature": "Tehkné Solutions",
+  "tag": "assets-first-playable-v1.0.0",
+  "filename": "TAIJIFU_FIRST_PLAYABLE_ASSETS_v1.0.0.zip",
+  "sha256": "69b6b4641fb93bffa81555926887d44a0dfed5edaa4368b8a58a62f689bd58d2",
+  "content_sha256": "b2b4e8e274cd1a819d3062c237907132b4067c3aac4a33ef2d7230e73f565eec",
+  "fighter_frames": 89,
+  "fighter_animations": 20,
+  "stage_layers": 3,
+  "candidate_run": 31844988125,
+  "candidate_artifact": 9235568462,
+  "status": "frozen_release_candidate"
+}
