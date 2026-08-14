@@ -1,0 +1,41 @@
+{
+  "schema": "tehkne/taijifu-env01-candidate-evidence/v1",
+  "signature": "Tehkné Solutions",
+  "stage": "ENV-01",
+  "arena_id": "mountain_dojo_night",
+  "candidate_head": "bf78ed28e4e9d86263e03b0bea75bde576862b5f",
+  "materializer_run_id": 31836656628,
+  "status": "rendered_candidate_pending_godot_and_manual_review",
+  "layers": {
+    "background.png": {
+      "dimensions": "1920x1080",
+      "sha256": "9eff3f1d443fbb49f265f939537e2a731156e72e3e302f8897b8408efe1f0e3d",
+      "bytes": 109529,
+      "parallax": 0.18
+    },
+    "midground.png": {
+      "dimensions": "1920x1080",
+      "sha256": "516fd9ebe3fbcba707fafa96d6f86f88037a3004dfcbd3a885bccddc8f72a752",
+      "bytes": 73930,
+      "parallax": 0.48
+    },
+    "foreground.png": {
+      "dimensions": "1920x1080",
+      "sha256": "65e32af104dabe15c92daefe02eaa3c15d457f7f56571a6474a577f8fbb10164",
+      "bytes": 78272,
+      "parallax": 1.0,
+      "transparent_pixels": 1854824,
+      "fighter_safe_zone_clear": true
+    }
+  },
+  "runtime_contract": {
+    "ground_y": 820,
+    "safe_fighter_zone": [280, 1640]
+  },
+  "promotion": {
+    "manifest_status": "art_pending",
+    "canonical_ready": false,
+    "godot_runtime_capture": "PENDING",
+    "manual_visual_review": "PENDING"
+  }
+}
