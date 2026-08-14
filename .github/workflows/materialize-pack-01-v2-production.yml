@@ -21,17 +21,19 @@ jobs:
           lfs: true
           fetch-depth: 0
 
-      - name: Checkout only the released C64 game-source subtree
-        uses: actions/checkout@v4
-        with:
-          repository: Tehkne-Solutions/taijifu-masters
-          ref: 7cb550161885c167664eb3e3ddd4597fafdc605c
-          path: .release-game-source
-          lfs: false
-          fetch-depth: 1
-          sparse-checkout: |
-            artifacts/sprints/c64_lian_first_playable_lot01
-          sparse-checkout-cone-mode: true
+      - name: Fetch only the released C64 game-source subtree
+        shell: bash
+        run: |
+          set -euo pipefail
+          rm -rf .release-game-source
+          git init -q .release-game-source
+          git -C .release-game-source remote add origin https://github.com/Tehkne-Solutions/taijifu-masters.git
+          git -C .release-game-source fetch --quiet --depth=1 --filter=blob:none origin 7cb550161885c167664eb3e3ddd4597fafdc605c
+          git -C .release-game-source sparse-checkout init --cone
+          git -C .release-game-source sparse-checkout set artifacts/sprints/c64_lian_first_playable_lot01
+          git -C .release-game-source checkout --quiet --detach FETCH_HEAD
+          test "$(git -C .release-game-source rev-parse HEAD)" = '7cb550161885c167664eb3e3ddd4597fafdc605c'
+          echo 'PACK01_V2_C64_BLOBLESS_FETCH=PASS'
 
       - name: Pull only C64 LFS objects
         shell: bash
@@ -42,7 +44,13 @@ jobs:
             --include='artifacts/sprints/c64_lian_first_playable_lot01/**' \
             --exclude=''
           test -f .release-game-source/artifacts/sprints/c64_lian_first_playable_lot01/lian_wu_c64_first_playable_lot01_16f_master_v1.png
-          echo 'PACK01_V2_C64_SPARSE_LFS=PASS'
+          python3 - <<'PY'
+          from pathlib import Path
+          p=Path('.release-game-source/artifacts/sprints/c64_lian_first_playable_lot01/lian_wu_c64_first_playable_lot01_16f_master_v1.png')
+          if p.read_bytes()[:8] != b'\x89PNG\r\n\x1a\n':
+              raise SystemExit('PACK01_V2_C64_LFS=BLOCKED reason=pointer_not_materialized')
+          print('PACK01_V2_C64_SPARSE_LFS=PASS')
+          PY
 
       - name: Install builder dependency
         run: python3 -m pip install --disable-pip-version-check pillow
