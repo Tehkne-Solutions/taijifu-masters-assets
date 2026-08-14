@@ -1,0 +1,41 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1920" height="1080" viewBox="0 0 1920 1080">
+  <title>Mountain Dojo Night — Background Layer</title>
+  <desc>Authored far-distance layer for PACK 03. Tehkné Solutions.</desc>
+  <rect width="1920" height="1080" fill="#09101c"/>
+  <rect y="210" width="1920" height="870" fill="#101a2a"/>
+  <circle cx="1460" cy="205" r="104" fill="#e8edf0"/>
+  <circle cx="1425" cy="180" r="103" fill="#c9d2d8" opacity="0.12"/>
+  <g fill="#d8e0e6" opacity="0.13">
+    <ellipse cx="420" cy="205" rx="250" ry="32"/><ellipse cx="735" cy="260" rx="190" ry="26"/><ellipse cx="1210" cy="145" rx="175" ry="22"/><ellipse cx="1610" cy="330" rx="220" ry="30"/>
+  </g>
+  <g fill="#182438">
+    <path d="M0 590 L190 420 L315 535 L470 335 L610 510 L770 300 L930 505 L1080 350 L1220 520 L1370 320 L1500 510 L1670 360 L1920 565 L1920 760 L0 760 Z"/>
+  </g>
+  <g fill="#22324a">
+    <path d="M0 675 L180 535 L305 625 L455 470 L610 625 L740 505 L875 640 L1030 515 L1185 645 L1350 500 L1495 635 L1650 520 L1920 675 L1920 820 L0 820 Z"/>
+  </g>
+  <g fill="#2c3e56">
+    <path d="M0 755 L190 630 L335 720 L495 585 L650 730 L800 610 L960 735 L1110 620 L1265 735 L1410 600 L1570 725 L1730 620 L1920 760 L1920 875 L0 875 Z"/>
+  </g>
+  <g opacity="0.45" fill="#67788a">
+    <path d="M0 732 C260 700 405 760 635 728 C865 695 1010 750 1240 714 C1490 676 1685 720 1920 690 L1920 775 C1710 805 1510 760 1270 790 C1000 825 820 778 600 810 C370 845 170 805 0 830 Z"/>
+    <path d="M0 806 C290 770 480 842 730 810 C1005 775 1180 830 1450 795 C1635 770 1775 800 1920 785 L1920 845 C1720 880 1570 845 1395 870 C1150 905 930 860 700 900 C480 936 220 890 0 925 Z"/>
+  </g>
+  <g fill="#111923">
+    <path d="M0 870 C220 825 420 875 620 842 C855 805 1060 858 1280 828 C1515 795 1710 822 1920 792 L1920 1080 L0 1080 Z"/>
+  </g>
+  <g fill="#0b1118">
+    <path d="M50 790 l40-130 35 112 44-166 42 175 35-97 30 122z"/><path d="M260 805 l38-124 32 94 48-172 42 176 34-102 32 135z"/><path d="M1690 785 l36-115 34 96 44-156 40 162 32-94 35 121z"/><path d="M1555 812 l34-102 30 85 42-142 36 146 28-82 30 108z"/>
+  </g>
+  <g fill="#d39b4a" opacity="0.8">
+    <rect x="287" y="840" width="8" height="8"/><rect x="336" y="856" width="6" height="6"/><rect x="397" y="833" width="7" height="7"/><rect x="510" y="862" width="8" height="8"/><rect x="1140" y="842" width="7" height="7"/><rect x="1200" y="855" width="6" height="6"/><rect x="1290" y="835" width="8" height="8"/><rect x="1362" y="861" width="7" height="7"/>
+  </g>
+  <g fill="#e8edf0">
+    <circle cx="170" cy="155" r="2"/><circle cx="270" cy="95" r="1.5"/><circle cx="365" cy="182" r="2"/><circle cx="560" cy="130" r="1.4"/><circle cx="680" cy="74" r="2"/><circle cx="810" cy="165" r="1.4"/><circle cx="980" cy="105" r="1.7"/><circle cx="1120" cy="190" r="1.5"/><circle cx="1275" cy="82" r="1.8"/><circle cx="1650" cy="122" r="2"/><circle cx="1780" cy="210" r="1.5"/>
+  </g>
+  <g opacity="0.18" stroke="#cfd8df" stroke-width="5" fill="none">
+    <path d="M110 300 C360 260 560 330 800 285 C1060 235 1220 305 1370 265"/>
+    <path d="M650 380 C890 340 1040 390 1260 355 C1470 322 1680 375 1840 350"/>
+  </g>
+  <text x="28" y="1045" font-family="sans-serif" font-size="18" fill="#9aa7b4" opacity="0.32">Tehkné Solutions • PACK 03 source/background • authored far layer</text>
+</svg>
