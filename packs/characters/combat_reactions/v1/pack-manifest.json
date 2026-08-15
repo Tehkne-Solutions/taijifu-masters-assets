@@ -1,0 +1,125 @@
+{
+  "schema": "tehkne/taijifu-global-pack/v1",
+  "signature": "Tehkné Solutions",
+  "pack_number": 4,
+  "pack_id": "PACK_04_COMBAT_REACTIONS_AND_MOTION",
+  "version": "1.0.0-candidate",
+  "status": "art_required_fail_closed",
+  "purpose": "Human-playtest recovery: make impact, separation, posture loss and return-to-neutral readable with authored character motion.",
+  "source_evidence": {
+    "pilot_id": "pilot-09-r2",
+    "participant": "TJFP-001",
+    "finding": "combat collapsed into close-range button spam and body stacking; physical recovery requires matching authored visual reactions",
+    "game_recovery_issue": 498
+  },
+  "reuse_policy": {
+    "do_not_regenerate_existing_good_art": true,
+    "existing_states_reused": [
+      "idle",
+      "run",
+      "jump_start",
+      "airborne",
+      "fall",
+      "attack_light",
+      "guard",
+      "dodge",
+      "hit",
+      "ko"
+    ],
+    "existing_sources": {
+      "lian_wu": "production/first_playable/lian_wu/first_playable_lot_01/animations",
+      "training_rival": "production/first_playable/training_rival/first_playable_lot_01/animations"
+    }
+  },
+  "canvas_contract": {
+    "width": 1024,
+    "height": 1024,
+    "format": "PNG_RGBA",
+    "transparent_background": true,
+    "embedded_text": false,
+    "embedded_logo": false,
+    "borders": false,
+    "pivot": [0.5, 0.92],
+    "max_footline_drift_px": 3,
+    "max_alpha_bounds_variation_percent": 8,
+    "one_character_per_file": true
+  },
+  "characters": {
+    "lian_wu": {
+      "native_facing": "right",
+      "canonical_footline_y": 969,
+      "identity_lock": "PACK_01 / Lian Wu First Playable v2",
+      "weapon_lock": "one katana; sheath continuity preserved"
+    },
+    "training_rival": {
+      "native_facing": "left",
+      "canonical_footline_y": 970,
+      "identity_lock": "PACK_02 / Training Rival First Playable v1",
+      "weapon_lock": "seismic gauntlet identity preserved"
+    }
+  },
+  "new_authored_states": [
+    {
+      "state": "block_recoil",
+      "frames_per_character": 3,
+      "brief": "compact guarded impact; feet yield visibly; reduced displacement versus clean hit; no attack pose"
+    },
+    {
+      "state": "parry",
+      "frames_per_character": 3,
+      "brief": "deflection/contact/readable recovery; defender stable, attacker reaction readable; no generic guard substitution"
+    },
+    {
+      "state": "posture_break",
+      "frames_per_character": 4,
+      "brief": "foundation visibly collapses; torso and feet lose structure; strongest non-KO reaction"
+    },
+    {
+      "state": "knockback",
+      "frames_per_character": 4,
+      "brief": "traveling recoil pose aligned to physical pushback; center of mass moves away from attacker; weapon continuity preserved"
+    },
+    {
+      "state": "neutral_recovery",
+      "frames_per_character": 3,
+      "brief": "recover footing after recoil and re-establish combat spacing before returning to idle/attack"
+    }
+  ],
+  "frame_budget": {
+    "new_frames_per_character": 17,
+    "character_count": 2,
+    "total_new_frames": 34
+  },
+  "required_files": {
+    "pattern": "packs/characters/combat_reactions/v1/{character}/{state}/char_{character}__{state}__fNN.png",
+    "expected_png_count": 34
+  },
+  "runtime_contract": {
+    "clean_hit_uses_existing_hit": true,
+    "block_uses_block_recoil": true,
+    "parry_uses_parry": true,
+    "posture_break_uses_posture_break": true,
+    "recoil_travel_uses_knockback": true,
+    "recoil_exit_uses_neutral_recovery": true,
+    "physics_owns_world_translation": true,
+    "animation_may_not_fake_world_translation": true,
+    "creator_modular_runtime_may_not_claim_final_motion_until_integrated": true
+  },
+  "acceptance": {
+    "all_34_pngs_present": "pending",
+    "rgba_transparency": "pending",
+    "identity_continuity": "pending",
+    "weapon_continuity": "pending",
+    "pivot_and_footline": "pending",
+    "bounds_consistency": "pending",
+    "runtime_integration": "pending",
+    "godot_capture_1920x1080": "pending",
+    "human_visual_review": "pending",
+    "release_tag": "pending"
+  },
+  "promotion": {
+    "canonical_ready": false,
+    "release_allowed": false,
+    "reason": "No new authored reaction PNGs have been approved yet. Manifest is production intake only."
+  }
+}
