@@ -1,0 +1,99 @@
+{
+  "schema": "tehkne/taijifu-combat-reaction-pack/v1",
+  "signature": "Tehkné Solutions",
+  "pack_id": "pack_04_combat_reactions",
+  "version": "1.0.0",
+  "status": "art_required",
+  "purpose": "Provide the missing authored reaction art required by the P0 recovery before PLAYTEST-02 visual completion.",
+  "source_release": {
+    "tag": "assets-pack-04-v1.0.0",
+    "archive": "PACK_04_COMBAT_REACTIONS_v1.0.0.zip",
+    "required": true,
+    "must_not_exist_before_art_approval": true
+  },
+  "characters": {
+    "lian_wu": {
+      "display_name": "Lian Wu",
+      "native_facing": "right",
+      "facing_strategy": "horizontal_flip",
+      "pivot": {"x": 0.5, "y": 0.92},
+      "feet_baseline_tolerance_px": 3,
+      "max_frame_bounds_variation_percent": 8,
+      "identity_source": "production_modular_lian_current_game_main",
+      "weapon_continuity": "single_serene_katana_plus_left_hip_blue_sheath"
+    },
+    "training_rival": {
+      "display_name": "Rival de Treino",
+      "native_facing": "left",
+      "facing_strategy": "horizontal_flip",
+      "pivot": "bottom_center",
+      "feet_baseline_tolerance_px": 3,
+      "identity_source": "training_rival_first_playable_lot_01",
+      "weapon_continuity": "single_wooden_training_saber"
+    }
+  },
+  "required_states": {
+    "block_recoil": {"minimum_frames": 3, "fps": 12, "loop": false, "semantic": "defensive impact absorption with smaller displacement than clean hit"},
+    "parry": {"minimum_frames": 4, "fps": 14, "loop": false, "semantic": "clear successful redirection/deflection read distinct from block"},
+    "posture_break": {"minimum_frames": 5, "fps": 12, "loop": false, "semantic": "strong balance collapse and exposed posture, stronger than normal hit"},
+    "knockback": {"minimum_frames": 5, "fps": 12, "loop": false, "semantic": "readable forced displacement reaction without changing gameplay physics source"},
+    "neutral_recovery": {"minimum_frames": 4, "fps": 10, "loop": false, "semantic": "authored return from pressure/reaction to a stable neutral stance"}
+  },
+  "naming": {
+    "lian_wu": "char_lian_wu__<state>__f<frame-3-digits>.png",
+    "training_rival": "char_training_rival__<state>__f<frame-3-digits>.png"
+  },
+  "minimum_pngs_per_character": 21,
+  "minimum_total_pngs": 42,
+  "required_support_files": [
+    "manifest.json",
+    "checksums.sha256",
+    "runtime-map.json",
+    "approval.json"
+  ],
+  "image_rules": {
+    "format": "png",
+    "rgba": true,
+    "alpha": true,
+    "premultiplied_alpha": false,
+    "single_fighter_per_file": true,
+    "trim_transparent_border": true,
+    "minimum_canvas": {"width": 128, "height": 128},
+    "maximum_canvas": {"width": 1024, "height": 1024},
+    "forbid_embedded_background": true,
+    "forbid_text": true,
+    "forbid_logo": true,
+    "forbid_border": true,
+    "forbid_contact_sheet_as_runtime_asset": true,
+    "forbid_relabelled_existing_frame_as_new_state": true
+  },
+  "authorship_rules": {
+    "source_art_must_be_authored": true,
+    "procedural_runtime_pose_is_not_source_art": true,
+    "existing_hit_or_ko_frame_cannot_satisfy_new_state_without_explicit_art_review": true,
+    "generated_placeholder_cannot_be_promoted": true
+  },
+  "review_requirements": {
+    "identity_continuity": "pass_required",
+    "weapon_continuity": "pass_required",
+    "pivot_ground_line": "pass_required",
+    "state_distinctness": "pass_required",
+    "gameplay_scale": "pass_required",
+    "godot_capture_1920x1080_each_state_each_fighter": "pass_required",
+    "human_visual_review": "pass_required"
+  },
+  "game_integration": {
+    "repository": "Tehkne-Solutions/taijifu-masters",
+    "required_before_pack_release": true,
+    "preserve_collision": true,
+    "preserve_damage_frame_data_ai": true,
+    "authored_visual_state_authority_required": true,
+    "fallback_must_be_observable": true
+  },
+  "promotion_policy": {
+    "pack_release_allowed_before_all_states": false,
+    "playtest_02_visual_completion_allowed_before_release": false,
+    "runtime_infrastructure_may_land_before_art": true,
+    "art_completion_may_not_be_inferred_from_runtime_infrastructure": true
+  }
+}
