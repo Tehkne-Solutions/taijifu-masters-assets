@@ -1,0 +1,83 @@
+{
+  "schema": "tehkne/taijifu-pack04-tgap-handoff/v1",
+  "signature": "Tehkné Solutions",
+  "pack_id": "PACK_04_COMBAT_REACTIONS_AND_MOTION",
+  "tgap_pack_id": "pack_04_combat_reactions_and_motion",
+  "version": "1.0.0",
+  "release_tag": "assets-pack-04-v1.0.0",
+  "archive": "PACK_04_COMBAT_REACTIONS_v1.0.0.zip",
+  "asset_count": 34,
+  "minimum_tgap_file_count": 38,
+  "fighters": ["lian_wu", "training_rival"],
+  "states": ["block_recoil", "parry", "posture_break", "knockback", "neutral_recovery"],
+  "support_files": [
+    "manifest.json",
+    "checksums.sha256",
+    "runtime-map.json",
+    "approval.json"
+  ],
+  "manifest_contract": {
+    "schema": "tehkne/taijifu-pack04-materialization/v1",
+    "required_identity": ["pack_id", "tgap_pack_id", "version", "release_tag", "signature"],
+    "required_fields": ["asset_count", "assets"],
+    "asset_fields": ["path", "fighter", "state", "sha256"],
+    "asset_count": 34,
+    "paths_are_relative_to_pack_root": true,
+    "duplicate_paths_forbidden": true
+  },
+  "checksum_contract": {
+    "file": "checksums.sha256",
+    "format": "sha256sum",
+    "canonical_authority": true,
+    "required_entry_scope": "34 authored PNGs plus manifest.json, runtime-map.json and approval.json",
+    "minimum_entry_count": 37,
+    "checksums_json_forbidden_as_independent_authority": true
+  },
+  "runtime_map_contract": {
+    "schema": "tehkne/taijifu-pack04-runtime-map/v1",
+    "required_identity": ["pack_id", "tgap_pack_id", "version", "release_tag", "signature"],
+    "required_field": "mappings",
+    "mapping_shape": "mappings[fighter][state] -> non-empty array of manifest asset paths",
+    "all_fighters_required": true,
+    "all_states_required": true,
+    "unknown_asset_paths_forbidden": true
+  },
+  "approval_contract": {
+    "schema": "tehkne/taijifu-pack04-approval/v1",
+    "required_identity": ["pack_id", "tgap_pack_id", "version", "release_tag", "signature"],
+    "required_fields": [
+      "approved",
+      "human_review",
+      "reviewer",
+      "evidence",
+      "status",
+      "human_visual_review",
+      "identity_continuity",
+      "weapon_continuity"
+    ],
+    "approved": true,
+    "human_review": "PASS",
+    "legacy_validator_compatibility": {
+      "status": "pass",
+      "human_visual_review": "pass",
+      "identity_continuity": "pass",
+      "weapon_continuity": "pass"
+    },
+    "reviewer_must_be_non_empty": true,
+    "evidence_must_be_non_empty": true
+  },
+  "runtime_boundary": {
+    "materialized_does_not_mean_runtime_active": true,
+    "runtime_active_before_game_visual_integration": false,
+    "fallback_remains_observable_until_activation": true,
+    "physics_remains_world_translation_owner": true,
+    "damage_frame_data_collision_ai_changes": false
+  },
+  "promotion_policy": {
+    "partial_pack_forbidden": true,
+    "human_review_required": true,
+    "tgap_install_required_before_materialized": true,
+    "game_runtime_activation_required_before_playtest_02_visual_completion": true,
+    "release_must_remain_blocked_without_real_authored_pngs": true
+  }
+}
