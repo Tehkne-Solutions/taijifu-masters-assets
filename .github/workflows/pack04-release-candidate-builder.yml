@@ -1,0 +1,59 @@
+name: PACK 04 Release Candidate Builder
+
+on:
+  pull_request:
+    paths:
+      - 'tools/build_pack04_release_candidate.py'
+      - 'tests/test_build_pack04_release_candidate.py'
+      - 'production/pack04/**'
+      - '.github/workflows/pack04-release-candidate-builder.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  validate-builder:
+    runs-on: ubuntu-22.04
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Install Pillow
+        run: python -m pip install --disable-pip-version-check Pillow
+
+      - name: Validate production reference authority
+        run: python tools/validate_pack04_production_reference_kit.py
+
+      - name: Test fail-closed release candidate builder
+        run: |
+          set -euo pipefail
+          python tests/test_build_pack04_release_candidate.py 2>&1 | tee pack04-rc-builder.log
+          grep -q 'PACK04_RC_BUILDER=PASS assets=34 support=4 checksums=37' pack04-rc-builder.log
+          grep -q 'PACK04_RC_APPROVAL=PASS approved=false human_review=PENDING' pack04-rc-builder.log
+          grep -q 'PACK04_RC_PROMOTION=BLOCKED human_visual_review_required=true' pack04-rc-builder.log
+          grep -q 'PACK04_RC_BUILDER_TEST=PASS assets=34 checksum_entries=37' pack04-rc-builder.log
+          grep -q 'PACK04_RC_SYNTHETIC_FIXTURE=PASS packaging_only=true art_claim=false' pack04-rc-builder.log
+          grep -q 'PACK04_RC_HUMAN_GATE=PASS pending_cannot_promote=true' pack04-rc-builder.log
+          grep -q 'SIGNATURE=Tehkné Solutions' pack04-rc-builder.log
+          if grep -q 'PACK04_RC_BUILDER=BLOCKED' pack04-rc-builder.log; then
+            exit 1
+          fi
+
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: PACK04-RC-BUILDER-EVIDENCE
+          path: pack04-rc-builder.log
+          if-no-files-found: ignore
+          retention-days: 30
+
+      - name: Summary
+        if: always()
+        run: echo 'PACK 04 release candidate packaging is automated and remains fail-closed on human review — Tehkné Solutions' >> "$GITHUB_STEP_SUMMARY"
+
+# Tehkné Solutions
