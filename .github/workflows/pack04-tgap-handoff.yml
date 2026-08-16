@@ -1,0 +1,53 @@
+name: PACK 04 TGAP Handoff Contract
+
+on:
+  pull_request:
+    paths:
+      - 'contracts/pack_04_combat_reactions/tgap-handoff-v1.json'
+      - 'contracts/pack_04_combat_reactions/pack-04-combat-reactions-v1.json'
+      - 'packs/characters/combat_reactions/v1/pack-manifest.json'
+      - 'tools/validate_pack04_tgap_handoff.py'
+      - '.github/workflows/pack04-tgap-handoff.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  validate-handoff:
+    runs-on: ubuntu-22.04
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Validate PACK 04 TGAP handoff
+        run: |
+          set -euo pipefail
+          python tools/validate_pack04_tgap_handoff.py | tee pack04-tgap-handoff.log
+          grep -q 'PACK04_TGAP_HANDOFF_STATIC=PASS' pack04-tgap-handoff.log
+          grep -q 'PACK04_TGAP_CHECKSUM_AUTHORITY=PASS format=sha256sum split_authority=false' pack04-tgap-handoff.log
+          grep -q 'PACK04_TGAP_IDENTITY=PASS pack=pack_04_combat_reactions_and_motion version=1.0.0 release=assets-pack-04-v1.0.0' pack04-tgap-handoff.log
+          grep -q 'PACK04_TGAP_RUNTIME_BOUNDARY=PASS materialized_not_runtime_active=true' pack04-tgap-handoff.log
+          grep -q 'PACK04_TGAP_HANDOFF_GATE=CONTRACT_READY_ART_BLOCKED' pack04-tgap-handoff.log
+          grep -q 'SIGNATURE=Tehkné Solutions' pack04-tgap-handoff.log
+          if grep -q 'PACK04_TGAP_HANDOFF=BLOCKED' pack04-tgap-handoff.log; then
+            exit 1
+          fi
+
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: PACK04-TGAP-HANDOFF-EVIDENCE
+          path: pack04-tgap-handoff.log
+          if-no-files-found: ignore
+          retention-days: 30
+
+      - name: Summary
+        if: always()
+        run: echo 'PACK 04 TGAP handoff contract synchronized; authored art remains blocked — Tehkné Solutions' >> "$GITHUB_STEP_SUMMARY"
+
+# Tehkné Solutions
