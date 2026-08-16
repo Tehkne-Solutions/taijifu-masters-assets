@@ -1,0 +1,51 @@
+name: PACK 04 Production Reference Kit
+
+on:
+  pull_request:
+    paths:
+      - 'production/pack04/**'
+      - 'tools/validate_pack04_production_reference_kit.py'
+      - '.github/workflows/pack04-production-reference-kit.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  validate-reference-kit:
+    runs-on: ubuntu-22.04
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Validate PACK 04 production reference kit
+        run: |
+          set -euo pipefail
+          python tools/validate_pack04_production_reference_kit.py 2>&1 | tee pack04-reference-kit.log
+          grep -q 'PACK04_REFERENCE_KIT=PASS fighters=2 states=5 slots=34' pack04-reference-kit.log
+          grep -q 'PACK04_REFERENCE_LIAN=PASS identity=current_modular_main motion_lineage=study_only' pack04-reference-kit.log
+          grep -q 'PACK04_REFERENCE_RIVAL=PASS identity=canonical-production-v1 weapon=wooden_training_saber' pack04-reference-kit.log
+          grep -q 'PACK04_REFERENCE_GUARDRAILS=PASS placeholders=false relabel=false physics_translation=false' pack04-reference-kit.log
+          grep -q 'PACK04_PRODUCTION_STATUS=READY_FOR_AUTHORING art_status=NOT_AUTHORED release=false runtime_active=false playtest_02=false' pack04-reference-kit.log
+          grep -q 'SIGNATURE=Tehkné Solutions' pack04-reference-kit.log
+          if grep -q 'PACK04_REFERENCE_KIT=BLOCKED' pack04-reference-kit.log; then
+            exit 1
+          fi
+
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: PACK04-PRODUCTION-REFERENCE-KIT-EVIDENCE
+          path: pack04-reference-kit.log
+          if-no-files-found: ignore
+          retention-days: 30
+
+      - name: Summary
+        if: always()
+        run: echo 'PACK 04 production reference kit validates 34 authored slots; no art is claimed yet — Tehkné Solutions' >> "$GITHUB_STEP_SUMMARY"
+
+# Tehkné Solutions
