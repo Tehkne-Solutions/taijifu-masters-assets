@@ -5,12 +5,21 @@
   "pack_id": "PACK_04_COMBAT_REACTIONS_AND_MOTION",
   "version": "1.0.0-candidate",
   "status": "art_required_fail_closed",
+  "contract": "contracts/pack_04_combat_reactions/pack-04-combat-reactions-v1.json",
   "purpose": "Human-playtest recovery: make impact, separation, posture loss and return-to-neutral readable with authored character motion.",
   "source_evidence": {
     "pilot_id": "pilot-09-r2",
     "participant": "TJFP-001",
     "finding": "combat collapsed into close-range button spam and body stacking; physical recovery requires matching authored visual reactions",
-    "game_recovery_issue": 498
+    "game_recovery_issue": 498,
+    "assets_issue": 85,
+    "approved_intake_pr": 84
+  },
+  "release_target": {
+    "tag": "assets-pack-04-v1.0.0",
+    "archive": "PACK_04_COMBAT_REACTIONS_v1.0.0.zip",
+    "binary_storage": "github_release_only",
+    "published": false
   },
   "reuse_policy": {
     "do_not_regenerate_existing_good_art": true,
@@ -27,7 +36,7 @@
       "ko"
     ],
     "existing_sources": {
-      "lian_wu": "production/first_playable/lian_wu/first_playable_lot_01/animations",
+      "lian_wu": "production modular Lian visual active in taijifu-masters main",
       "training_rival": "production/first_playable/training_rival/first_playable_lot_01/animations"
     }
   },
@@ -39,7 +48,6 @@
     "embedded_text": false,
     "embedded_logo": false,
     "borders": false,
-    "pivot": [0.5, 0.92],
     "max_footline_drift_px": 3,
     "max_alpha_bounds_variation_percent": 8,
     "one_character_per_file": true
@@ -47,41 +55,50 @@
   "characters": {
     "lian_wu": {
       "native_facing": "right",
+      "pivot": [0.5, 0.92],
       "canonical_footline_y": 969,
-      "identity_lock": "PACK_01 / Lian Wu First Playable v2",
-      "weapon_lock": "one katana; sheath continuity preserved"
+      "identity_lock": "production modular Lian / current taijifu-masters main",
+      "weapon_lock": "one serene katana; left-hip blue sheath continuity preserved"
     },
     "training_rival": {
       "native_facing": "left",
+      "pivot": "bottom_center",
       "canonical_footline_y": 970,
-      "identity_lock": "PACK_02 / Training Rival First Playable v1",
-      "weapon_lock": "seismic gauntlet identity preserved"
+      "identity_lock": "production/first_playable/training_rival/canonical-production-v1.json",
+      "weapon_lock": "one wooden training saber; single-weapon continuity preserved",
+      "combat_loadout_mismatch_issue": "Tehkne-Solutions/taijifu-masters#515",
+      "reaction_art_must_not_silently_switch_to_gauntlets": true
     }
   },
   "new_authored_states": [
     {
       "state": "block_recoil",
       "frames_per_character": 3,
+      "fps": 12,
       "brief": "compact guarded impact; feet yield visibly; reduced displacement versus clean hit; no attack pose"
     },
     {
       "state": "parry",
       "frames_per_character": 3,
-      "brief": "deflection/contact/readable recovery; defender stable, attacker reaction readable; no generic guard substitution"
+      "fps": 14,
+      "brief": "deflection/contact/readable recovery; defender stable; no generic guard substitution"
     },
     {
       "state": "posture_break",
       "frames_per_character": 4,
+      "fps": 12,
       "brief": "foundation visibly collapses; torso and feet lose structure; strongest non-KO reaction"
     },
     {
       "state": "knockback",
       "frames_per_character": 4,
-      "brief": "traveling recoil pose aligned to physical pushback; center of mass moves away from attacker; weapon continuity preserved"
+      "fps": 12,
+      "brief": "traveling recoil pose aligned to physical pushback; center of mass moves away from attacker"
     },
     {
       "state": "neutral_recovery",
       "frames_per_character": 3,
+      "fps": 10,
       "brief": "recover footing after recoil and re-establish combat spacing before returning to idle/attack"
     }
   ],
@@ -91,8 +108,9 @@
     "total_new_frames": 34
   },
   "required_files": {
-    "pattern": "packs/characters/combat_reactions/v1/{character}/{state}/char_{character}__{state}__fNN.png",
-    "expected_png_count": 34
+    "pattern": "{character}/{state}/char_{character}__{state}__fNNN.png",
+    "expected_png_count": 34,
+    "support_files": ["manifest.json", "checksums.sha256", "runtime-map.json", "approval.json"]
   },
   "runtime_contract": {
     "clean_hit_uses_existing_hit": true,
@@ -103,7 +121,7 @@
     "recoil_exit_uses_neutral_recovery": true,
     "physics_owns_world_translation": true,
     "animation_may_not_fake_world_translation": true,
-    "creator_modular_runtime_may_not_claim_final_motion_until_integrated": true
+    "creator_modular_runtime_may_not_claim_pack04_art_until_integrated": true
   },
   "acceptance": {
     "all_34_pngs_present": "pending",
@@ -113,13 +131,15 @@
     "pivot_and_footline": "pending",
     "bounds_consistency": "pending",
     "runtime_integration": "pending",
-    "godot_capture_1920x1080": "pending",
+    "godot_capture_1920x1080_each_state_each_fighter": "pending",
     "human_visual_review": "pending",
     "release_tag": "pending"
   },
   "promotion": {
     "canonical_ready": false,
     "release_allowed": false,
+    "playtest_02_visual_completion_allowed": false,
+    "contract_ci_may_pass_while_art_status_is_blocked": true,
     "reason": "No new authored reaction PNGs have been approved yet. Manifest is production intake only."
   }
 }
