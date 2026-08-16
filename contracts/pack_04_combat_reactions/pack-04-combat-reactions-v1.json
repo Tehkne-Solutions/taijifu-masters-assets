@@ -1,0 +1,114 @@
+{
+  "schema": "tehkne/taijifu-combat-reaction-pack/v1",
+  "signature": "Tehkné Solutions",
+  "pack_id": "PACK_04_COMBAT_REACTIONS_AND_MOTION",
+  "version": "1.0.0",
+  "status": "art_required_fail_closed",
+  "purpose": "Provide the five missing authored combat-reaction states for canonical First Playable Lian Wu and Training Rival before PLAYTEST-02 visual completion.",
+  "source_evidence": {
+    "game_recovery_issue": 498,
+    "assets_issue": 85,
+    "approved_intake_pr": 84,
+    "frame_budget_policy": "reuse existing approved idle/run/jump/attack/guard/dodge/hit/ko and author only missing reaction states"
+  },
+  "source_release": {
+    "tag": "assets-pack-04-v1.0.0",
+    "archive": "PACK_04_COMBAT_REACTIONS_v1.0.0.zip",
+    "required": true,
+    "binary_storage": "github_release_only",
+    "must_not_exist_before_art_approval": true
+  },
+  "characters": {
+    "lian_wu": {
+      "display_name": "Lian Wu",
+      "native_facing": "right",
+      "facing_strategy": "horizontal_flip",
+      "pivot": {"x": 0.5, "y": 0.92},
+      "canonical_footline_y": 969,
+      "feet_baseline_tolerance_px": 3,
+      "max_frame_bounds_variation_percent": 8,
+      "identity_source": "production modular Lian visual active in taijifu-masters main",
+      "weapon_continuity": "single_serene_katana_plus_left_hip_blue_sheath"
+    },
+    "training_rival": {
+      "display_name": "Rival de Treino",
+      "native_facing": "left",
+      "facing_strategy": "horizontal_flip",
+      "pivot": "bottom_center",
+      "canonical_footline_y": 970,
+      "feet_baseline_tolerance_px": 3,
+      "max_frame_bounds_variation_percent": 8,
+      "identity_source": "production/first_playable/training_rival/canonical-production-v1.json",
+      "weapon_continuity": "single_wooden_training_saber",
+      "combat_loadout_mismatch_issue": "Tehkne-Solutions/taijifu-masters#515",
+      "reaction_art_must_not_silently_switch_to_gauntlets": true
+    }
+  },
+  "required_states": {
+    "block_recoil": {"minimum_frames": 3, "fps": 12, "loop": false, "semantic": "compact guarded impact; reduced displacement versus clean hit"},
+    "parry": {"minimum_frames": 3, "fps": 14, "loop": false, "semantic": "deflection, contact and readable recovery; distinct from generic guard"},
+    "posture_break": {"minimum_frames": 4, "fps": 12, "loop": false, "semantic": "foundation visibly collapses; strongest non-KO balance-loss reaction"},
+    "knockback": {"minimum_frames": 4, "fps": 12, "loop": false, "semantic": "traveling recoil pose aligned to physics-owned pushback"},
+    "neutral_recovery": {"minimum_frames": 3, "fps": 10, "loop": false, "semantic": "recover footing and re-establish neutral combat spacing"}
+  },
+  "naming": {
+    "lian_wu": "char_lian_wu__<state>__f<frame-3-digits>.png",
+    "training_rival": "char_training_rival__<state>__f<frame-3-digits>.png"
+  },
+  "minimum_pngs_per_character": 17,
+  "minimum_total_pngs": 34,
+  "required_support_files": [
+    "manifest.json",
+    "checksums.sha256",
+    "runtime-map.json",
+    "approval.json"
+  ],
+  "image_rules": {
+    "format": "png",
+    "canvas": {"width": 1024, "height": 1024},
+    "rgba": true,
+    "alpha": true,
+    "premultiplied_alpha": false,
+    "single_fighter_per_file": true,
+    "forbid_embedded_background": true,
+    "forbid_text": true,
+    "forbid_logo": true,
+    "forbid_border": true,
+    "forbid_contact_sheet_as_runtime_asset": true,
+    "forbid_relabelled_existing_frame_as_new_state": true
+  },
+  "authorship_rules": {
+    "source_art_must_be_authored": true,
+    "procedural_runtime_pose_is_not_source_art": true,
+    "existing_hit_or_ko_frame_cannot_satisfy_new_state_without_explicit_art_review": true,
+    "generated_placeholder_cannot_be_promoted": true,
+    "do_not_regenerate_existing_good_states": true
+  },
+  "review_requirements": {
+    "identity_continuity": "pass_required",
+    "weapon_continuity": "pass_required",
+    "pivot_ground_line": "pass_required",
+    "state_distinctness": "pass_required",
+    "gameplay_scale": "pass_required",
+    "godot_capture_1920x1080_each_state_each_fighter": "pass_required",
+    "runtime_integration": "pass_required",
+    "human_visual_review": "pass_required"
+  },
+  "game_integration": {
+    "repository": "Tehkne-Solutions/taijifu-masters",
+    "required_before_pack_release": true,
+    "physics_owns_world_translation": true,
+    "animation_may_not_fake_world_translation": true,
+    "preserve_collision": true,
+    "preserve_damage_frame_data_ai": true,
+    "authored_visual_state_authority_required": true,
+    "fallback_must_be_observable": true
+  },
+  "promotion_policy": {
+    "pack_release_allowed_before_all_states": false,
+    "playtest_02_visual_completion_allowed_before_release": false,
+    "runtime_infrastructure_may_land_before_art": true,
+    "art_completion_may_not_be_inferred_from_runtime_infrastructure": true,
+    "contract_ci_may_pass_while_art_status_is_blocked": true
+  }
+}

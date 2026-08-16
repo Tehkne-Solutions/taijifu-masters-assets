@@ -3,19 +3,18 @@ name: PACK 04 Combat Reactions & Motion
 on:
   pull_request:
     paths:
+      - 'contracts/pack_04_combat_reactions/**'
       - 'packs/characters/combat_reactions/**'
       - 'tools/validate_pack04_combat_reactions.py'
       - '.github/workflows/pack04-combat-reactions.yml'
   workflow_dispatch:
 
 jobs:
-  validate-pack04:
+  validate-pack04-contract:
     runs-on: ubuntu-22.04
     timeout-minutes: 10
     steps:
       - uses: actions/checkout@v4
-        with:
-          lfs: true
 
       - uses: actions/setup-python@v5
         with:
@@ -24,11 +23,34 @@ jobs:
       - name: Install image validation dependency
         run: python -m pip install --disable-pip-version-check Pillow
 
-      - name: Validate PACK 04 authored reaction intake
-        run: python tools/validate_pack04_combat_reactions.py
+      - name: Validate PACK 04 governance and intake contract
+        shell: bash
+        run: |
+          set -euo pipefail
+          python tools/validate_pack04_combat_reactions.py 2>&1 | tee pack04-contract.log
+          grep -q 'PACK04_CONTRACT=PASS states=5 characters=2 minimum_pngs=34' pack04-contract.log
+          grep -q 'PACK04_INTAKE_MANIFEST=PASS binary_storage=github_release_only naming=fNNN' pack04-contract.log
+          grep -q 'PACK04_RIVAL_VISUAL_IDENTITY=PASS weapon=wooden_training_saber mismatch_issue=taijifu-masters#515' pack04-contract.log
+          grep -q 'PACK04_RELEASE_POLICY=PASS partial_release=false playtest_completion_before_release=false' pack04-contract.log
+          grep -q 'PACK04_ART_STATUS=BLOCKED reason=candidate_not_provided' pack04-contract.log
+          grep -q 'PACK04_GATE=CONTRACT_READY_ART_BLOCKED' pack04-contract.log
+          grep -q 'SIGNATURE=Tehkné Solutions' pack04-contract.log
+          if grep -q 'PACK04_ART_STATUS=PASS' pack04-contract.log; then
+            echo 'PACK04_CONTRACT_CI=BLOCKED reason=false_art_completion'
+            exit 1
+          fi
+          echo 'PACK04_CONTRACT_CI=PASS art_status=blocked'
+
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: PACK-04-CONTRACT-EVIDENCE
+          path: pack04-contract.log
+          if-no-files-found: error
+          retention-days: 30
 
       - name: Summary
         if: always()
-        run: echo 'PACK 04 Combat Reactions & Motion — Tehkné Solutions' >> "$GITHUB_STEP_SUMMARY"
+        run: echo 'PACK 04 contract ready; authored art remains blocked — Tehkné Solutions' >> "$GITHUB_STEP_SUMMARY"
 
 # Tehkné Solutions
