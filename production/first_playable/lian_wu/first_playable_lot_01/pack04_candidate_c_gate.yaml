@@ -2,10 +2,14 @@ schema: tehkne/pack04-review/v1
 signature: Tehkné Solutions
 fighter: lian_wu
 state: block_recoil
-candidate: C
+candidate: H
 status: REVIEW_ONLY
 promoted: false
 runtime_authority: false
-method: continuous_32px_mesh_high_guard_recoil_from_canonical_guard
-history_A: REJECTED_MESH_SEAMS
-history_B: REJECTED_INSUFFICIENT_SEMANTIC_MOTION
+method: authored_pose_edit_from_canonical_visual_identity
+procedural_candidates: A-G_REJECTED
+candidate_h_frames: 3
+candidate_h_canvas: 1024x1024_RGBA
+candidate_h_footline: 969
+candidate_h_visual_read: PASS_BLOCK_RECOIL
+candidate_h_identity_review: PENDING_STRICT_CANONICAL_COMPARISON
