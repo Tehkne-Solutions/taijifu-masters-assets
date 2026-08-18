@@ -5,9 +5,8 @@ import argparse
 import hashlib
 import json
 from pathlib import Path
-from typing import Callable
 
-from PIL import Image, ImageDraw
+from PIL import Image
 
 SIGNATURE = "Tehkné Solutions"
 CANVAS = (1024, 1024)
@@ -24,8 +23,8 @@ def alpha_bbox(image: Image.Image):
 
 
 def displacement(frame: int, x: float, y: float) -> tuple[float, float]:
-    # Continuous authored recoil deformation. Feet remain anchored while torso/head
-    # absorb impact away from the attacker (native facing right => recoil left).
+    # Continuous authored recoil deformation. Native facing is right, so the
+    # guarded torso yields left while the feet remain effectively anchored.
     t = max(0.0, min(1.0, (930.0 - y) / 650.0))
     upper = t * t
     mid = max(0.0, 1.0 - abs(y - 650.0) / 300.0)
@@ -48,7 +47,8 @@ def build_mesh(frame: int, cell: int = 64):
         for x0 in range(0, CANVAS[0], cell):
             x1 = min(x0 + cell, CANVAS[0])
             y1 = min(y0 + cell, CANVAS[1])
-            corners = [(x0, y0), (x1, y0), (x1, y1), (x0, y1)]
+            # Pillow QUAD order is upper-left, lower-left, lower-right, upper-right.
+            corners = [(x0, y0), (x0, y1), (x1, y1), (x1, y0)]
             quad = []
             for x, y in corners:
                 dx, dy = displacement(frame, x, y)
@@ -119,17 +119,18 @@ def main() -> int:
     sheet = Image.new("RGBA", (1024 * 3, 1024), (0, 0, 0, 0))
     for i, frame in enumerate(frames):
         sheet.alpha_composite(frame, (i * 1024, 0))
-    sheet.save(args.output / "contact-sheet-candidate-a.png", optimize=True)
+    sheet.save(args.output / "contact-sheet-candidate-b.png", optimize=True)
 
     report = {
         "schema": "tehkne/taijifu-pack04-authoring-candidate/v1",
         "signature": SIGNATURE,
-        "candidate": "A",
+        "candidate": "B",
         "fighter": "lian_wu",
         "state": "block_recoil",
         "source": str(args.source),
         "source_sha256": SOURCE_SHA256,
         "method": "continuous_mesh_warp_from_canonical_guard",
+        "candidate_a_rejected_reason": "incorrect Pillow QUAD corner order caused visible tile seams",
         "promoted": False,
         "human_review": "PENDING",
         "runtime_authority": False,
@@ -137,7 +138,7 @@ def main() -> int:
     }
     (args.output / "candidate-report.json").write_text(json.dumps(report, indent=2) + "\n", encoding="utf-8")
 
-    print("PACK04_LIAN_BLOCK_RECOIL_CANDIDATE_A=PASS frames=3 promoted=false")
+    print("PACK04_LIAN_BLOCK_RECOIL_CANDIDATE_B=PASS frames=3 promoted=false")
     print("PACK04_LIAN_BLOCK_RECOIL_FOOTLINE=PASS target=969 tolerance=3")
     print("PACK04_LIAN_BLOCK_RECOIL_BOUNDS=PASS max_variation=8pct")
     print("PACK04_LIAN_BLOCK_RECOIL_HUMAN_REVIEW=PENDING")
