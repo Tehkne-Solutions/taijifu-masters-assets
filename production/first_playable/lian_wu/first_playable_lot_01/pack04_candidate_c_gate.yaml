@@ -1,0 +1,11 @@
+schema: tehkne/pack04-review/v1
+signature: Tehkné Solutions
+fighter: lian_wu
+state: block_recoil
+candidate: C
+status: REVIEW_ONLY
+promoted: false
+runtime_authority: false
+method: continuous_32px_mesh_high_guard_recoil_from_canonical_guard
+history_A: REJECTED_MESH_SEAMS
+history_B: REJECTED_INSUFFICIENT_SEMANTIC_MOTION
