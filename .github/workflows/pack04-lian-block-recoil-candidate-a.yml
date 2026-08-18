@@ -6,6 +6,7 @@ on:
       - 'tools/author_pack04_lian_block_recoil_candidate.py'
       - '.github/workflows/pack04-lian-block-recoil-candidate-a.yml'
       - 'production/first_playable/lian_wu/first_playable_lot_01/animations/guard/**'
+      - 'production/first_playable/lian_wu/first_playable_lot_01/animations/hit/**'
   workflow_dispatch:
 
 permissions:
@@ -21,18 +22,25 @@ jobs:
         with:
           lfs: true
 
-      - name: Verify canonical guard materialized
+      - name: Verify canonical sources materialized
         shell: bash
         run: |
           set -euo pipefail
-          src='production/first_playable/lian_wu/first_playable_lot_01/animations/guard/char_lian_wu__guard__f01.png'
-          test -f "$src"
-          size=$(wc -c < "$src")
-          if [ "$size" -lt 10000 ]; then
-            echo "PACK04_LIAN_BLOCK_RECOIL=BLOCKED lfs_not_materialized size=$size"
-            exit 2
-          fi
-          echo "PACK04_LIAN_BLOCK_RECOIL_LFS=PASS size=$size"
+          for src in \
+            production/first_playable/lian_wu/first_playable_lot_01/animations/guard/char_lian_wu__guard__f01.png \
+            production/first_playable/lian_wu/first_playable_lot_01/animations/hit/char_lian_wu__hit__f01.png \
+            production/first_playable/lian_wu/first_playable_lot_01/animations/hit/char_lian_wu__hit__f02.png \
+            production/first_playable/lian_wu/first_playable_lot_01/animations/hit/char_lian_wu__hit__f03.png \
+            production/first_playable/lian_wu/first_playable_lot_01/animations/hit/char_lian_wu__hit__f04.png
+          do
+            test -f "$src"
+            size=$(wc -c < "$src")
+            if [ "$size" -lt 10000 ]; then
+              echo "PACK04_LIAN_BLOCK_RECOIL=BLOCKED lfs_not_materialized file=$src size=$size"
+              exit 2
+            fi
+          done
+          echo 'PACK04_LIAN_BLOCK_RECOIL_LFS=PASS guard=1 hit=4'
 
       - name: Install authoring dependency
         run: python3 -m pip install --disable-pip-version-check Pillow==11.3.0
@@ -42,6 +50,13 @@ jobs:
           python3 tools/author_pack04_lian_block_recoil_candidate.py \
             --source production/first_playable/lian_wu/first_playable_lot_01/animations/guard/char_lian_wu__guard__f01.png \
             --output /tmp/pack04-lian-block-recoil-candidate-b
+
+      - name: Include canonical hit references for visual selection
+        shell: bash
+        run: |
+          mkdir -p /tmp/pack04-lian-block-recoil-candidate-b/reference-hit
+          cp production/first_playable/lian_wu/first_playable_lot_01/animations/hit/*.png \
+            /tmp/pack04-lian-block-recoil-candidate-b/reference-hit/
 
       - name: Compile authoring tool
         run: python3 -m py_compile tools/author_pack04_lian_block_recoil_candidate.py
