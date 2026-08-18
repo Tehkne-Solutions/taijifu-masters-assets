@@ -1,4 +1,4 @@
-name: PACK04 Lian block recoil Candidate F
+name: PACK04 Lian block recoil Candidate G
 on:
   pull_request:
     paths:
@@ -24,15 +24,15 @@ jobs:
           test -f "$src" && test $(wc -c < "$src") -gt 10000
       - name: Install Pillow
         run: python3 -m pip install --disable-pip-version-check Pillow==11.3.0
-      - name: Author Candidate F
-        run: python3 tools/author_pack04_lian_block_recoil_candidate.py --source production/first_playable/lian_wu/first_playable_lot_01/animations/guard/char_lian_wu__guard__f01.png --output /tmp/pack04-candidate-f
+      - name: Author Candidate G
+        run: python3 tools/author_pack04_lian_block_recoil_candidate.py --source production/first_playable/lian_wu/first_playable_lot_01/animations/guard/char_lian_wu__guard__f01.png --output /tmp/pack04-candidate-g
       - name: Compile tool
         run: python3 -m py_compile tools/author_pack04_lian_block_recoil_candidate.py
       - name: Publish review artifact only
         uses: actions/upload-artifact@v4
         with:
-          name: PACK04_LIAN_WU_BLOCK_RECOIL_CANDIDATE_F
-          path: /tmp/pack04-candidate-f
+          name: PACK04_LIAN_WU_BLOCK_RECOIL_CANDIDATE_G
+          path: /tmp/pack04-candidate-g
           if-no-files-found: error
           retention-days: 14
       - name: Assert no runtime promotion
