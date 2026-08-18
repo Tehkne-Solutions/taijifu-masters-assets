@@ -1,0 +1,48 @@
+name: PACK03 v3 Premium Art Candidate
+
+on:
+  pull_request:
+    paths:
+      - 'production/first_playable/stages/mountain_dojo_night/art_pass_v3/**'
+      - 'tools/validate_pack03_v3_candidate.py'
+      - 'requirements-tools.txt'
+      - '.github/workflows/pack03-v3-candidate.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  validate-candidate:
+    runs-on: ubuntu-22.04
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Install asset validation dependencies
+        run: python -m pip install --disable-pip-version-check -r requirements-tools.txt
+
+      - name: Validate PACK03 v3 staging contract
+        run: |
+          set -euo pipefail
+          python tools/validate_pack03_v3_candidate.py --allow-missing | tee pack03-v3-candidate.log
+          grep -Eq 'PACK03_V3_CANDIDATE=(WAITING|PASS)' pack03-v3-candidate.log
+          grep -q 'SIGNATURE=Tehkné Solutions' pack03-v3-candidate.log
+
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: PACK03-V3-CANDIDATE-VALIDATION
+          path: pack03-v3-candidate.log
+          if-no-files-found: error
+          retention-days: 30
+
+      - name: Summary
+        if: always()
+        run: echo 'PACK03 v3 premium art candidate staging validation — Tehkné Solutions' >> "$GITHUB_STEP_SUMMARY"
+
+# Tehkné Solutions

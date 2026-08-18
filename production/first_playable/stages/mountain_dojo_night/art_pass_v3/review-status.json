@@ -1,0 +1,22 @@
+{
+  "schema": "tehkne/taijifu-pack03-art-review/v3",
+  "signature": "Tehkné Solutions",
+  "arena_id": "mountain_dojo_night",
+  "candidate_id": "pack03_mountain_dojo_night_art_pass_v3",
+  "status": "art_pending",
+  "layers": {
+    "background.png": {"state": "missing", "sha256": null},
+    "midground.png": {"state": "missing", "sha256": null},
+    "foreground.png": {"state": "missing", "sha256": null}
+  },
+  "automated_validation": "pending",
+  "foreground_transparency": "pending",
+  "safe_zone": "pending",
+  "manual_visual_review": "pending",
+  "godot_runtime_capture": "pending",
+  "c30_materialization": "pending",
+  "stage_premium_runtime_review": "pending",
+  "vertical_slice_asset_truth": "pending",
+  "promotion": false,
+  "canonical_replacement_authorized": false
+}
