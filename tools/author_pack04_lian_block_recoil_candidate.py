@@ -43,7 +43,7 @@ def validate(im,label):
  if not b or abs(b[3]-FOOTLINE)>3: raise ValueError(label+':footline')
  return {'bbox':list(b),'footline':b[3],'width':b[2]-b[0],'height':b[3]-b[1]}
 def frame_from_layers(layers,idx):
- cfg={1:{'la':-42,'ra':42,'arm_dx':12,'upper':(-7,4)},2:{'la':-58,'ra':58,'arm_dx':20,'upper':(-15,10)},3:{'la':-30,'ra':30,'arm_dx':8,'upper':(-4,2)}}[idx]
+ cfg={1:{'la':35,'ra':-35,'arm_dx':10,'upper':(-7,4)},2:{'la':45,'ra':-45,'arm_dx':14,'upper':(-15,10)},3:{'la':30,'ra':-30,'arm_dx':8,'upper':(-4,2)}}[idx]
  out=Image.new('RGBA',CANVAS,(0,0,0,0)); out=Image.alpha_composite(out,layers['leg_left']); out=Image.alpha_composite(out,layers['leg_right'])
  ux,uy=cfg['upper']
  for n in ('waist_sash','torso','weapon','head_hair'): out=Image.alpha_composite(out,shift(layers[n],ux,uy))
