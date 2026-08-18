@@ -1,0 +1,28 @@
+{
+  "schema": "tehkne/taijifu-pack04-materialization/v1",
+  "signature": "Tehkné Solutions",
+  "pack_id": "PACK_04_COMBAT_REACTIONS_AND_MOTION",
+  "tgap_pack_id": "pack_04_combat_reactions_and_motion",
+  "version": "1.0.0",
+  "release_tag": "assets-pack-04-v1.0.0",
+  "status": "art_required_fail_closed",
+  "asset_count": 0,
+  "expected_asset_count": 34,
+  "assets": [],
+  "source_contract": "contracts/pack_04_combat_reactions/pack-04-combat-reactions-v1.json",
+  "characters": ["lian_wu", "training_rival"],
+  "states": ["block_recoil", "parry", "posture_break", "knockback", "neutral_recovery"],
+  "materialization": {
+    "complete": false,
+    "runtime_active": false,
+    "art_present": false,
+    "checksum_authority": "checksums.sha256",
+    "checksums_ready": false
+  },
+  "blockers": [
+    "authored_pngs_missing:34",
+    "checksums_missing",
+    "human_review_not_approved",
+    "runtime_integration_pending"
+  ]
+}
