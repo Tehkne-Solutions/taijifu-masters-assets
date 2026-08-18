@@ -1,0 +1,56 @@
+name: PACK04 materialization intake gate
+
+on:
+  pull_request:
+    paths:
+      - 'packs/characters/combat_reactions/v1/**'
+      - 'production/pack04/**'
+      - 'tools/validate_pack04_materialization_intake.py'
+      - 'tools/build_pack04_release_candidate.py'
+      - '.github/workflows/pack04-materialization-intake-gate.yml'
+  push:
+    branches: [main]
+    paths:
+      - 'packs/characters/combat_reactions/v1/**'
+      - 'production/pack04/**'
+      - 'tools/validate_pack04_materialization_intake.py'
+      - 'tools/build_pack04_release_candidate.py'
+      - '.github/workflows/pack04-materialization-intake-gate.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  intake-contract:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Validate PACK04 intake
+        run: python3 tools/validate_pack04_materialization_intake.py
+
+      - name: Compile PACK04 tools
+        run: |
+          python3 -m py_compile tools/validate_pack04_materialization_intake.py
+          python3 -m py_compile tools/build_pack04_release_candidate.py
+
+      - name: Assert release candidate remains blocked without authored frames
+        shell: bash
+        run: |
+          set +e
+          python3 tools/build_pack04_release_candidate.py \
+            --frames-root packs/characters/combat_reactions/v1 \
+            --output /tmp/pack04-rc-probe
+          rc=$?
+          set -e
+          if [ "$rc" -eq 0 ]; then
+            echo 'PACK04_INTAKE_NEGATIVE_GATE=FAIL builder unexpectedly produced a release candidate'
+            exit 2
+          fi
+          echo 'PACK04_INTAKE_NEGATIVE_GATE=PASS authored frames still required'
+
+      - name: Signature
+        run: echo 'SIGNATURE=Tehkné Solutions'
