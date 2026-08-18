@@ -3,9 +3,8 @@ on:
   pull_request:
     paths:
       - 'tools/author_pack04_lian_block_recoil_candidate.py'
-      - 'tools/build_lian_wu_rig_v1.py'
       - '.github/workflows/pack04-lian-block-recoil-candidate-a.yml'
-      - 'production/first_playable/lian_wu/character_lock_v1/**'
+      - 'production/first_playable/lian_wu/first_playable_lot_01/animations/guard/**'
   workflow_dispatch:
 permissions:
   contents: read
@@ -18,32 +17,17 @@ jobs:
         uses: actions/checkout@v4
         with:
           lfs: true
-      - name: Verify canonical neutral
+      - name: Verify canonical guard
         shell: bash
         run: |
-          src='production/first_playable/lian_wu/character_lock_v1/lian_wu_neutral.png'
+          src='production/first_playable/lian_wu/first_playable_lot_01/animations/guard/char_lian_wu__guard__f01.png'
           test -f "$src" && test $(wc -c < "$src") -gt 10000
       - name: Install Pillow
         run: python3 -m pip install --disable-pip-version-check Pillow==11.3.0
-      - name: Build pixel-exact rig v1 layers
-        run: python3 tools/build_lian_wu_rig_v1.py
-      - name: Assert rig reconstruction
-        shell: bash
-        run: |
-          python3 - <<'PY'
-          import json
-          p='production/first_playable/lian_wu/rig_v1/generated/build-report.json'
-          d=json.load(open(p,encoding='utf-8'))
-          assert d['assigned_exactly_once'] is True
-          assert d['reconstruction_pixel_exact'] is True
-          print('PACK04_RIG_V1_RECONSTRUCTION=PASS')
-          PY
       - name: Author Candidate E
-        run: python3 tools/author_pack04_lian_block_recoil_candidate.py --rig-root production/first_playable/lian_wu/rig_v1/generated --output /tmp/pack04-candidate-e
-      - name: Compile tools
-        run: |
-          python3 -m py_compile tools/build_lian_wu_rig_v1.py
-          python3 -m py_compile tools/author_pack04_lian_block_recoil_candidate.py
+        run: python3 tools/author_pack04_lian_block_recoil_candidate.py --source production/first_playable/lian_wu/first_playable_lot_01/animations/guard/char_lian_wu__guard__f01.png --output /tmp/pack04-candidate-e
+      - name: Compile tool
+        run: python3 -m py_compile tools/author_pack04_lian_block_recoil_candidate.py
       - name: Publish review artifact only
         uses: actions/upload-artifact@v4
         with:
