@@ -1,0 +1,11 @@
+# PACK 04 — Lian Wu Block Recoil — Candidate C
+
+Status: REVIEW ONLY / NOT PROMOTED
+
+Candidate A: rejected (mesh seams).
+Candidate B: rejected (motion too subtle for block_recoil semantics).
+Candidate C: stronger continuous 32 px mesh articulation from the canonical guard, with compact high-guard pull, torso yield and planted feet.
+
+Promotion remains fail-closed until visual review passes identity, silhouette, block readability, footline and equipment continuity.
+
+Signature: Tehkné Solutions
