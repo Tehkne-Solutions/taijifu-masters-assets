@@ -93,11 +93,15 @@ def main() -> int:
             raise ValueError("approval_must_be_false")
         if str(approval.get("human_review", "")).upper() != "PENDING":
             raise ValueError("human_review_must_be_pending")
-        if approval.get("canonical_ready") is not False:
+
+        promotion = approval.get("promotion")
+        if not isinstance(promotion, dict):
+            raise ValueError("approval_promotion_missing")
+        if promotion.get("canonical_ready") is not False:
             raise ValueError("canonical_ready_must_be_false")
-        if approval.get("release_allowed") is not False:
+        if promotion.get("release_allowed") is not False:
             raise ValueError("release_allowed_must_be_false")
-        if approval.get("playtest_02_visual_completion_allowed") is not False:
+        if promotion.get("playtest_02_visual_completion_allowed") is not False:
             raise ValueError("playtest02_must_be_false")
 
         pngs = sorted(PACK_ROOT.rglob("*.png"))
