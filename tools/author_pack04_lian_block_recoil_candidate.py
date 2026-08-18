@@ -7,26 +7,41 @@ SIGNATURE='Tehkné Solutions'; CANVAS=(1024,1024); FOOTLINE=969
 SOURCE_SHA256='c8e6cd1feece7c2a54cf2279085c2a4bb33338dd6a3dcb3e4d5a2402b537631c'
 def sha256(p): return hashlib.sha256(p.read_bytes()).hexdigest()
 def bbox(im): return im.getchannel('A').getbbox()
-def bump(x,y,cx,cy,rx,ry):
- d=((x-cx)/rx)**2+((y-cy)/ry)**2
- return math.exp(-2.6*d)
+def g(x,y,cx,cy,rx,ry): return math.exp(-2.8*(((x-cx)/rx)**2+((y-cy)/ry)**2))
 def displacement(frame,x,y):
- # Stronger authored silhouette: compact high guard + recoil/yield while feet stay anchored.
- strength={1:1.0,2:1.55,3:0.45}[frame]
- upper=max(0.0,min(1.0,(900-y)/620.0)); anchor=max(0.0,min(1.0,(969-y)/110.0))
- dx=-strength*(18*upper*upper+7*bump(x,y,500,560,260,240))
- dy=strength*(8*upper+8*bump(x,y,500,650,250,210))
- # Pull both forearm/hand zones inward and upward to read as a compact block.
- for cx,cy,sign in ((405,545,1),(610,545,-1)):
-  w=bump(x,y,cx,cy,155,180)
-  dx += strength*sign*24*w
-  dy -= strength*30*w
- # Head/shoulder tuck on impact, strongest on yield.
- w=bump(x,y,505,390,210,180); dx-=strength*8*w; dy+=strength*12*w
- # Preserve planted feet.
- foot=max(0.0,min(1.0,(y-850)/119.0)); dx*=1-foot; dy*=1-foot
+ # Rig-anchor-driven recoil. Source anchors come from rig_v1 manifest.
+ # Frame 1 contact absorb, frame 2 yield, frame 3 guard recover.
+ k={1:0.78,2:1.0,3:0.38}[frame]
+ dx=0.0; dy=0.0
+ # Global torso/head recoil left/down; feet remain planted.
+ upper=max(0.0,min(1.0,(900-y)/560.0))
+ dx += -24*k*upper*upper
+ dy +=  12*k*upper
+ # Left arm: shoulder 420,435 / elbow 385,545 / wrist 365,655.
+ for cx,cy,mx,my,rx,ry in [
+   (420,435, 28,-42,105,115),
+   (385,545, 58,-92,115,135),
+   (365,655, 92,-166,120,150),
+ ]:
+  w=g(x,y,cx,cy,rx,ry); dx += k*mx*w; dy += k*my*w
+ # Right arm: shoulder 610,435 / elbow 655,545 / wrist 665,655.
+ for cx,cy,mx,my,rx,ry in [
+   (610,435,-24,-38,105,115),
+   (655,545,-58,-88,115,135),
+   (665,655,-96,-160,120,150),
+ ]:
+  w=g(x,y,cx,cy,rx,ry); dx += k*mx*w; dy += k*my*w
+ # Compact head tuck into the block, strongest at yield.
+ w=g(x,y,512,300,190,190); dx += -16*k*w; dy += 18*k*w
+ # Hips absorb impact without sliding feet.
+ w=g(x,y,512,650,220,150); dx += -16*k*w; dy += 14*k*w
+ # Recover frame opens slightly from the strongest guard while remaining readable.
+ if frame==3:
+  dx *= 0.82; dy *= 0.82
+ # Freeze lower legs/feet progressively below y=820.
+ foot=max(0.0,min(1.0,(y-820)/149.0)); dx*=1-foot; dy*=1-foot
  return dx,dy
-def mesh(frame,cell=32):
+def mesh(frame,cell=24):
  out=[]
  for y0 in range(0,1024,cell):
   for x0 in range(0,1024,cell):
@@ -55,8 +70,8 @@ def main():
  if (max(widths)-min(widths))/max(widths)>.08 or (max(heights)-min(heights))/max(heights)>.08: raise SystemExit('PACK04_LIAN_BLOCK_RECOIL=BLOCKED bounds_variation')
  sheet=Image.new('RGBA',(3072,1024),(0,0,0,0))
  for n,im in enumerate(frames): sheet.alpha_composite(im,(n*1024,0))
- sheet.save(a.output/'contact-sheet-candidate-c.png',optimize=True)
- report={'schema':'tehkne/taijifu-pack04-authoring-candidate/v1','signature':SIGNATURE,'candidate':'C','fighter':'lian_wu','state':'block_recoil','source_sha256':SOURCE_SHA256,'method':'continuous_32px_mesh_high_guard_recoil_from_canonical_guard','candidate_a':'REJECTED seams','candidate_b':'REJECTED insufficient semantic motion','promoted':False,'human_review':'PENDING','runtime_authority':False,'frames':stats}
+ sheet.save(a.output/'contact-sheet-candidate-d.png',optimize=True)
+ report={'schema':'tehkne/taijifu-pack04-authoring-candidate/v1','signature':SIGNATURE,'candidate':'D','fighter':'lian_wu','state':'block_recoil','source_sha256':SOURCE_SHA256,'method':'continuous_24px_mesh_from_rig_v1_shoulder_elbow_wrist_anchors','candidate_a':'REJECTED seams','candidate_b':'REJECTED insufficient semantic motion','candidate_c':'REJECTED arms remained low / idle-like','promoted':False,'human_review':'PENDING','runtime_authority':False,'frames':stats}
  (a.output/'candidate-report.json').write_text(json.dumps(report,indent=2)+'\n',encoding='utf-8')
- print('PACK04_LIAN_BLOCK_RECOIL_CANDIDATE_C=PASS frames=3 promoted=false'); print('SIGNATURE='+SIGNATURE)
+ print('PACK04_LIAN_BLOCK_RECOIL_CANDIDATE_D=PASS frames=3 promoted=false'); print('SIGNATURE='+SIGNATURE)
 if __name__=='__main__': main()
