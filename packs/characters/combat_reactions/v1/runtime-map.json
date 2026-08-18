@@ -1,0 +1,48 @@
+{
+  "schema": "tehkne/taijifu-pack04-runtime-map/v1",
+  "signature": "Tehkné Solutions",
+  "pack_id": "PACK_04_COMBAT_REACTIONS_AND_MOTION",
+  "tgap_pack_id": "pack_04_combat_reactions_and_motion",
+  "version": "1.0.0",
+  "status": "blocked_until_authored_art",
+  "characters": ["lian_wu", "training_rival"],
+  "states": ["block_recoil", "parry", "posture_break", "knockback", "neutral_recovery"],
+  "mappings": {
+    "lian_wu": {
+      "block_recoil": [],
+      "parry": [],
+      "posture_break": [],
+      "knockback": [],
+      "neutral_recovery": []
+    },
+    "training_rival": {
+      "block_recoil": [],
+      "parry": [],
+      "posture_break": [],
+      "knockback": [],
+      "neutral_recovery": []
+    }
+  },
+  "expected_frames": {
+    "lian_wu": {
+      "block_recoil": 3,
+      "parry": 3,
+      "posture_break": 4,
+      "knockback": 4,
+      "neutral_recovery": 3
+    },
+    "training_rival": {
+      "block_recoil": 3,
+      "parry": 3,
+      "posture_break": 4,
+      "knockback": 4,
+      "neutral_recovery": 3
+    }
+  },
+  "runtime_policy": {
+    "physics_owns_world_translation": true,
+    "animation_may_not_fake_world_translation": true,
+    "fallback_allowed_until_pack_promotion": true,
+    "runtime_active": false
+  }
+}
