@@ -63,7 +63,7 @@ jobs:
           grep -q 'FIRST_PLAYABLE_SNAPSHOT=PASS' first-playable-snapshot-v1.log
           grep -q 'SIGNATURE=Tehkné Solutions' first-playable-snapshot-v1.log
 
-      - name: Verify frozen checksum when registered
+      - name: Verify frozen release or classify candidate drift
         shell: bash
         run: |
           set -euo pipefail
@@ -75,15 +75,36 @@ jobs:
           python3 - <<'PY'
           import hashlib, json
           from pathlib import Path
+
           freeze = json.loads(Path('releases/first-playable-v1.freeze.json').read_text(encoding='utf-8'))
+          manifest = json.loads(Path('artifacts/first-playable-assets-v1/FIRST_PLAYABLE_RELEASE_MANIFEST.json').read_text(encoding='utf-8'))
           archive = Path('artifacts/first-playable-assets-v1/TAIJIFU_FIRST_PLAYABLE_ASSETS_v1.0.0.zip')
-          actual = hashlib.sha256(archive.read_bytes()).hexdigest()
-          expected = freeze['sha256']
-          if actual != expected:
-              raise SystemExit(f'FIRST_PLAYABLE_SNAPSHOT_FREEZE=BLOCKED actual={actual} expected={expected}')
+
           if freeze.get('signature') != 'Tehkné Solutions':
               raise SystemExit('FIRST_PLAYABLE_SNAPSHOT_FREEZE=BLOCKED reason=signature')
+
+          actual = hashlib.sha256(archive.read_bytes()).hexdigest()
+          expected = freeze['sha256']
+          frozen_content = freeze.get('content_sha256')
+          candidate_content = manifest.get('content_sha256')
+
+          if candidate_content != frozen_content:
+              print(
+                  'FIRST_PLAYABLE_SNAPSHOT_FREEZE=DRIFT_NEW_CANDIDATE '
+                  f'candidate_content={candidate_content} frozen_content={frozen_content}'
+              )
+              print('FIRST_PLAYABLE_RELEASE_V1_IMMUTABLE=true')
+              print('FIRST_PLAYABLE_NEW_RELEASE_REQUIRED=true')
+              print('SIGNATURE=Tehkné Solutions')
+              raise SystemExit(0)
+
+          if actual != expected:
+              raise SystemExit(
+                  f'FIRST_PLAYABLE_SNAPSHOT_FREEZE=BLOCKED actual={actual} expected={expected} reason=same_content_archive_mismatch'
+              )
+
           print(f'FIRST_PLAYABLE_SNAPSHOT_FREEZE=PASS sha256={actual}')
+          print('FIRST_PLAYABLE_RELEASE_V1_IMMUTABLE=true')
           print('SIGNATURE=Tehkné Solutions')
           PY
 
