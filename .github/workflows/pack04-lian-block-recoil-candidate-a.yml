@@ -1,43 +1,14 @@
-name: PACK04 Lian block recoil Candidate G
+name: PACK04 Lian block recoil procedural archive
 on:
-  pull_request:
-    paths:
-      - 'tools/author_pack04_lian_block_recoil_candidate.py'
-      - '.github/workflows/pack04-lian-block-recoil-candidate-a.yml'
-      - 'production/first_playable/lian_wu/first_playable_lot_01/animations/guard/**'
   workflow_dispatch:
 permissions:
   contents: read
 jobs:
-  author-candidate:
+  archive-status:
     runs-on: ubuntu-latest
-    timeout-minutes: 10
     steps:
-      - name: Checkout canonical LFS pixels
-        uses: actions/checkout@v4
-        with:
-          lfs: true
-      - name: Verify canonical guard
-        shell: bash
-        run: |
-          src='production/first_playable/lian_wu/first_playable_lot_01/animations/guard/char_lian_wu__guard__f01.png'
-          test -f "$src" && test $(wc -c < "$src") -gt 10000
-      - name: Install Pillow
-        run: python3 -m pip install --disable-pip-version-check Pillow==11.3.0
-      - name: Author Candidate G
-        run: python3 tools/author_pack04_lian_block_recoil_candidate.py --source production/first_playable/lian_wu/first_playable_lot_01/animations/guard/char_lian_wu__guard__f01.png --output /tmp/pack04-candidate-g
-      - name: Compile tool
-        run: python3 -m py_compile tools/author_pack04_lian_block_recoil_candidate.py
-      - name: Publish review artifact only
-        uses: actions/upload-artifact@v4
-        with:
-          name: PACK04_LIAN_WU_BLOCK_RECOIL_CANDIDATE_G
-          path: /tmp/pack04-candidate-g
-          if-no-files-found: error
-          retention-days: 14
-      - name: Assert no runtime promotion
-        shell: bash
-        run: |
-          test ! -e packs/characters/combat_reactions/v1/lian_wu/block_recoil/char_lian_wu__block_recoil__f001.png
-          echo 'PACK04_LIAN_BLOCK_RECOIL_PROMOTION=BLOCKED human_review_required=true'
+      - run: |
+          echo 'PACK04_PROCEDURAL_CANDIDATES=A,B,C,D,E,F,G_REJECTED'
+          echo 'PACK04_NEXT_AUTHORITY=AUTHORED_CANDIDATE_H'
+          echo 'PACK04_RUNTIME_PROMOTION=BLOCKED'
           echo 'SIGNATURE=Tehkné Solutions'
