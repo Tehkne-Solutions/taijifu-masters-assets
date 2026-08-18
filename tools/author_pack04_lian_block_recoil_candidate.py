@@ -7,31 +7,27 @@ SIGNATURE='Tehkné Solutions'; CANVAS=(1024,1024); FOOTLINE=969
 SOURCE_SHA256='c8e6cd1feece7c2a54cf2279085c2a4bb33338dd6a3dcb3e4d5a2402b537631c'
 def sha256(p): return hashlib.sha256(p.read_bytes()).hexdigest()
 def bbox(im): return im.getchannel('A').getbbox()
-def g(x,y,cx,cy,rx,ry): return math.exp(-3.0*(((x-cx)/rx)**2+((y-cy)/ry)**2))
+def g(x,y,cx,cy,rx,ry): return math.exp(-3.2*(((x-cx)/rx)**2+((y-cy)/ry)**2))
 def field(frame,x,y):
  cfg={
-  1:{'torso':(-8,4),'lw':(42,-96),'le':(22,-52),'rw':(-42,-96),'re':(-22,-52),'head':(-5,5)},
-  2:{'torso':(-18,10),'lw':(50,-118),'le':(28,-66),'rw':(-50,-118),'re':(-28,-66),'head':(-12,12)},
-  3:{'torso':(-4,2),'lw':(36,-82),'le':(18,-44),'rw':(-36,-82),'re':(-18,-44),'head':(-3,3)},
+  1:{'torso':(-8,5),'lw':(75,-180),'le':(42,-100),'rw':(-75,-180),'re':(-42,-100),'head':(-5,5)},
+  2:{'torso':(-18,12),'lw':(95,-230),'le':(55,-135),'rw':(-95,-230),'re':(-55,-135),'head':(-12,12)},
+  3:{'torso':(-4,3),'lw':(65,-155),'le':(35,-85),'rw':(-65,-155),'re':(-35,-85),'head':(-3,3)},
  }[frame]
  dx=dy=0.0
- # Torso/hips recoil field.
- w=g(x,y,512,575,260,300); dx+=cfg['torso'][0]*w; dy+=cfg['torso'][1]*w
- # Head tuck follows recoil softly.
- w=g(x,y,512,300,210,190); dx+=cfg['head'][0]*w; dy+=cfg['head'][1]*w
- # Left chain: shoulder remains near anchor; elbow and wrist fold inward/up.
- for (cx,cy),(vx,vy),rx,ry in [((385,545),cfg['le'],120,125),((365,655),cfg['lw'],125,145)]:
+ w=g(x,y,512,550,250,260); dx+=cfg['torso'][0]*w; dy+=cfg['torso'][1]*w
+ w=g(x,y,512,300,205,180); dx+=cfg['head'][0]*w; dy+=cfg['head'][1]*w
+ # Recalibrated against the current canonical guard raster: elbows ~y500, hands/wrists ~y620.
+ for (cx,cy),(vx,vy),rx,ry in [((395,500),cfg['le'],105,115),((365,620),cfg['lw'],105,125)]:
   w=g(x,y,cx,cy,rx,ry); dx+=vx*w; dy+=vy*w
- # Right chain mirrors left.
- for (cx,cy),(vx,vy),rx,ry in [((655,545),cfg['re'],120,125),((665,655),cfg['rw'],125,145)]:
+ for (cx,cy),(vx,vy),rx,ry in [((635,500),cfg['re'],105,115),((665,620),cfg['rw'],105,125)]:
   w=g(x,y,cx,cy,rx,ry); dx+=vx*w; dy+=vy*w
- # Pin shoulder neighborhoods so the pose bends rather than detaches.
- pin=max(g(x,y,420,435,105,105),g(x,y,610,435,105,105))*0.55
+ # Shoulder anchoring prevents detachment while allowing the forearms to fold in front of the torso.
+ pin=max(g(x,y,420,390,95,95),g(x,y,610,390,95,95))*0.42
  dx*=1-pin; dy*=1-pin
- # Fully preserve planted lower legs / feet.
  foot=max(0.0,min(1.0,(y-820)/149.0)); dx*=1-foot; dy*=1-foot
  return dx,dy
-def build_mesh(frame,cell=16):
+def build_mesh(frame,cell=12):
  out=[]
  for y0 in range(0,1024,cell):
   for x0 in range(0,1024,cell):
@@ -59,12 +55,12 @@ def main():
   im=src.transform(CANVAS,Image.Transform.MESH,build_mesh(i),resample=Image.Resampling.BICUBIC); im=normalize(im)
   name=f'char_lian_wu__block_recoil__f{i:03d}.png'; p=a.output/name; im.save(p,optimize=True); s=validate(im,name); s.update(file=name,sha256=sha256(p)); stats.append(s); frames.append(im)
  widths=[s['width'] for s in stats]; heights=[s['height'] for s in stats]; wv=(max(widths)-min(widths))/max(widths); hv=(max(heights)-min(heights))/max(heights)
- print('PACK04_CANDIDATE_F_BOUNDS='+json.dumps([{'frame':i+1,'bbox':s['bbox'],'width':s['width'],'height':s['height']} for i,s in enumerate(stats)])); print(f'PACK04_CANDIDATE_F_VARIATION width={wv:.6f} height={hv:.6f}')
+ print('PACK04_CANDIDATE_G_BOUNDS='+json.dumps([{'frame':i+1,'bbox':s['bbox'],'width':s['width'],'height':s['height']} for i,s in enumerate(stats)])); print(f'PACK04_CANDIDATE_G_VARIATION width={wv:.6f} height={hv:.6f}')
  if wv>.08 or hv>.08: raise SystemExit('PACK04_LIAN_BLOCK_RECOIL=BLOCKED bounds_variation')
  sheet=Image.new('RGBA',(3072,1024),(0,0,0,0))
  for n,im in enumerate(frames): sheet.alpha_composite(im,(n*1024,0))
- sheet.save(a.output/'contact-sheet-candidate-f.png',optimize=True)
- report={'schema':'tehkne/taijifu-pack04-authoring-candidate/v1','signature':SIGNATURE,'candidate':'F','fighter':'lian_wu','state':'block_recoil','source_sha256':SOURCE_SHA256,'method':'continuous_16px_joint_field_from_rig_v1_elbow_wrist_anchors','candidate_history':{'A':'REJECTED seams','B':'REJECTED insufficient motion','C':'REJECTED idle-like','D':'REJECTED anatomically weak warp','E':'REJECTED rectangular rig segmentation exposed holes'},'promoted':False,'human_review':'PENDING','runtime_authority':False,'frames':stats}
+ sheet.save(a.output/'contact-sheet-candidate-g.png',optimize=True)
+ report={'schema':'tehkne/taijifu-pack04-authoring-candidate/v1','signature':SIGNATURE,'candidate':'G','fighter':'lian_wu','state':'block_recoil','source_sha256':SOURCE_SHA256,'method':'continuous_12px_joint_field_recalibrated_on_current_guard_raster','candidate_history':{'A':'REJECTED seams','B':'REJECTED insufficient motion','C':'REJECTED idle-like','D':'REJECTED anatomically weak warp','E':'REJECTED segmentation holes','F':'REJECTED stale joint coordinates / insufficient block read'},'promoted':False,'human_review':'PENDING','runtime_authority':False,'frames':stats}
  (a.output/'candidate-report.json').write_text(json.dumps(report,indent=2)+'\n',encoding='utf-8')
- print('PACK04_LIAN_BLOCK_RECOIL_CANDIDATE_F=PASS frames=3 promoted=false'); print('SIGNATURE='+SIGNATURE)
+ print('PACK04_LIAN_BLOCK_RECOIL_CANDIDATE_G=PASS frames=3 promoted=false'); print('SIGNATURE='+SIGNATURE)
 if __name__=='__main__': main()
