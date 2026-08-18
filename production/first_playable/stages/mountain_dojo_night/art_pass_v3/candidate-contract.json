@@ -1,0 +1,74 @@
+{
+  "schema": "tehkne/taijifu-pack03-art-candidate/v3",
+  "signature": "Tehkné Solutions",
+  "issue": 90,
+  "arena_id": "mountain_dojo_night",
+  "candidate_id": "pack03_mountain_dojo_night_art_pass_v3",
+  "status": "art_pending",
+  "canonical_source": "packs/stages/mountain_dojo_night/v1",
+  "candidate_root": "production/first_playable/stages/mountain_dojo_night/art_pass_v3",
+  "replace_canonical_only_after_promotion": true,
+  "viewport": [1920, 1080],
+  "runtime_contract": {
+    "ground_y": 820,
+    "safe_fighter_zone_x": [280, 1640],
+    "parallax": {
+      "background.png": 0.18,
+      "midground.png": 0.48,
+      "foreground.png": 1.0
+    },
+    "collision_changes_allowed": false,
+    "physics_changes_allowed": false,
+    "camera_contract_changes_allowed": false
+  },
+  "layers": {
+    "background.png": {
+      "role": "distant_environment",
+      "required": true,
+      "size": [1920, 1080],
+      "allowed_modes": ["RGB", "RGBA"],
+      "transparent_required": false,
+      "art_target": "cool moonlit mountain depth, distant silhouettes, atmospheric perspective; no fighters, UI or baked text"
+    },
+    "midground.png": {
+      "role": "primary_stage_identity",
+      "required": true,
+      "size": [1920, 1080],
+      "allowed_modes": ["RGB", "RGBA"],
+      "transparent_required": false,
+      "art_target": "authored dojo architecture, believable wood/stone/tile materials, restrained warm lantern practicals, combat-safe center"
+    },
+    "foreground.png": {
+      "role": "depth_frame",
+      "required": true,
+      "size": [1920, 1080],
+      "allowed_modes": ["RGBA"],
+      "transparent_required": true,
+      "min_overall_transparent_fraction": 0.50,
+      "min_nontransparent_fraction": 0.005,
+      "max_safe_zone_nontransparent_fraction": 0.03,
+      "safe_zone_y": [80, 820],
+      "art_target": "sparse edge framing only: vegetation, roof edge, rope, stone or lantern elements; no continuous bottom bar and no fighter obstruction"
+    }
+  },
+  "forbidden": [
+    "visible grid",
+    "procedural placeholder geometry",
+    "generic app UI",
+    "baked text",
+    "tech glow",
+    "purple sci-fi treatment",
+    "fighters baked into stage art"
+  ],
+  "promotion_gates": [
+    "candidate_files_pass",
+    "foreground_transparency_pass",
+    "safe_zone_pass",
+    "hashes_frozen",
+    "manual_visual_review_pass",
+    "godot_runtime_capture_pass",
+    "c30_materialization_pass",
+    "stage_premium_runtime_review_pass",
+    "vertical_slice_asset_truth_pass"
+  ]
+}
