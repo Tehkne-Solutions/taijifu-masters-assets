@@ -1,0 +1,25 @@
+{
+  "schema": "tehkne/taijifu-pack04-approval/v1",
+  "signature": "Tehkné Solutions",
+  "pack_id": "PACK_04_COMBAT_REACTIONS_AND_MOTION",
+  "tgap_pack_id": "pack_04_combat_reactions_and_motion",
+  "version": "1.0.0",
+  "approved": false,
+  "status": "blocked",
+  "human_review": "PENDING",
+  "human_visual_review": "pending",
+  "identity_continuity": "pending",
+  "weapon_continuity": "pending",
+  "pivot_ground_line": "pending",
+  "state_distinctness": "pending",
+  "gameplay_scale": "pending",
+  "runtime_integration": "pending",
+  "godot_capture_1920x1080_each_state_each_fighter": "pending",
+  "evidence": [],
+  "promotion": {
+    "release_allowed": false,
+    "playtest_02_visual_completion_allowed": false,
+    "canonical_ready": false
+  },
+  "reason": "Materialization intake only. No authored PACK 04 runtime PNGs are present or approved."
+}
