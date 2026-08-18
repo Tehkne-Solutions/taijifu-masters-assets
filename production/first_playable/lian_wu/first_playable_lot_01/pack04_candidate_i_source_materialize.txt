@@ -1,0 +1,17 @@
+PACK 04 — Candidate I canonical source materialization
+
+Canonical source:
+production/first_playable/lian_wu/first_playable_lot_01/animations/guard/char_lian_wu__guard__f01.png
+
+SHA-256:
+c8e6cd1feece7c2a54cf2279085c2a4bb33338dd6a3dcb3e4d5a2402b537631c
+
+Size: 548624 bytes
+
+Purpose: materialize the exact Git LFS raster as a review artifact so Candidate I can be produced by true source edit rather than regeneration.
+
+Promotion remains blocked.
+Runtime authority remains false.
+Counts toward PACK04 34 remains false.
+
+Signature: Tehkné Solutions
