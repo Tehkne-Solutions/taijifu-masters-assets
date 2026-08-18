@@ -1,0 +1,90 @@
+{
+  "schema": "tehkne/taijifu-stage-pack/v1",
+  "signature": "Tehkné Solutions",
+  "arena_id": "mountain_dojo_night",
+  "display_name": "Mountain Dojo Night — Premium Art Pass v3",
+  "version": "3.0.0-rc.0",
+  "status": "authored_art_production",
+  "canonical_ready": false,
+  "viewport": "1920x1080",
+  "source_contract": {
+    "preserved_from": "packs/stages/mountain_dojo_night/v1",
+    "ground_y": 820,
+    "safe_fighter_zone": [280, 1640],
+    "collision_geometry_changes": false,
+    "gameplay_geometry_changes": false
+  },
+  "layers": [
+    {
+      "file": "background.png",
+      "role": "background",
+      "parallax": 0.18,
+      "required": true,
+      "production_state": "pending_authored_art",
+      "art_scope": "distant mountains, night sky, moon, atmospheric depth; no fighters, no UI, no baked text"
+    },
+    {
+      "file": "midground.png",
+      "role": "midground",
+      "parallax": 0.48,
+      "required": true,
+      "production_state": "pending_authored_art",
+      "art_scope": "primary dojo architecture, stone combat floor, lantern structures and authored props; preserve combat-safe center and ground_y=820"
+    },
+    {
+      "file": "foreground.png",
+      "role": "foreground",
+      "parallax": 1.0,
+      "required": true,
+      "transparent": true,
+      "production_state": "pending_authored_art",
+      "art_scope": "transparent depth frame using vegetation, branches, roof or lantern edge elements; combat center must remain clear"
+    }
+  ],
+  "runtime_files": ["collision.json", "lighting.json"],
+  "runtime_contract": {
+    "ground_y": 820,
+    "safe_fighter_zone": [280, 1640],
+    "no_visible_grid": true,
+    "no_procedural_placeholder": true,
+    "transparent_foreground_required": true,
+    "fighter_readability_priority": true
+  },
+  "visual_direction": {
+    "theme": "mountain dojo at night",
+    "style": "premium authored martial-fantasy 2.5D layered parallax",
+    "mood": "calm, disciplined, cinematic, tactile, readable for combat",
+    "materials": ["weathered timber", "dark ceramic roof tile", "aged stone", "paper lantern", "cloth banners", "mountain vegetation"],
+    "lighting": "cool moonlight with restrained warm lantern practicals",
+    "depth": "strong atmospheric perspective and authored foreground framing",
+    "forbidden": [
+      "tech glow",
+      "purple sci-fi treatment",
+      "generic website panels",
+      "visible grid",
+      "procedural placeholder geometry",
+      "flat vector blockout read",
+      "baked UI",
+      "baked text"
+    ]
+  },
+  "production": {
+    "issue": 90,
+    "real_runtime_layers_required": 3,
+    "real_runtime_layers_present": 0,
+    "contact_sheet_counts_as_progress": false,
+    "candidate_board_counts_as_progress": false,
+    "human_visual_pass_required": true
+  },
+  "promotion": {
+    "required_image_count": 3,
+    "foreground_alpha_validation_required": true,
+    "safe_zone_validation_required": true,
+    "hash_freeze_required": true,
+    "c30_materialization_required": true,
+    "stage_premium_runtime_review_required": true,
+    "vertical_slice_asset_truth_required": true,
+    "neutral_critical_elemental_captures_required": true,
+    "human_visual_pass_required": true
+  }
+}

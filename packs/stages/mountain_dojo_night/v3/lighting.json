@@ -1,0 +1,37 @@
+{
+  "schema": "tehkne/taijifu-stage-lighting/v1",
+  "signature": "Tehkné Solutions",
+  "arena_id": "mountain_dojo_night",
+  "ambient": {
+    "intensity": 0.42,
+    "temperature": "cool_moonlight"
+  },
+  "key_light": {
+    "source": "moon",
+    "direction": [-0.35, 0.72],
+    "intensity": 0.78,
+    "softness": 0.62
+  },
+  "practicals": [
+    {"id": "lantern_left", "type": "warm_lantern", "x": 190, "y": 560, "intensity": 0.72, "radius": 180},
+    {"id": "lantern_right", "type": "warm_lantern", "x": 1730, "y": 560, "intensity": 0.72, "radius": 180},
+    {"id": "dojo_warmth", "type": "window_emission", "x": 960, "y": 540, "intensity": 0.38, "radius": 420}
+  ],
+  "fighter_readability": {
+    "minimum_contrast": 0.58,
+    "rim_light_enabled": true,
+    "rim_light_intensity": 0.22,
+    "avoid_face_blackout": true
+  },
+  "vfx_policy": {
+    "allow_combat_flashes": true,
+    "allow_elemental_accents": true,
+    "forbid_tech_glow": true,
+    "forbid_fullscreen_bloom": true
+  },
+  "inheritance": {
+    "source": "packs/stages/mountain_dojo_night/v1/lighting.json",
+    "runtime_contract_changes": false,
+    "art_direction_note": "The v3 authored layers should materially realize this lighting rather than relying on post-process effects to create depth."
+  }
+}
