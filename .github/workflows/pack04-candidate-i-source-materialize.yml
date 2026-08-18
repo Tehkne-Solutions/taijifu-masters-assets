@@ -1,0 +1,44 @@
+name: PACK04 Candidate I canonical source materialize
+on:
+  pull_request:
+    paths:
+      - '.github/workflows/pack04-candidate-i-source-materialize.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  materialize-source:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Checkout canonical LFS pixels
+        uses: actions/checkout@v4
+        with:
+          lfs: true
+      - name: Verify canonical source hash
+        shell: bash
+        run: |
+          src='production/first_playable/lian_wu/first_playable_lot_01/animations/guard/char_lian_wu__guard__f01.png'
+          test -f "$src"
+          actual=$(sha256sum "$src" | awk '{print $1}')
+          test "$actual" = 'c8e6cd1feece7c2a54cf2279085c2a4bb33338dd6a3dcb3e4d5a2402b537631c'
+          test $(wc -c < "$src") -eq 548624
+          echo "PACK04_CANDIDATE_I_SOURCE_HASH=PASS sha256=$actual"
+      - name: Stage canonical review source
+        shell: bash
+        run: |
+          mkdir -p /tmp/pack04-candidate-i-source
+          cp production/first_playable/lian_wu/first_playable_lot_01/animations/guard/char_lian_wu__guard__f01.png /tmp/pack04-candidate-i-source/lian_wu_canonical_source.png
+          printf '%s\n' 'c8e6cd1feece7c2a54cf2279085c2a4bb33338dd6a3dcb3e4d5a2402b537631c  lian_wu_canonical_source.png' > /tmp/pack04-candidate-i-source/checksums.sha256
+      - name: Publish canonical source artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: PACK04_CANDIDATE_I_CANONICAL_SOURCE
+          path: /tmp/pack04-candidate-i-source
+          if-no-files-found: error
+          retention-days: 14
+      - name: Assert no promotion
+        run: |
+          echo 'PACK04_CANDIDATE_I_PROMOTED=false'
+          echo 'PACK04_CANDIDATE_I_RUNTIME_AUTHORITY=false'
+          echo 'SIGNATURE=Tehkné Solutions'
