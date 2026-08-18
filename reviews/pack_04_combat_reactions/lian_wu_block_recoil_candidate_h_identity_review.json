@@ -1,0 +1,42 @@
+{
+  "schema": "tehkne/taijifu-pack04-identity-review/v1",
+  "signature": "Tehkné Solutions",
+  "fighter": "lian_wu",
+  "state": "block_recoil",
+  "candidate": "H",
+  "review_status": "REJECTED_DO_NOT_PROMOTE",
+  "review_basis": {
+    "canonical_reference": "production/first_playable/lian_wu/first_playable_lot_01/animations/guard/char_lian_wu__guard__f01.png",
+    "candidate_artifact": "TAIJIFU_PACK04_LIAN_WU_BLOCK_RECOIL_CANDIDATE_H.zip",
+    "comparison": "strict_visual_identity"
+  },
+  "passes": {
+    "block_recoil_readability": true,
+    "three_state_sequence": true,
+    "transparent_rgba": true,
+    "canvas_1024": true,
+    "footline_969": true
+  },
+  "fails": {
+    "canonical_face": true,
+    "canonical_hair_silhouette": true,
+    "canonical_outfit_construction": true,
+    "canonical_body_proportions": true,
+    "canonical_weapon_and_sheath_read": true,
+    "canonical_character_silhouette": true
+  },
+  "decision": {
+    "promoted": false,
+    "runtime_authority": false,
+    "counts_toward_pack04_34": false,
+    "authored_frames_accepted": 0,
+    "next_candidate": "I",
+    "next_method": "identity_locked_source_edit_only"
+  },
+  "next_requirements": [
+    "Use the canonical Lian Wu raster as the actual image-edit source, not only as a style reference.",
+    "Preserve face, hair mass, outfit geometry, proportions, single sheathed katana and water-blue sheath exactly.",
+    "Change pose only: contact_absorb, yield, guard_recover.",
+    "Fail closed if the image pipeline regenerates the character instead of editing the canonical source."
+  ]
+}
