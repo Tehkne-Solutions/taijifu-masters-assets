@@ -1,0 +1,47 @@
+{
+  "schema": "tehkne/taijifu-pack04-source-edit-gate/v1",
+  "signature": "Tehkné Solutions",
+  "fighter": "lian_wu",
+  "state": "block_recoil",
+  "candidate": "I",
+  "status": "BLOCKED_UNTIL_TRUE_SOURCE_EDIT",
+  "canonical_source": {
+    "path": "production/first_playable/lian_wu/first_playable_lot_01/animations/guard/char_lian_wu__guard__f01.png",
+    "sha256": "c8e6cd1feece7c2a54cf2279085c2a4bb33338dd6a3dcb3e4d5a2402b537631c",
+    "must_be_actual_edit_input": true
+  },
+  "required_evidence": {
+    "source_edit_mode": true,
+    "source_image_identity_locked": true,
+    "regeneration_from_scratch_forbidden": true,
+    "three_frames": ["contact_absorb", "yield", "guard_recover"],
+    "canvas": [1024, 1024],
+    "mode": "RGBA",
+    "footline": 969,
+    "footline_tolerance_px": 3,
+    "max_bounds_variation_percent": 8
+  },
+  "identity_invariants": [
+    "face",
+    "hair_mass_and_topknot",
+    "blue_tie",
+    "white_water_blue_black_gold_outfit",
+    "asymmetric_outfit_construction",
+    "single_sheathed_katana",
+    "water_blue_sheath_left_hip",
+    "body_proportions",
+    "native_facing_right"
+  ],
+  "promotion": {
+    "promoted": false,
+    "runtime_authority": false,
+    "counts_toward_pack04_34": false,
+    "release_allowed": false
+  },
+  "fail_closed_if": [
+    "edit metadata is absent or indicates generation from scratch",
+    "canonical source hash does not match",
+    "any identity invariant changes",
+    "any frame fails geometry or footline gates"
+  ]
+}
