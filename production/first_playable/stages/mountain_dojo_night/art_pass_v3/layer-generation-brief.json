@@ -1,0 +1,69 @@
+{
+  "schema": "tehkne/taijifu-pack03-generation-brief/v3",
+  "signature": "Tehkné Solutions",
+  "arena_id": "mountain_dojo_night",
+  "output": {
+    "width": 1920,
+    "height": 1080,
+    "format": "PNG",
+    "shared_camera": "side-view 2.5D fighting-game stage",
+    "shared_horizon_y": 515,
+    "ground_y": 820,
+    "safe_fighter_zone_x": [280, 1640]
+  },
+  "shared_art_direction": {
+    "quality": "premium authored production art",
+    "style": "hand-painted martial-fantasy 2.5D with believable materials and cinematic depth",
+    "mood": "calm disciplined mountain dojo at night, ancient but maintained and inhabited",
+    "primary_read": "fighters first, dojo second, mountains third",
+    "lighting": "cool moon environment with restrained warm amber lantern practicals",
+    "materials": ["aged dark timber", "weathered stone", "ceramic roof tile", "rope", "cloth", "pine foliage", "subtle metal fittings"],
+    "detail_policy": "high material richness at edges and architecture, restrained frequency behind the combat lane",
+    "forbidden": ["text", "logos", "fighters", "UI", "visible grid", "tech neon", "purple sci-fi glow", "procedural blockout look", "flat vector wallpaper", "promotional framing"]
+  },
+  "continuity_lock": {
+    "same_architecture": true,
+    "same_camera": true,
+    "same_night": true,
+    "same_light_sources": true,
+    "same_material_language": true,
+    "same_ground_alignment": true,
+    "generate_as_one_scene_then_separate_by_depth": true
+  },
+  "layers": {
+    "background.png": {
+      "alpha": false,
+      "role": "distant_environment",
+      "brief": "Night sky and layered mountain ranges with strong atmospheric perspective, a restrained moon or moonlit cloud break, distant temple/dojo silhouettes integrated into the mountains, pine silhouettes and mist depth. Keep the central combat lane calm and lower contrast. No near architecture, floor, fighters, text or UI.",
+      "depth": "far",
+      "contrast": "low-to-medium",
+      "warm_light": "only tiny distant accents"
+    },
+    "midground.png": {
+      "alpha": false,
+      "role": "primary_stage_identity",
+      "brief": "The actual mountain dojo fighting terrace: authored asymmetrical timber dojo architecture, tiled roofs, stone retaining walls and combat floor, stairs/railings at the sides, hanging training details, banners without writing, rope and believable wear. Warm lantern pools on left/right architecture contrast with cool moonlight. The center x=280..1640 remains visually open and readable; ground contact aligns at y=820. No fighters, text or UI.",
+      "depth": "middle",
+      "contrast": "medium with controlled warm practical focal points outside fighter silhouettes",
+      "ground_contract": "visual floor must read continuously under x=280..1640 at y=820"
+    },
+    "foreground.png": {
+      "alpha": true,
+      "role": "depth_frame",
+      "brief": "Transparent edge-only framing elements from the same scene: sparse pine branch clusters, one partial roof/eave or post edge, rope/training detail, small stone/grass silhouettes and at most one lantern-edge element. Keep the entire central fighter lane almost completely transparent; do not create a bottom bar or frame. Elements must feel physically closer to camera and match the midground lighting/materials.",
+      "depth": "near",
+      "contrast": "medium-high only at extreme edges",
+      "safe_zone_rule": "nontransparent coverage inside x=280..1640,y=80..820 must remain <=3%",
+      "transparency_rule": "overall transparent fraction >=50%"
+    }
+  },
+  "review_sequence": [
+    "background continuity and depth",
+    "midground architecture and ground alignment",
+    "foreground alpha and safe-zone obstruction",
+    "combined 3-layer composite",
+    "Godot neutral capture",
+    "Godot critical/posture-break capture",
+    "Godot elemental capture"
+  ]
+}
