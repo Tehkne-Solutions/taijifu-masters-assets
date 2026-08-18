@@ -60,7 +60,10 @@ def main():
  for i in (1,2,3):
   im=frame_from_layers(layers,i); name=f'char_lian_wu__block_recoil__f{i:03d}.png'; p=a.output/name; im.save(p,optimize=True); s=validate(im,name); s.update(file=name,sha256=sha256(p)); stats.append(s); frames.append(im)
  widths=[s['width'] for s in stats]; heights=[s['height'] for s in stats]
- if (max(widths)-min(widths))/max(widths)>.08 or (max(heights)-min(heights))/max(heights)>.08: raise SystemExit('PACK04_LIAN_BLOCK_RECOIL=BLOCKED bounds_variation')
+ print('PACK04_CANDIDATE_E_BOUNDS='+json.dumps([{'frame':i+1,'bbox':s['bbox'],'width':s['width'],'height':s['height']} for i,s in enumerate(stats)]))
+ wv=(max(widths)-min(widths))/max(widths); hv=(max(heights)-min(heights))/max(heights)
+ print(f'PACK04_CANDIDATE_E_VARIATION width={wv:.6f} height={hv:.6f}')
+ if wv>.08 or hv>.08: raise SystemExit('PACK04_LIAN_BLOCK_RECOIL=BLOCKED bounds_variation')
  sheet=Image.new('RGBA',(3072,1024),(0,0,0,0))
  for n,im in enumerate(frames): sheet.alpha_composite(im,(n*1024,0))
  sheet.save(a.output/'contact-sheet-candidate-e.png',optimize=True)
