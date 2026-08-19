@@ -16,13 +16,18 @@ OUT = Path('/tmp/lian_wu_remaining_hidden_patch_kit_v1')
 CANONICAL = KIT_DIR / 'canonical-source.png'
 FRONT_URL = 'https://raw.githubusercontent.com/Tehkne-Solutions/taijifu-masters/main/assets/characters/lian_wu/character_lock/lian_wu_neutral.png'
 EXPECTED_FRONT_SHA = '0e435757b5c8a114f3ba91653f79bc86db51ee9cf3bfb74c529efed5d4ff7ab5'
-EXPECTED_CANONICAL_SHA = 'c8e6cd1feece7c2a54cf2279085c2a4bb33338dd6a3dcb3e4d5a2402b537631c'
+EXPECTED_CANONICAL_SOURCE_SHA = 'c8e6cd1feece7c2a54cf2279085c2a4bb33338dd6a3dcb3e4d5a2402b537631c'
+EXPECTED_CANONICAL_RGBA_SHA = '1c06a604173fec765131de5e12ec6bf3739fc5068099ecc4494dee1de8447993'
 SLOTS = ['torso_underpaint_complete', 'arm_left_complete', 'arm_right_complete']
 PADDING = 28
 
 
 def sha256(path: Path) -> str:
     return hashlib.sha256(path.read_bytes()).hexdigest()
+
+
+def rgba_sha256(arr: np.ndarray) -> str:
+    return hashlib.sha256(arr.tobytes()).hexdigest()
 
 
 def download(url: str, dest: Path) -> None:
@@ -44,20 +49,22 @@ def main() -> int:
     OUT.mkdir(parents=True, exist_ok=True)
     if not CANONICAL.exists():
         raise SystemExit('authoring kit v2 canonical-source.png missing')
-    if sha256(CANONICAL) != EXPECTED_CANONICAL_SHA:
-        raise SystemExit('canonical source hash mismatch')
+
+    canonical = np.array(Image.open(CANONICAL).convert('RGBA'))
+    if rgba_sha256(canonical) != EXPECTED_CANONICAL_RGBA_SHA:
+        raise SystemExit('canonical RGBA pixel hash mismatch')
 
     front_path = OUT / 'char_lian_wu__front_clean_recovered.png'
     download(FRONT_URL, front_path)
     if sha256(front_path) != EXPECTED_FRONT_SHA:
         raise SystemExit('front clean source hash mismatch')
 
-    canonical = np.array(Image.open(CANONICAL).convert('RGBA'))
     front = np.array(Image.open(front_path).convert('RGBA'))
     manifest = {
         'schema': 'tehkne/taijifu-lian-wu-remaining-hidden-patch-kit/v1',
         'signature': 'Tehkné Solutions',
-        'canonical_sha256': EXPECTED_CANONICAL_SHA,
+        'canonical_source_contract_sha256': EXPECTED_CANONICAL_SOURCE_SHA,
+        'canonical_rgba_sha256': EXPECTED_CANONICAL_RGBA_SHA,
         'front_clean_sha256': EXPECTED_FRONT_SHA,
         'generative_pixels_created': False,
         'automatic_inpainting_used': False,
@@ -96,7 +103,6 @@ def main() -> int:
         rem_crop = remaining[y0:y1, x0:x1]
         rec_crop = recovered[y0:y1, x0:x1]
 
-        # Context image: canonical visible pixels + recovered real pixels + red outline for remaining region.
         context = crop.copy()
         context[rec_crop] = front_crop[rec_crop]
         ctx_img = Image.fromarray(context, 'RGBA')
@@ -140,6 +146,8 @@ def main() -> int:
         total_remaining += int(remaining.sum())
 
     manifest['total_remaining_hidden_px'] = total_remaining
+    if total_remaining != 22636:
+        raise SystemExit(f'unexpected remaining hidden pixel count: {total_remaining}')
     manifest['authoring_complete'] = False
     (OUT / 'remaining-hidden-patch-kit-manifest.json').write_text(json.dumps(manifest, indent=2) + '\n', encoding='utf-8')
     print('LIAN_WU_REMAINING_HIDDEN_PATCH_KIT_V1=PASS')
