@@ -1,0 +1,20 @@
+{
+  "schema": "tehkne/taijifu-lian-wu-rig-v22-arm-envelope/v1",
+  "signature": "Tehkné Solutions",
+  "source_sha256": "c8e6cd1feece7c2a54cf2279085c2a4bb33338dd6a3dcb3e4d5a2402b537631c",
+  "method": "continuous_arm_envelope_from_canonical_raster",
+  "chains": {
+    "left": ["shoulder_left", "elbow_left", "wrist_left"],
+    "right": ["shoulder_right", "elbow_right", "wrist_right"]
+  },
+  "source_parts_per_arm": ["upper_arm", "forearm", "hand"],
+  "joint_caps_allowed": false,
+  "independent_segment_rotation_allowed": false,
+  "continuous_envelope_required": true,
+  "clipping": "anatomical_arm_mask_only",
+  "composition_order": ["static_body", "left_arm_envelope", "right_arm_envelope", "weapon"],
+  "human_review": "PENDING",
+  "animation_authoring_allowed": false,
+  "pack04_promotion_allowed": false,
+  "counts_toward_pack04": false
+}
