@@ -1,0 +1,28 @@
+{
+  "schema": "tehkne/taijifu-lian-wu-rig-v2-joints/v1",
+  "signature": "Tehkné Solutions",
+  "source_sha256": "c8e6cd1feece7c2a54cf2279085c2a4bb33338dd6a3dcb3e4d5a2402b537631c",
+  "canvas": [1024, 1024],
+  "footline": 969,
+  "joint_count": 13,
+  "joints": {
+    "neck": [512, 382],
+    "shoulder_left": [410, 438],
+    "elbow_left": [372, 558],
+    "wrist_left": [346, 651],
+    "shoulder_right": [624, 438],
+    "elbow_right": [675, 558],
+    "wrist_right": [691, 655],
+    "hip_left": [454, 754],
+    "knee_left": [430, 858],
+    "ankle_left": [410, 928],
+    "hip_right": [575, 754],
+    "knee_right": [602, 858],
+    "ankle_right": [625, 928]
+  },
+  "weapon_policy": "rigid_separate_piece_no_skeletal_joint",
+  "mask_review_basis": "PR109 authored anatomical polygon masks",
+  "joint_anchor_freeze_allowed": true,
+  "animation_authoring_allowed": false,
+  "pack04_promotion_allowed": false
+}
