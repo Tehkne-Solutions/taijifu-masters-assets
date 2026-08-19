@@ -1,0 +1,19 @@
+{
+  "schema": "tehkne/taijifu-lian-wu-rig-review-history/v1",
+  "signature": "Tehkné Solutions",
+  "fighter": "lian_wu",
+  "state": "contact_absorb",
+  "tests": [
+    {"version":"v1","method":"segmented_joint_rotation","result":"REJECTED_VISUAL","reason":"joint gaps and detached segments"},
+    {"version":"v2","method":"joint_caps","result":"REJECTED_VISUAL","reason":"floating islands and overlap artifacts"},
+    {"version":"v3","method":"continuous_arm_envelope_pil_mesh","result":"REJECTED_VISUAL","reason":"mesh seams"},
+    {"version":"v4","method":"dense_remap_segment_union","result":"REJECTED_VISUAL","reason":"source envelope remained fragmented"},
+    {"version":"v5","method":"direct_canonical_arm_mask_dense_remap","result":"REJECTED_VISUAL","reason":"static body exposed missing hidden surfaces"},
+    {"version":"v6","method":"automatic_body_underpaint_plus_dense_remap","result":"REJECTED_VISUAL","reason":"underpaint blur/silhouette artifacts and weak block readability"}
+  ],
+  "conclusion": "PROCEDURAL_HIDDEN_SURFACE_RECOVERY_EXHAUSTED",
+  "next_authority": "layered-master-authored-v1.json",
+  "pack04_accepted_frames": 0,
+  "animation_authoring_allowed": false,
+  "pack04_promotion_allowed": false
+}
