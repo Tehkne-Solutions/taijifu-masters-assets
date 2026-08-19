@@ -1,0 +1,6 @@
+Rig v2 mask ownership fix v3
+Root cause: weapon priority consumed all visible hand_left pixels.
+Fix: hands own overlap pixels before weapon.
+Reconstruction must remain pixel-exact.
+Joints, animation and PACK04 promotion remain blocked pending review.
+Signature: Tehkné Solutions
