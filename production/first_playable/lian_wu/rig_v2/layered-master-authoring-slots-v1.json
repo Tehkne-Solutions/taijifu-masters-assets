@@ -1,0 +1,26 @@
+{
+  "schema": "tehkne/taijifu-lian-wu-layered-master-slots/v1",
+  "signature": "Tehkné Solutions",
+  "source_sha256": "c8e6cd1feece7c2a54cf2279085c2a4bb33338dd6a3dcb3e4d5a2402b537631c",
+  "canvas": [1024, 1024],
+  "footline": 969,
+  "status": "AUTHORING_REQUIRED",
+  "slots": {
+    "head_hair": {"path": null, "sha256": null, "authored": false},
+    "torso_underpaint_complete": {"path": null, "sha256": null, "authored": false},
+    "arm_left_complete": {"path": null, "sha256": null, "authored": false},
+    "arm_right_complete": {"path": null, "sha256": null, "authored": false},
+    "waist_sash": {"path": null, "sha256": null, "authored": false},
+    "leg_left_complete": {"path": null, "sha256": null, "authored": false},
+    "leg_right_complete": {"path": null, "sha256": null, "authored": false},
+    "weapon_rigid": {"path": null, "sha256": null, "authored": false}
+  },
+  "visible_canonical_pixels_locked_exact": true,
+  "hidden_surfaces_authored_only": true,
+  "automatic_hidden_surface_generation_allowed": false,
+  "reconstruction_gate": "BLOCKED_UNTIL_ALL_SLOTS_AUTHORED",
+  "contact_absorb_pose_gate": "BLOCKED_UNTIL_RECONSTRUCTION_PASS",
+  "animation_authoring_allowed": false,
+  "pack04_promotion_allowed": false,
+  "counts_toward_pack04": false
+}

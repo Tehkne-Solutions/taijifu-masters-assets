@@ -1,0 +1,30 @@
+name: Lian Wu Layered Master Authoring Readiness
+on:
+  pull_request:
+    paths:
+      - 'production/first_playable/lian_wu/rig_v2/layered-master-**'
+      - 'production/first_playable/lian_wu/first_playable_lot_01/animations/guard/**'
+      - 'tools/validate_lian_wu_layered_master_authoring_readiness.py'
+      - '.github/workflows/lian-wu-layered-master-authoring-readiness.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  readiness:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Checkout canonical LFS pixels
+        uses: actions/checkout@v4
+        with:
+          lfs: true
+      - name: Validate authored-layer contract and slots
+        run: python3 tools/validate_lian_wu_layered_master_authoring_readiness.py
+      - name: Compile validator
+        run: python3 -m py_compile tools/validate_lian_wu_layered_master_authoring_readiness.py
+      - name: Assert fail closed
+        run: |
+          echo 'ANIMATION_AUTHORING_ALLOWED=false'
+          echo 'PACK04_PROMOTION_ALLOWED=false'
+          echo 'COUNTS_TOWARD_PACK04=false'
+          echo 'SIGNATURE=Tehkné Solutions'
