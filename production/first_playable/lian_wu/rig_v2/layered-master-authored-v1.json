@@ -1,0 +1,35 @@
+{
+  "schema": "tehkne/taijifu-lian-wu-layered-master/v1",
+  "signature": "Tehkné Solutions",
+  "source_sha256": "c8e6cd1feece7c2a54cf2279085c2a4bb33338dd6a3dcb3e4d5a2402b537631c",
+  "status": "AUTHORING_REQUIRED",
+  "visible_canonical_pixels": "LOCKED_EXACT",
+  "required_layers": [
+    "head_hair",
+    "torso_underpaint_complete",
+    "arm_left_complete",
+    "arm_right_complete",
+    "waist_sash",
+    "leg_left_complete",
+    "leg_right_complete",
+    "weapon_rigid"
+  ],
+  "hidden_surface_policy": "AUTHORED_ONLY",
+  "forbidden_methods": [
+    "regeneration_from_scratch",
+    "automatic_inpainting",
+    "joint_caps",
+    "fragmented_segment_union",
+    "independent_segment_rotation"
+  ],
+  "acceptance": {
+    "canonical_reconstruction_pixel_exact": true,
+    "hidden_surfaces_human_authored": true,
+    "no_visible_style_drift": true,
+    "no_external_silhouette_artifacts": true,
+    "contact_absorb_pose_test_required": true
+  },
+  "animation_authoring_allowed": false,
+  "pack04_promotion_allowed": false,
+  "counts_toward_pack04": false
+}
