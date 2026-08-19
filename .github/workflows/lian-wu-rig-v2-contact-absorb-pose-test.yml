@@ -1,0 +1,40 @@
+name: Lian Wu Rig v2 contact absorb pose test
+on:
+  pull_request:
+    paths:
+      - 'tools/author_lian_wu_rig_v2_contact_absorb_pose_test.py'
+      - '.github/workflows/lian-wu-rig-v2-contact-absorb-pose-test.yml'
+      - 'tools/build_lian_wu_rig_v2_segmentation.py'
+      - 'production/first_playable/lian_wu/rig_v2/joint-anchors-v1.json'
+      - 'production/first_playable/lian_wu/first_playable_lot_01/animations/guard/**'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  pose-test:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Checkout canonical LFS pixels
+        uses: actions/checkout@v4
+        with:
+          lfs: true
+      - name: Install Pillow
+        run: python3 -m pip install --disable-pip-version-check Pillow==11.3.0
+      - name: Build contact absorb pose test
+        run: python3 tools/author_lian_wu_rig_v2_contact_absorb_pose_test.py
+      - name: Compile tool
+        run: python3 -m py_compile tools/author_lian_wu_rig_v2_contact_absorb_pose_test.py
+      - name: Publish review artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: LIAN_WU_RIG_V2_CONTACT_ABSORB_POSE_TEST_V1
+          path: /tmp/lian_wu_rig_v2_contact_absorb_pose_test
+          if-no-files-found: error
+          retention-days: 14
+      - name: Assert fail closed
+        run: |
+          echo 'HUMAN_REVIEW=PENDING'
+          echo 'ANIMATION_AUTHORING_ALLOWED=false'
+          echo 'PACK04_PROMOTION_ALLOWED=false'
+          echo 'SIGNATURE=Tehkné Solutions'
