@@ -27,7 +27,8 @@ POLYGONS={
 'foot_right':[(555,905),(720,905),(735,985),(555,985)],
 'weapon':[(285,595),(430,595),(430,745),(300,745)],
 }
-PRIORITY=['weapon','hand_left','hand_right','forearm_left','forearm_right','upper_arm_left','upper_arm_right','head_hair','foot_left','foot_right','lower_leg_left','lower_leg_right','upper_leg_left','upper_leg_right','waist_sash','torso']
+# Hands must own overlapping visible hand pixels before the rigid weapon region.
+PRIORITY=['hand_left','hand_right','weapon','forearm_left','forearm_right','upper_arm_left','upper_arm_right','head_hair','foot_left','foot_right','lower_leg_left','lower_leg_right','upper_leg_left','upper_leg_right','waist_sash','torso']
 
 def sha256(p): return hashlib.sha256(p.read_bytes()).hexdigest()
 
@@ -79,8 +80,12 @@ def main():
     for i,p in enumerate(PARTS):
       thumb=layers[p].copy(); thumb.thumbnail((480,480),Image.Resampling.NEAREST); cx=(i%4)*512; cy=(i//4)*512; board.alpha_composite(thumb,(cx+(512-thumb.width)//2,cy+(512-thumb.height)//2))
     board.save(OUTPUT/'segmentation-board.png',optimize=True)
-    report={'schema':'tehkne/taijifu-lian-wu-rig-v2-segmentation/v3','signature':'Tehkné Solutions','source_sha256':SOURCE_SHA256,'method':'authored_anatomical_polygon_masks_v3','parts':PARTS,'opaque_source_pixels':opaque,'assigned_pixels':assigned,'assigned_exactly_once':assigned==opaque,'reconstruction_pixel_exact':exact,'part_pixel_counts':counts,'component_stats':stats,'human_mask_review':'PENDING','joint_anchor_freeze_allowed':False,'animation_authoring_allowed':False,'pack04_promotion_allowed':False}
+    zero_parts=[p for p in PARTS if counts[p]==0]
+    report={'schema':'tehkne/taijifu-lian-wu-rig-v2-segmentation/v3','signature':'Tehkné Solutions','source_sha256':SOURCE_SHA256,'method':'authored_anatomical_polygon_masks_v3','ownership_priority':PRIORITY,'parts':PARTS,'opaque_source_pixels':opaque,'assigned_pixels':assigned,'assigned_exactly_once':assigned==opaque,'reconstruction_pixel_exact':exact,'part_pixel_counts':counts,'zero_parts':zero_parts,'component_stats':stats,'human_mask_review':'PENDING','joint_anchor_freeze_allowed':False,'animation_authoring_allowed':False,'pack04_promotion_allowed':False}
     (OUTPUT/'segmentation-report.json').write_text(json.dumps(report,indent=2)+'\n',encoding='utf-8')
-    ok=exact and assigned==opaque and all(counts[p]>0 for p in PARTS)
-    print('RIG_V2_SEGMENTATION='+('PASS' if ok else 'FAIL')); print('RIG_V2_SEGMENTATION_METHOD=AUTHORED_POLYGONS_V3'); return 0 if ok else 1
+    ok=exact and assigned==opaque and not zero_parts
+    print('RIG_V2_SEGMENTATION='+('PASS' if ok else 'FAIL'))
+    print('RIG_V2_ZERO_PARTS='+(','.join(zero_parts) if zero_parts else 'NONE'))
+    print('RIG_V2_SEGMENTATION_METHOD=AUTHORED_POLYGONS_V3')
+    return 0 if ok else 1
 if __name__=='__main__': raise SystemExit(main())
