@@ -1,4 +1,4 @@
-name: Lian Wu Rig v2.2 contact absorb pose test
+name: Lian Wu Rig v2.3 contact absorb pose test
 on:
   pull_request:
     paths:
@@ -18,17 +18,17 @@ jobs:
         uses: actions/checkout@v4
         with:
           lfs: true
-      - name: Install Pillow
-        run: python3 -m pip install --disable-pip-version-check Pillow==11.3.0
-      - name: Build continuous arm envelope pose test v3
+      - name: Install image dependencies
+        run: python3 -m pip install --disable-pip-version-check Pillow==11.3.0 numpy==2.2.6 opencv-python-headless==4.12.0.88
+      - name: Build continuous dense-remap pose test v4
         run: python3 tools/author_lian_wu_rig_v22_contact_absorb_pose_test.py
       - name: Compile tool
         run: python3 -m py_compile tools/author_lian_wu_rig_v22_contact_absorb_pose_test.py
       - name: Publish review artifact
         uses: actions/upload-artifact@v4
         with:
-          name: LIAN_WU_RIG_V22_CONTACT_ABSORB_POSE_TEST_V3
-          path: /tmp/lian_wu_rig_v22_contact_absorb_v3
+          name: LIAN_WU_RIG_V23_CONTACT_ABSORB_POSE_TEST_V4
+          path: /tmp/lian_wu_rig_v23_contact_absorb_v4
           if-no-files-found: error
           retention-days: 14
       - name: Assert fail closed
