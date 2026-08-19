@@ -1,0 +1,39 @@
+name: Lian Wu Layered Master Authoring Kit v2
+on:
+  pull_request:
+    paths:
+      - 'tools/build_lian_wu_layered_master_authoring_kit_v2.py'
+      - '.github/workflows/lian-wu-layered-master-authoring-kit-v2.yml'
+      - 'production/first_playable/lian_wu/first_playable_lot_01/animations/guard/**'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  authoring-kit-v2:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Checkout canonical LFS pixels
+        uses: actions/checkout@v4
+        with:
+          lfs: true
+      - name: Install image dependencies
+        run: python3 -m pip install --disable-pip-version-check Pillow==11.3.0 numpy==2.2.6 opencv-python-headless==4.12.0.88
+      - name: Build authoring kit v2
+        run: python3 tools/build_lian_wu_layered_master_authoring_kit_v2.py
+      - name: Compile tool
+        run: python3 -m py_compile tools/build_lian_wu_layered_master_authoring_kit_v2.py
+      - name: Publish authoring kit v2
+        uses: actions/upload-artifact@v4
+        with:
+          name: LIAN_WU_LAYERED_MASTER_AUTHORING_KIT_V2
+          path: /tmp/lian_wu_layered_master_authoring_kit_v2
+          if-no-files-found: error
+          retention-days: 14
+      - name: Assert fail closed
+        run: |
+          echo 'AUTHORED_PIXELS_GENERATED=false'
+          echo 'AUTHORING_READY=false'
+          echo 'PACK04_PROMOTION_ALLOWED=false'
+          echo 'COUNTS_TOWARD_PACK04=false'
+          echo 'SIGNATURE=Tehkné Solutions'
