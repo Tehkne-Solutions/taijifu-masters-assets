@@ -1,0 +1,43 @@
+name: Lian Wu Rig v2 segmentation
+on:
+  pull_request:
+    paths:
+      - 'tools/build_lian_wu_rig_v2_segmentation.py'
+      - '.github/workflows/lian-wu-rig-v2-segmentation.yml'
+      - 'production/first_playable/lian_wu/first_playable_lot_01/animations/guard/**'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  segmentation:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Checkout canonical LFS pixels
+        uses: actions/checkout@v4
+        with:
+          lfs: true
+      - name: Install Pillow
+        run: python3 -m pip install --disable-pip-version-check Pillow==11.3.0
+      - name: Build segmentation masks
+        run: python3 tools/build_lian_wu_rig_v2_segmentation.py
+      - name: Compile tool
+        run: python3 -m py_compile tools/build_lian_wu_rig_v2_segmentation.py
+      - name: Assert reconstruction artifact
+        shell: bash
+        run: |
+          test -f production/first_playable/lian_wu/rig_v2/generated/lian_wu_rig_v2_reconstructed.png
+          test -f production/first_playable/lian_wu/rig_v2/generated/segmentation-board.png
+          test -f production/first_playable/lian_wu/rig_v2/generated/segmentation-report.json
+      - name: Publish segmentation review artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: LIAN_WU_RIG_V2_SEGMENTATION_REVIEW
+          path: production/first_playable/lian_wu/rig_v2/generated
+          if-no-files-found: error
+          retention-days: 14
+      - name: Assert no PACK04 promotion
+        run: |
+          echo 'RIG_V2_SEGMENTATION_REVIEW_ONLY=true'
+          echo 'PACK04_PROMOTION_ALLOWED=false'
+          echo 'SIGNATURE=Tehkné Solutions'
