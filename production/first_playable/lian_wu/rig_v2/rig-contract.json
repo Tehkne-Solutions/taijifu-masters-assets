@@ -1,0 +1,18 @@
+{
+  "schema": "tehkne/taijifu-lian-wu-rig/v2",
+  "signature": "Tehkné Solutions",
+  "status": "FOUNDATION",
+  "source": {
+    "path": "production/first_playable/lian_wu/first_playable_lot_01/animations/guard/char_lian_wu__guard__f01.png",
+    "sha256": "c8e6cd1feece7c2a54cf2279085c2a4bb33338dd6a3dcb3e4d5a2402b537631c",
+    "size_bytes": 548624,
+    "must_be_git_lfs_pixels": true
+  },
+  "canvas": {"width": 1024, "height": 1024, "mode": "RGBA", "footline": 969, "footline_tolerance": 3},
+  "identity_lock": ["face", "hair_mass", "topknot", "blue_tie", "outfit_geometry", "palette", "body_proportions", "single_sheathed_katana", "water_blue_sheath_left_hip"],
+  "rig_parts": ["head_hair", "torso", "upper_arm_left", "forearm_left", "hand_left", "upper_arm_right", "forearm_right", "hand_right", "waist_sash", "upper_leg_left", "lower_leg_left", "foot_left", "upper_leg_right", "lower_leg_right", "foot_right", "weapon_sheath"],
+  "joints": ["neck", "shoulder_left", "elbow_left", "wrist_left", "shoulder_right", "elbow_right", "wrist_right", "hip_left", "knee_left", "ankle_left", "hip_right", "knee_right", "ankle_right"],
+  "occlusion_repair": {"required": true, "policy": "author only hidden joint-fill pixels; never redraw visible canonical identity", "review_required": true},
+  "gates": {"source_hash": true, "source_reconstruction_pixel_exact": true, "individual_frames_only": true, "spritesheet_as_runtime_asset": false, "regeneration_from_scratch": false, "runtime_promotion": false},
+  "next_target": {"pack": "PACK04", "fighter": "lian_wu", "state": "block_recoil", "frames": ["contact_absorb", "yield", "guard_recover"]}
+}
