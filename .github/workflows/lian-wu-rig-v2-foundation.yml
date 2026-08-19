@@ -1,0 +1,32 @@
+name: Lian Wu Rig v2 foundation
+on:
+  pull_request:
+    paths:
+      - 'production/first_playable/lian_wu/rig_v2/**'
+      - 'tools/validate_lian_wu_rig_v2_source.py'
+      - '.github/workflows/lian-wu-rig-v2-foundation.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  validate-source:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Checkout canonical LFS pixels
+        uses: actions/checkout@v4
+        with:
+          lfs: true
+      - name: Install Pillow
+        run: python3 -m pip install --disable-pip-version-check Pillow==11.3.0
+      - name: Validate Rig v2 source authority
+        run: python3 tools/validate_lian_wu_rig_v2_source.py
+      - name: Compile validator
+        run: python3 -m py_compile tools/validate_lian_wu_rig_v2_source.py
+      - name: Assert no premature Rig v2 output
+        shell: bash
+        run: |
+          test ! -d production/first_playable/lian_wu/rig_v2/generated
+          echo 'LIAN_WU_RIG_V2_ARTICULATION=BLOCKED occlusion_repair_and_joint_masks_required=true'
+          echo 'PACK04_ACCEPTED_FRAMES=0/34'
+          echo 'SIGNATURE=Tehkné Solutions'
