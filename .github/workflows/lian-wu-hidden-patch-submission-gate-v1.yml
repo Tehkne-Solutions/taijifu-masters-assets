@@ -1,0 +1,44 @@
+name: Lian Wu Hidden Patch Submission Gate v1
+on:
+  pull_request:
+    paths:
+      - 'tools/validate_lian_wu_hidden_patch_submission_v1.py'
+      - 'tools/build_lian_wu_remaining_hidden_patch_kit_v1.py'
+      - '.github/workflows/lian-wu-hidden-patch-submission-gate-v1.yml'
+      - 'production/first_playable/lian_wu/layered_master/hidden_patch_submission_v1/**'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  hidden-patch-submission:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Checkout canonical LFS pixels
+        uses: actions/checkout@v4
+        with:
+          lfs: true
+      - name: Install image dependencies
+        run: python3 -m pip install --disable-pip-version-check Pillow==11.3.0 numpy==2.2.6 opencv-python-headless==4.12.0.88
+      - name: Build Authoring Kit v2 dependency
+        run: python3 tools/build_lian_wu_layered_master_authoring_kit_v2.py
+      - name: Build Remaining Hidden Patch Kit v1 dependency
+        run: python3 tools/build_lian_wu_remaining_hidden_patch_kit_v1.py
+      - name: Validate hidden patch submission
+        run: python3 tools/validate_lian_wu_hidden_patch_submission_v1.py
+      - name: Compile validator
+        run: python3 -m py_compile tools/validate_lian_wu_hidden_patch_submission_v1.py
+      - name: Publish submission report
+        uses: actions/upload-artifact@v4
+        with:
+          name: LIAN_WU_HIDDEN_PATCH_SUBMISSION_GATE_V1
+          path: /tmp/lian_wu_hidden_patch_submission_gate_v1
+          if-no-files-found: error
+          retention-days: 14
+      - name: Assert fail closed
+        run: |
+          echo 'CANONICAL_RECONSTRUCTION_ALLOWED=false'
+          echo 'CONTACT_ABSORB_ALLOWED=false'
+          echo 'PACK04_PROMOTION_ALLOWED=false'
+          echo 'COUNTS_TOWARD_PACK04=false'
+          echo 'SIGNATURE=Tehkné Solutions'
