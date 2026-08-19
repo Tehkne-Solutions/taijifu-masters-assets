@@ -1,0 +1,23 @@
+{
+  "schema": "tehkne/taijifu-lian-wu-remaining-hidden-patch-kit/v1",
+  "signature": "Tehkné Solutions",
+  "status": "builder_and_gate_added",
+  "source_recovery_pr": 124,
+  "canonical_visible_pixels": "LOCKED_EXACT",
+  "source_front_clean_sha256": "0e435757b5c8a114f3ba91653f79bc86db51ee9cf3bfb74c529efed5d4ff7ab5",
+  "source_combat_sha256": "c8e6cd1feece7c2a54cf2279085c2a4bb33338dd6a3dcb3e4d5a2402b537631c",
+  "slots": [
+    "torso_underpaint_complete",
+    "arm_left_complete",
+    "arm_right_complete"
+  ],
+  "expected_remaining_hidden_pixels": 22636,
+  "rules": {
+    "generative_pixels_created_by_kit": false,
+    "automatic_inpainting_used": false,
+    "patches_are_individual": true,
+    "locked_visible_pixels_may_change": false,
+    "contact_absorb_allowed": false,
+    "pack04_promotion_allowed": false
+  }
+}

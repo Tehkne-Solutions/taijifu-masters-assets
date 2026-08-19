@@ -1,0 +1,6 @@
+Lian Wu Remaining Hidden Patch Kit v1
+Tehkné Solutions
+
+This kit does not author or promote hidden pixels. It produces three individual, tightly cropped authoring surfaces for torso, left arm and right arm. Each surface includes context, remaining-hidden mask, already-recovered real pixels, and a blank authoring patch canvas.
+
+Canonical visible pixels remain locked. Contact Absorb and PACK04 remain blocked until the three hidden patches are completed, submitted, reconstructed and visually reviewed.
