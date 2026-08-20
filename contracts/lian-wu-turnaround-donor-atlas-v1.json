@@ -1,0 +1,13 @@
+{
+  "schema": "tehkne/taijifu-lian-wu-turnaround-donor-atlas-contract/v1",
+  "signature": "Tehkné Solutions",
+  "source_release": "assets-pack-01-v1.0.0",
+  "source_views": ["front_raw", "side_left_raw", "back_raw", "side_right_raw"],
+  "classification": "CANDIDATE_DONOR_ONLY",
+  "same_xy_donor_authoritative": false,
+  "human_authored_remap_required": true,
+  "generative_pixels_created": false,
+  "automatic_inpainting_used": false,
+  "pack04_promotion_allowed": false,
+  "counts_toward_pack04": false
+}
