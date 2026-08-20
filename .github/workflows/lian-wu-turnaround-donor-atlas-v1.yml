@@ -1,0 +1,66 @@
+name: Lian Wu Turnaround Donor Atlas v1
+
+on:
+  pull_request:
+    paths:
+      - 'tools/build_lian_wu_turnaround_donor_atlas_v1.py'
+      - '.github/workflows/lian-wu-turnaround-donor-atlas-v1.yml'
+      - 'tools/build_lian_wu_layered_master_authoring_kit_v2.py'
+      - 'tools/build_lian_wu_remaining_hidden_patch_kit_v1.py'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  donor-atlas:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    steps:
+      - name: Checkout canonical LFS pixels
+        uses: actions/checkout@v4
+        with:
+          lfs: true
+
+      - name: Install image dependencies
+        run: python3 -m pip install --disable-pip-version-check Pillow==11.3.0 numpy==2.2.6 opencv-python-headless==4.12.0.88
+
+      - name: Build Authoring Kit v2 dependency
+        run: python3 tools/build_lian_wu_layered_master_authoring_kit_v2.py
+
+      - name: Build Remaining Hidden Patch Kit v1 dependency
+        run: python3 tools/build_lian_wu_remaining_hidden_patch_kit_v1.py
+
+      - name: Recover exact Pack 01 turnaround source
+        shell: bash
+        run: |
+          set -euo pipefail
+          URL='https://github.com/Tehkne-Solutions/taijifu-masters-assets/releases/download/assets-pack-01-v1.0.0/PACK_01_LIAN_WU_BASE_FINAL_v1.0.0.zip'
+          curl --fail --location --retry 3 --output /tmp/pack01.zip "$URL"
+          rm -rf /tmp/pack01 && mkdir -p /tmp/pack01 /tmp/lian_wu_turnaround_raw
+          unzip -q /tmp/pack01.zip -d /tmp/pack01
+          cp /tmp/pack01/turnaround/char_lian_wu__front_raw.png /tmp/lian_wu_turnaround_raw/
+          cp /tmp/pack01/turnaround/char_lian_wu__side_left_raw.png /tmp/lian_wu_turnaround_raw/
+          cp /tmp/pack01/turnaround/char_lian_wu__back_raw.png /tmp/lian_wu_turnaround_raw/
+          cp /tmp/pack01/turnaround/char_lian_wu__side_right_raw.png /tmp/lian_wu_turnaround_raw/
+
+      - name: Build turnaround donor atlas v1
+        run: python3 tools/build_lian_wu_turnaround_donor_atlas_v1.py
+
+      - name: Compile builder
+        run: python3 -m py_compile tools/build_lian_wu_turnaround_donor_atlas_v1.py
+
+      - name: Publish donor atlas
+        uses: actions/upload-artifact@v4
+        with:
+          name: LIAN_WU_TURNAROUND_DONOR_ATLAS_V1
+          path: /tmp/lian_wu_turnaround_donor_atlas_v1
+          if-no-files-found: error
+          retention-days: 30
+
+      - name: Assert fail closed
+        run: |
+          echo 'CLASSIFICATION=CANDIDATE_DONOR_ONLY'
+          echo 'SAME_XY_DONOR_AUTHORITATIVE=false'
+          echo 'PACK04_PROMOTION_ALLOWED=false'
+          echo 'SIGNATURE=Tehkné Solutions'
