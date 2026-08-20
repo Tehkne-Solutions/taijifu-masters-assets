@@ -24,6 +24,15 @@ jobs:
         run: python3 tools/build_lian_wu_layered_master_authoring_kit_v2.py
       - name: Build Remaining Hidden Patch Kit v1 dependency
         run: python3 tools/build_lian_wu_remaining_hidden_patch_kit_v1.py
+      - name: Materialize authored patch payloads
+        shell: bash
+        run: |
+          set -euo pipefail
+          DIR='production/first_playable/lian_wu/layered_master/hidden_patch_submission_v1'
+          shopt -s nullglob
+          for payload in "$DIR"/*.png.bin; do
+            cp -- "$payload" "${payload%.bin}"
+          done
       - name: Validate hidden patch submission
         run: python3 tools/validate_lian_wu_hidden_patch_submission_v1.py
       - name: Compile validator
