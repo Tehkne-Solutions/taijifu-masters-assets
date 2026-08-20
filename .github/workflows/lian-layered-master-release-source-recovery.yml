@@ -1,0 +1,68 @@
+name: Lian Wu Layered Master Release Source Recovery
+
+on:
+  pull_request:
+    paths:
+      - '.github/workflows/lian-layered-master-release-source-recovery.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  recover:
+    runs-on: ubuntu-22.04
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Recover exact Pack 01 release source
+        shell: bash
+        run: |
+          set -euo pipefail
+          URL='https://github.com/Tehkne-Solutions/taijifu-masters-assets/releases/download/assets-pack-01-v1.0.0/PACK_01_LIAN_WU_BASE_FINAL_v1.0.0.zip'
+          curl --fail --location --retry 3 --output /tmp/pack01.zip "$URL"
+          unzip -t /tmp/pack01.zip >/dev/null
+          rm -rf /tmp/pack01 && mkdir -p /tmp/pack01
+          unzip -q /tmp/pack01.zip -d /tmp/pack01
+          mkdir -p recovered/turnaround
+          cp /tmp/pack01/turnaround/char_lian_wu__front_raw.png recovered/turnaround/
+          cp /tmp/pack01/turnaround/char_lian_wu__side_left_raw.png recovered/turnaround/
+          cp /tmp/pack01/turnaround/char_lian_wu__back_raw.png recovered/turnaround/
+          cp /tmp/pack01/turnaround/char_lian_wu__side_right_raw.png recovered/turnaround/
+          python - <<'PY'
+          from pathlib import Path
+          import hashlib, json
+          expected={
+            'char_lian_wu__front_raw.png':'047de240f47d6b8ba1e0605dd3353dc3bd6921ae7589163b74c1855d1b5cf1ec',
+            'char_lian_wu__side_left_raw.png':'458a3ed289dad5f2f9714625847e87e270ea6e027d8d281f67c3507ee77465df',
+            'char_lian_wu__back_raw.png':'fbfa0c5a678d515cde9b61fbee445ff35efa0713415960f15e43efa88359c3b3',
+            'char_lian_wu__side_right_raw.png':'7858b89976d8fd5968ca404e490927d37894f1146dd2452c872992c797a39168',
+          }
+          rows=[]
+          root=Path('recovered/turnaround')
+          for name,want in expected.items():
+              path=root/name
+              got=hashlib.sha256(path.read_bytes()).hexdigest()
+              if got!=want:
+                  raise SystemExit(f'RELEASE_SOURCE_RECOVERY=FAIL {name} {got}')
+              rows.append({'file':name,'sha256':got,'bytes':path.stat().st_size})
+          Path('recovered/recovery-report.json').write_text(json.dumps({
+              'schema':'tehkne/lian-layered-master-release-source-recovery/v1',
+              'signature':'Tehkné Solutions',
+              'release_tag':'assets-pack-01-v1.0.0',
+              'asset':'PACK_01_LIAN_WU_BASE_FINAL_v1.0.0.zip',
+              'files':rows,
+              'release_source_recovery':'PASS'
+          },indent=2)+'\n')
+          print('RELEASE_SOURCE_RECOVERY=PASS files=4')
+          PY
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: LIAN_WU_PACK01_TURNAROUND_RAW_RECOVERED
+          path: recovered/
+          if-no-files-found: error
+
+      - name: Summary
+        run: echo 'Lian Wu Pack 01 release source recovery — Tehkné Solutions' >> "$GITHUB_STEP_SUMMARY"
